@@ -1,0 +1,17 @@
+---
+title: "Sarah Yao"
+about:
+  template: jolla
+  image: image.jpg
+  links:
+    - icon: github
+      text: Github
+      href: https://github.com/yaosarah2005
+---
+
+Hi, I’m Sarah Yao, an undergraduate student at Colgate University. I'm interested in data analysis, economics, and statistics.
+
+## Education
+
+Colgate University ｜ Aug 2023 - May 2027 | B.A. in Economics | Minor in Applied Mathematics
+
