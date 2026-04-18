@@ -1,0 +1,222 @@
+---
+execute:               # Default settings for code blocks
+  warning: false       # Do not print warnings
+  message: false       # Do not print messages
+  size: "scriptsize"   # Set code size to script size
+
+format:
+  pdf:        # Specify .pdf formatting options 
+    documentclass: article     # Document Class
+    number-sections: true      # Number Sections
+    reference-section-title: "References" # Title for reference section
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables 
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+format-links: [pdf]
+---
+```{r}
+#| echo: false
+
+default_chunk_hook  <- knitr::knit_hooks$get("chunk")
+
+latex_font_size <- c("Huge", "huge", "LARGE", "Large", 
+                     "large", "normalsize", "small", 
+                     "footnotesize", "scriptsize", "tiny")
+
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- default_chunk_hook(x, options)
+  if(options$size %in% latex_font_size) {
+    paste0("\n \\", options$size, "\n\n", 
+      x, 
+      "\n\n \\normalsize"
+    )
+  } else {
+    x
+  }
+})
+
+```
+
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+```
+
+<!-- Code For Building Menu Here -->
+```{r}
+#| include: false
+breakfasts <- c("website/BerryMelonSmoothie.html",
+                "website/BiscuitsAndGravy.html",
+                "website/BreakfastCheesecake.html",
+                "website/BreakfastMuffins.html",
+                "website/ChiaParfait.html",
+                "website/GardenTomatoQuiche.html",
+                "website/OvernightOats.html",
+                "website/PumpkinToast.html",
+                "website/TropicalSmoothie.html")
+dinner <- c("website/AfricanPeanutSoup.html",
+            "website/Alfredo.html",
+            "website/ArugulaPasta.html",
+            "website/AutumnGrainBowl.html",
+            "website/BakedZiti.html",
+            "website/BBQChili.html",
+            "website/Bibimbap.html",
+            "website/BLTSalad.html",
+            "website/Burgers.html",
+            "website/CapreseSandwiches.html",
+            "website/EggplantParmesan.html",
+            "website/Enchiladas.html",
+            "website/FloridaRolls.html",
+            "website/KimchiGrilledCheese.html",
+            "website/Lasagna.html",
+            "website/LatinBowl.html",
+            "website/Meatloaf.html",
+            "website/PadThai.html",
+            "website/PastaAndPeas.html",
+            "website/Pizza.html",
+            "website/RedWineRagu.html",
+            "website/SalmonChowder.html",
+            "website/Shakshuka.html")
+```
+
+# Ingredients
+
+Grocery List
+```{r}
+#| echo: false
+#| results: 'asis'
+dinner.recipes <- dinner[sample(x=1:length(dinner), size=3, replace = TRUE)] # Select dinner recipes
+breakfast.recipe <- breakfasts[sample(x=1:length(breakfasts), size=1, replace = TRUE)] # Select breakfast recipes
+recipe <- c(breakfast.recipe, dinner.recipes[1], dinner.recipes[2], dinner.recipes[3])             # Create a vector to store the recipe
+
+
+library(package = "rvest")
+for (i in 1:4){
+   recipe.item <- read_html(recipe[i])
+   ingredients.section <- html_element(recipe.item, "#ingredients")
+   ingredients <- html_elements(ingredients.section, "li")
+   formatted_list <- paste("-", html_text(ingredients))
+   cat(formatted_list, sep = "\n")
+} # Find the ingredients for each recipe
+
+```
+
+\newpage
+
+# Recipe One
+```{r}
+#| echo: false
+#| results: 'asis'
+image <- function(recipenumber){
+recipe.one <- read_html(recipe[recipenumber])
+image.element <- html_element(recipe.one, ".figure-img")
+image.url <- paste("website/", html_attr(image.element,"src"), sep = "")
+# width="50%" shrinks the image for printing
+recipe.title <- recipe.one |> html_element("h1") |> html_text()
+cat(paste('![', recipe.title, '](', image.url, "){width=50%}", sep="")) 
+} # Create a function to load the figure of the recipe
+image(2)
+```
+
+**Ingredients**
+```{r}
+#| echo: false
+#| results: 'asis'
+ingredients <- function(recipenumber){
+recipe.one <- read_html(recipe[recipenumber])
+ingredients.section <- html_element(recipe.one, "#ingredients")
+ingredients <- html_elements(ingredients.section, "li")
+formatted_list <- paste("-", html_text(ingredients))
+cat(formatted_list, sep = "\n")
+} # Create a function to load the ingredients of the recipe
+ingredients(2)
+```
+
+**Instructions**
+```{r}
+#| echo: false
+#| results: 'asis'
+instructions <- function(recipenumber){
+recipe.one <- read_html(recipe[recipenumber])
+instructions.section <- html_element(recipe.one, "#instructions")
+instructions <- html_elements(instructions.section, "li")
+formatted_list <- paste("1.", html_text(instructions))
+cat(formatted_list, sep = "\n")
+} # Create a function to load the instructions of the recipe
+instructions(2)
+```
+
+\newpage
+
+# Recipe Two
+```{r}
+#| echo: false
+#| results: 'asis'
+image(3)
+```
+
+**Ingredients**
+```{r}
+#| echo: false
+#| results: 'asis'
+ingredients(3)
+```
+
+**Instructions**
+```{r}
+#| echo: false
+#| results: 'asis'
+instructions(3)
+```
+
+\newpage
+
+# Recipe Three
+
+```{r}
+#| echo: false
+#| results: 'asis'
+image(4)
+```
+
+**Ingredients**
+```{r}
+#| echo: false
+#| results: 'asis'
+ingredients(4)
+```
+
+**Instructions**
+```{r}
+#| echo: false
+#| results: 'asis'
+instructions(4)
+```
+
+\newpage
+
+# Breakfast Recipe
+```{r}
+#| echo: false
+#| results: 'asis'
+image(1)
+```
+
+**Ingredients**
+```{r}
+#| echo: false
+#| results: 'asis'
+ingredients(1)
+```
+
+**Instructions**
+```{r}
+#| echo: false
+#| results: 'asis'
+instructions(1)
+```

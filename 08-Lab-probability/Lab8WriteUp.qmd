@@ -1,0 +1,893 @@
+---
+title: Lab Eight -- Probability # Title of the document
+
+# Bibliography Details
+bibliography: Lab8References.bib  # Name of bib file in the same folder 
+bibliographystyle: apa            # Bibliography style
+
+execute:               # Default settings for code blocks
+  warning: false       # Do not print warnings
+  message: false       # Do not print messages
+  size: "scriptsize"   # Set code size to script size
+
+# Below will do html by default. To render the entire project
+# Use the following code:
+# quarto::quarto_render("Lab8WriteUp.qmd")
+format:
+  pdf:        # Specify .pdf formatting options 
+    documentclass: article     # Document Class
+    number-sections: true      # Number Sections
+    reference-section-title: "References" # Title for reference section
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables 
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+  html:       # Specify HTML formatting options 
+    number-sections: true      # Number Sections
+    code-fold: true            # Button to show code
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables and figures
+format-links: [pdf]
+---
+```{r}
+#| echo: false
+
+default_chunk_hook  <- knitr::knit_hooks$get("chunk")
+
+latex_font_size <- c("Huge", "huge", "LARGE", "Large", 
+                     "large", "normalsize", "small", 
+                     "footnotesize", "scriptsize", "tiny")
+
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- default_chunk_hook(x, options)
+  if(options$size %in% latex_font_size) {
+    paste0("\n \\", options$size, "\n\n", 
+      x, 
+      "\n\n \\normalsize"
+    )
+  } else {
+    x
+  }
+})
+```
+
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+library(patchwork)
+```
+
+**Tips**
+
+* Complete the tasks below. Make sure to start your solutions in on a new line that starts with "**Solution**:".
+* Make sure to use the Quarto Cheatsheet. This will make completing and writing up the lab *much* easier.
+* Make sure to use "enter" to make your code readable, so it doesn't run off the page. I switched the Quarto document to automatically render to .pdf, so you can see what you're submitting by default. You can switch back for the highlighting by moving the html block above the pdf block in the YAML header.
+* Don't forget that you can copy-and-paste code when you're doing something similar as we did in class!
+* Make sure to plot all computed probabilities. This is good `ggplot` practice AND will help make sure you don't make a mistake when computing the probability.
+
+# The Binomial and Negative Binomial Distributions
+
+## The Binomial Distribution
+In many introductory courses, we make the simplifying assumption of independence in Bernoulli trials. For example, when playing best two-out-of-three legs in a darts match, we would assume Player A has an 70% chance of winning each leg. We write:
+$$X \sim \text{Binomial}(n=3, p=0.70)$$
+where
+
+* $X$ is the number of legs won
+* $n$ is the number of trials 
+* $p$ is the probability of the event of interest
+
+Of note, it is not necessarily the case that the players play all three legs -- if either player wins legs one and two the match ends.
+
+There are eight possible outcomes for Player A:
+
+* (win, win, "win") $\longrightarrow$ Player A wins
+* (win, win, "lose") $\longrightarrow$ Player A wins
+* (win, lose, win) $\longrightarrow$ Player A wins
+* (win, lose, lose) $\longrightarrow$ Player A loses
+* (lose, win, win)  $\longrightarrow$ Player A wins
+* (lose, win, lose) $\longrightarrow$ Player A loses
+* (lose, lose, "win") $\longrightarrow$ Player A loses
+* (lose, lose, "lose") $\longrightarrow$ Player A loses
+
+**Note**: I use quotations above to denote outcomes where the last match isn't actually played.
+
+**Use the Binomial distribution to compute the probability that Player A wins the match.  Make sure write out your probability statement and work to write it in terms of the distribution function (PMF/CDF) to plot the probability using `ggplot`.**
+
+**Solution**
+
+$$P(X\geq2) = 1- F_X(1)$$
+
+
+```{r}
+1 - pbinom(q = 1, prob = 0.7, size = 3)
+
+ggdat <- tibble(x = 0: 4) |>
+  mutate(PMF = dbinom(x, prob = 0.7, size = 3),
+         CDF = pbinom(x, prob = 0.7, size = 3))
+
+PMF.plot <- ggplot() +
+  geom_linerange(data = ggdat,
+                 aes(x = x, ymin = 0, ymax = PMF)) +
+  geom_linerange(data = ggdat |> filter(x >= 2),
+                 aes(x = x, ymin = 0, ymax = PMF),
+                 color = "darkorchid2", linewidth=2, alpha=0.50) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x", breaks=0:4) +
+  ylab("Probability") +
+  theme_bw()
+
+CDF.plot <- ggplot() +
+  geom_step(data=ggdat, aes(x = x, y = CDF)) +
+  geom_point(data=ggdat, aes(x = x, y = CDF)) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x", breaks=0:4) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+
+PMF.plot | CDF.plot
+```
+
+## The Negative Binomial Distribution
+In intermediate courses, we learn the Negative Binomial distribution that we use to model the number of "failures" until the $r$th success. Note that this approach still makes the simplifying assumption of independence in Bernoulli trials.
+
+**Specify the two cases necessary to compute the probability. Fully explain these probability statements in the context of a best two-out-of-three match and the Negative Binomial distribution. Finally, compute the probability that Player A wins the match and show you get the same result as the Binomial approach. Make sure write out your probability statement and work to write it in terms of the distribution function (PMF/CDF) to plot the probability using `ggplot`.**
+
+**Solution**
+
+First case: Player A has 0 failure before the first two success.
+$$P(X = 0) = f(0)$$
+
+Second case: Player A has 1 failure before the first two success.
+$$P(X = 1) = f(1)$$
+
+```{r}
+dnbinom(x = 0, prob = 0.7, size = 2) + dnbinom(x = 1, prob = 0.7, size = 2)
+```
+
+This is the same result as the binomial approach.
+
+
+```{r}
+ggdat <- tibble(x = 0:5) |>
+  mutate(PMF = dnbinom(x, prob = 0.7, size = 2),
+         CDF = pnbinom(x, prob = 0.7, size = 2))
+
+PMF.plot <- ggplot() +
+  geom_linerange(data = ggdat,
+                 aes(x = x, ymin = 0, ymax = PMF)) +
+  geom_linerange(data = ggdat |> filter(x == 0 | x == 1),
+                 aes(x = x, ymin = 0, ymax = PMF),
+                 color = "darkorchid2", linewidth=2, alpha=0.50) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x", breaks=0:4) +
+  ylab("Probability") +
+  theme_bw()
+
+CDF.plot <- ggplot() +
+  geom_step(data=ggdat, aes(x = x, y = CDF)) +
+  geom_point(data=ggdat, aes(x = x, y = CDF)) +
+  geom_point(data=tibble(x=1) |> mutate(CDF = pnbinom(x, prob = 0.7, size = 2)),
+             aes(x = x, y=CDF), color="darkorchid2")+
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x", breaks=0:5) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+
+PMF.plot | CDF.plot
+```
+
+# The Beta Binomial Distribution
+One approach to generalize this modeling is to use a Beta-Binomial distribution. This distribution arrises when we let $p$ be a random variable that follows a Beta distribution:
+\begin{align*}
+  P &\sim \text{Beta}(\alpha, \beta)\\
+  X &\sim \text{Binomial}(n, P).
+\end{align*}
+This distribution is not part of base `R`, but is available using the `_bbinom` functions from the `extraDistr` package [@extraDistr].
+
+The primary benefit is that the Beta-Binomial enables us to specify some uncertainty about the skill of Player A, as $p$ does not have to be fixed (e.g., $p=0.70$). Suppose the result of the best two-out-of-three match follows a Beta-Binomial distribution  where $\alpha=7$ and $\beta=3$.
+
+## The Beta Part
+1. **Plot the corresponding Beta distribution. Interpret the plot in the context of a best two-out-of-three match and the Binomial distribution.**\
+**Hint**: The Beta distribution is available in base `R` via `_beta()`.
+
+```{r}
+ggdat <- tibble(x = seq(0, 1, 0.001)) |>
+  mutate(PDF = dbeta(x, 7, 3),
+         CDF = pbeta(x, 7,3))
+
+PDF.plot <- ggplot(ggdat) +
+  geom_line(aes(x = x, y= PDF)) +
+  geom_hline(yintercept = 0) +
+  ylab("Density") +
+  theme_bw()
+
+CDF.plot <- ggplot() +
+  geom_line(data=ggdat, aes(x = x, y = CDF)) +
+  geom_hline(yintercept = 0) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+
+PDF.plot | CDF.plot
+```
+
+The area between a certain interval under the PDF curve represents the probability of player A per leg winning probability lies within that interval. It represent the variation of the p value in a binomial distribution. The CDF represent the probability of player A winning each leg with a probability less than a given value. 
+
+
+
+2. How does the Beta incorporate uncertainty about the skill of Player A? **Compute the mean and variance of the distribution.**\
+**Hint**: You will find the `integrate(...)` function helpful here. 
+\begin{align*}
+  E(P) &= \mu_P = \int_{0}^1 p f_P(p) dp\\
+  var(P) &= \sigma^2_P = \int_{0}^1 (p-\mu_P)^2 f_P(p) dp\\
+\end{align*}
+
+```{r}
+mean <- integrate(function(p) p*dbeta(p,7,3), 0, 1)$value
+variance <- integrate(function(p) ((p-mean)^2) * dbeta(p,7,3), 0, 1)$value
+mean
+variance
+```
+
+The Beta distribution has an expected value of 0.7, so that it is not purely random, but it also allows the probability to vary, which introduces uncertainty.
+
+3. **What is the probability that Player A has a win probability of exactly 0.70?  Make sure write out your probability statement and work to write it in terms of the distribution function (PDF/CDF) to plot the probability using `ggplot`.**\
+**Hint:** Think carefully about the properties of continuous distributions here.
+
+$$P(X = 0.7) \neq f(0.7)$$
+
+The probability is 0, because it is a continuous distribution
+
+
+```{r}
+ggdat <- tibble(x = seq(0, 1, 0.001)) |>
+  mutate(PDF = dbeta(x, 7, 3),
+         CDF = pbeta(x, 7,3))
+
+PDF.plot <- ggplot(ggdat) +
+  geom_line(aes(x = x, y= PDF)) +
+  geom_linerange(data=tibble(x=0.7) |> mutate(PDF=dbeta(x, 7, 3)),
+                 aes(x = x, ymin=0, ymax=PDF), color="darkorchid2") +
+  geom_hline(yintercept = 0) +
+  ylab("Density") +
+  theme_bw()
+
+CDF.plot <- ggplot() +
+  geom_line(data=ggdat, aes(x = x, y = CDF)) +
+  geom_hline(yintercept = 0) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+
+PDF.plot | CDF.plot
+```
+
+4. **What is the probability that Player A has a win probability of at least 0.50?  Make sure write out your probability statement and work to write it in terms of the distribution function (PDF/CDF) to plot the probability using `ggplot`.**
+
+
+**Solution**
+$$P(X\geq0.5) = 1-F(0.5)$$
+
+```{r}
+1 - pbeta(0.5,7,3)
+
+ggdat <- tibble(x = seq(0, 1, 0.001)) |>
+  mutate(PDF = dbeta(x, 7, 3),
+         CDF = pbeta(x, 7,3))
+
+PDF.plot <- ggplot(ggdat) +
+  geom_line(aes(x = x, y= PDF)) +
+  geom_ribbon(data = ggdat |> filter(x > 0.5),
+              aes(x = x, ymin=0, ymax=PDF),
+              fill="darkorchid2", alpha=0.50)+
+  geom_hline(yintercept = 0) +
+  ylab("Density") +
+  theme_bw()
+
+CDF.plot <- ggplot() +
+  geom_line(data=ggdat, aes(x = x, y = CDF)) +
+  geom_point(data=tibble(x=0.5) |> mutate(CDF=pbeta(x, 7,3)),
+             aes(x = x, y=CDF), color="darkorchid2")+
+  geom_hline(yintercept = 0) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+
+PDF.plot | CDF.plot
+```
+
+**5. What is the 90th percentile of Player A's win probability based on this Beta distribution? Make sure write out your probability statement and work to write it in terms of the distribution function (PDF/CDF) to plot the percentile using `ggplot`.**
+
+
+**Solution**
+$$P(X\leq x) = 0.9$$
+$$F^{-1}(0.9)$$
+
+```{r}
+q <- qbeta(0.9,7,3)
+q
+
+ggdat <- tibble(x = seq(0, 1, 0.001)) |>
+  mutate(PDF = dbeta(x, 7, 3),
+         CDF = pbeta(x, 7,3))
+
+PDF.plot <- ggplot(ggdat) +
+  geom_line(aes(x = x, y= PDF)) +
+  geom_ribbon(data = ggdat |> filter(x < q),
+              aes(x = x, ymin=0, ymax=PDF),
+              fill="darkorchid2", alpha=0.50)+
+  geom_hline(yintercept = 0) +
+  ylab("Density") +
+  theme_bw()
+
+CDF.plot <- ggplot() +
+  geom_line(data=ggdat, aes(x = x, y = CDF)) +
+  geom_point(data=tibble(x=q) |> mutate(CDF=pbeta(x, 7,3)),
+             aes(x = x, y=CDF), color="darkorchid2")+
+  geom_linerange(data=tibble(x=0.871) |> mutate(CDF=pbeta(x, 7, 3)),
+                 aes(x = x, ymin=0, ymax=CDF), color="darkorchid2")+
+  geom_hline(yintercept = 0) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+
+PDF.plot | CDF.plot
+```
+
+## The Beta-Binomial Part
+**Compute the probability that Player A wins the match. Compare your result to the Binomial and Negative Binomial results. Make sure write out your probability statement and work to write it in terms of the distribution function (PMF/CDF) to plot the probability using `ggplot`**
+
+**Solution**
+
+$$P(X\geq2) = 1 - F(1) $$
+
+```{r}
+library(extraDistr)
+1 - pbbinom(1, size = 3, alpha = 7, beta = 3)
+```
+
+```{r}
+ggdat <- tibble(x = 0:4) |>
+  mutate(PMF = dbbinom(x, size = 3, alpha = 7, beta = 3),
+         CDF = pbbinom(x, size = 3, alpha = 7, beta = 3))
+
+PMF.plot <- ggplot() +
+  geom_linerange(data = ggdat,
+                 aes(x = x, ymin = 0, ymax = PMF)) +
+  geom_linerange(data = ggdat |> filter(x == 2 | x == 3),
+                 aes(x = x, ymin = 0, ymax = PMF),
+                 color = "darkorchid2", linewidth=2, alpha=0.50) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x", breaks=0:4) +
+  ylab("Probability") +
+  theme_bw()
+
+CDF.plot <- ggplot() +
+  geom_step(data=ggdat, aes(x = x, y = CDF)) +
+  geom_point(data=ggdat, aes(x = x, y = CDF)) +
+  geom_point(data=tibble(x=1) |> mutate(CDF = pbbinom(x, size = 3, alpha = 7, beta = 3)),
+             aes(x = x, y=CDF), color="darkorchid2")+
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x", breaks=0:4) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+
+PMF.plot | CDF.plot
+```
+
+The probability of player A wins the match in beta-binomial distribution is lower than the Binomial and Negative Binomial results.
+
+
+## The Why
+Check the expected value and variance of each distribution.
+
+Analytically, we have
+\begin{align*}
+  E(X) &= np  &&var(X) = np(1-p) \tag{Binomial Distribution}\\
+  E(X) &= n\left(\frac{\alpha}{\alpha+\beta}\right)  &&var(X) = \frac{n \alpha \beta (\alpha + \beta + n)}{(\alpha+\beta)^2(\alpha + \beta + 1)} \tag{Beta-Binomial Distribution}
+\end{align*}
+
+**For each distribution, compute the mean number of legs won for player A.**\
+**Hint**: You can perform the sum over the finite support set here. 
+\begin{align*}
+  E(X)   = \mu_X    &= \sum_{i=0}^3 i f_X(i)\\
+  var(X) = \sigma_X &= \sum_{i=0}^3 (i-\mu_X) f_X(i)
+\end{align*}
+
+**Solution**
+
+Binomeal Distribution
+```{r}
+n <- 0:3
+mean <- sum(n*dbinom(n, 3, 0.7))
+variance <- sum((n-mean)^2 * dbinom(n, 3, 0.7))
+mean
+variance
+```
+
+
+Beta-Binomial Distribution
+```{r}
+n <- 0:3
+mean <- sum(n*dbbinom(n, size = 3, alpha = 7, beta = 3))
+variance <- sum((n-mean)^2 * dbbinom(n, size = 3, alpha = 7, beta = 3))
+mean
+variance
+```
+
+The binomial distribution and beta-binomial distribution has same expected value. However, the beta-binomial distribution has higher variance, which makes them to have different results.
+
+# Altham's Multiplicative Binomial Distribution
+While the Beta-Binomial enables us to model cases where winning has a clustering effect (e.g., a "hot hand").
+
+## Probability Mass Function
+The mass function for this distribution is below. While it used to be available in the `MBD` package for `R`, this package is no longer available.
+$$f_X(x) = \frac{1}{c} {n \choose x} p^x (1-p)^{n-x} \theta^{x(n-x)}I(x \in \{0, 1, ..., n\})$$
+where
+$$c = \sum_{i=0}^n {n \choose i} p^i (1-p)^{n-i} \theta^{i(n-i)}$$ 
+
+**Write a function in `R` called `daltbinom()` for computing the PMF of this distribution. Use your function to plot the distribution where $p=0.70$ where $\theta=0.50$, $\theta=1$, and $\theta=1.50$. Comment on the differences in the context of a best two-out-of-three match**
+
+```{r}
+C <- function(n, p, theta){
+  i <- 0: n
+  sapply(p, function(pval) sum(choose(n, i)*(pval^i)*(1-pval)^(n-i)*theta^(i*(n-i))))
+}
+
+daltbinom <- function(x, n, p, theta){
+  1/C(n,p,theta)*choose(n, x)*p^x*(1-p)^(n-x)*theta^(x*(n-x))
+}
+```
+
+```{r}
+ggdat <- tibble(x = 0: 3) |>
+  mutate(PMF0.5 = daltbinom(x, n=3, p=0.7, theta = 0.5),
+         PMF1 = daltbinom(x, n=3, p=0.7, theta = 1),
+         PMF1.5 = daltbinom(x, n=3, p=0.7, theta = 1.5))
+
+PMF0.5.plot <- ggplot() +
+  geom_linerange(data = ggdat,
+                 aes(x = x, ymin = 0, ymax = PMF0.5)) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 0.5", breaks=0:4) +
+  ylab("Probability") +
+  theme_bw()
+
+PMF1.plot <- ggplot() +
+  geom_linerange(data = ggdat,
+                 aes(x = x, ymin = 0, ymax = PMF1)) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 1", breaks=0:4) +
+  ylab("Probability") +
+  theme_bw()
+
+PMF1.5.plot <- ggplot() +
+  geom_linerange(data = ggdat,
+                 aes(x = x, ymin = 0, ymax = PMF1.5)) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 1.5", breaks=0:4) +
+  ylab("Probability") +
+  theme_bw()
+
+PMF0.5.plot | PMF1.plot | PMF1.5.plot
+```
+
+## Cumulative Distribution Function
+**Use your `daltbinom()` function to create a `paltbinom()` function for computing the CDF of this distribution. Use your function to plot the distribution where $p=0.70$ where $\theta=0.50$, $\theta=1$, and $\theta=1.50$.**
+
+**Solution**
+
+```{r}
+paltbinom <- function(x, n, p, theta){
+  i <- 0:x
+  sum(daltbinom(i,n,p,theta))
+}
+
+ggdat <- tibble(x = 0: 4) |>
+  rowwise()|>
+  mutate(CDF0.5 = paltbinom(x, n=3, p=0.7, theta = 0.5),
+         CDF1 = paltbinom(x, n=3, p=0.7, theta = 1),
+         CDF1.5 = paltbinom(x, n=3, p=0.7, theta = 1.5))
+
+CDF.plot.0.5 <- ggplot() +
+  geom_step(data=ggdat, aes(x = x, y = CDF0.5)) +
+  geom_point(data=ggdat, aes(x = x, y = CDF0.5)) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 0.5", breaks=0:3) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+
+CDF.plot.1 <- ggplot() +
+  geom_step(data=ggdat, aes(x = x, y = CDF1)) +
+  geom_point(data=ggdat, aes(x = x, y = CDF1)) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 1", breaks=0:3) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+
+CDF.plot.1.5 <- ggplot() +
+  geom_step(data=ggdat, aes(x = x, y = CDF1.5)) +
+  geom_point(data=ggdat, aes(x = x, y = CDF1.5)) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 1.5", breaks=0:3) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+
+CDF.plot.0.5 | CDF.plot.1 | CDF.plot.1.5
+```
+
+## The Winning Probability
+**Compute the probability that Player A wins the match using Altham's Multiplicative Binomial Distribution. Compare your result to the Binomial and Negative Binomial results. Compare your results to the Beta-Binomial model, too. Make sure write out your probability statement and work to write it in terms of the distribution function (PMF/CDF) to plot the probability using `ggplot`.**
+
+**Solution**
+
+$$P(X\geq2) = 1-F(1)$$
+
+```{r}
+ggdat <- tibble(x = 0: 4) |>
+  rowwise()|>
+  mutate(PMF0.5 = daltbinom(x, n=3, p=0.7, theta = 0.5),
+         PMF1 = daltbinom(x, n=3, p=0.7, theta = 1),
+         PMF1.5 = daltbinom(x, n=3, p=0.7, theta = 1.5),
+         CDF0.5 = paltbinom(x, n=3, p=0.7, theta = 0.5),
+         CDF1 = paltbinom(x, n=3, p=0.7, theta = 1),
+         CDF1.5 = paltbinom(x, n=3, p=0.7, theta = 1.5))
+
+PMF.plot.0.5 <- ggplot() +
+  geom_linerange(data = ggdat,
+                 aes(x = x, ymin = 0, ymax = PMF0.5)) +
+  geom_linerange(data = ggdat |> filter(x == 2 | x == 3),
+                 aes(x = x, ymin = 0, ymax = PMF0.5),
+                 color = "darkorchid2", linewidth=2, alpha=0.50) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 0.5", breaks=0:4) +
+  ylab("Probability") +
+  theme_bw()
+
+CDF.plot.0.5 <- ggplot() +
+  geom_step(data=ggdat, aes(x = x, y = CDF0.5)) +
+  geom_point(data=ggdat, aes(x = x, y = CDF0.5)) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 0.5", breaks=0:3) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+
+PMF.plot.1 <- ggplot() +
+  geom_linerange(data = ggdat,
+                 aes(x = x, ymin = 0, ymax = PMF1)) +
+  geom_linerange(data = ggdat |> filter(x == 2 | x == 3),
+                 aes(x = x, ymin = 0, ymax = PMF1),
+                 color = "darkorchid2", linewidth=2, alpha=0.50) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 1", breaks=0:4) +
+  ylab("Probability") +
+  theme_bw()
+
+CDF.plot.1 <- ggplot() +
+  geom_step(data=ggdat, aes(x = x, y = CDF1)) +
+  geom_point(data=ggdat, aes(x = x, y = CDF1)) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 1", breaks=0:3) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+
+PMF.plot.1.5 <- ggplot() +
+  geom_linerange(data = ggdat,
+                 aes(x = x, ymin = 0, ymax = PMF1.5)) +
+  geom_linerange(data = ggdat |> filter(x == 2 | x == 3),
+                 aes(x = x, ymin = 0, ymax = PMF1.5),
+                 color = "darkorchid2", linewidth=2, alpha=0.50) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 1.5", breaks=0:4) +
+  ylab("Probability") +
+  theme_bw()
+
+CDF.plot.1.5 <- ggplot() +
+  geom_step(data=ggdat, aes(x = x, y = CDF1.5)) +
+  geom_point(data=ggdat, aes(x = x, y = CDF1.5)) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 1.5", breaks=0:3) +
+  ylab("Cumulative Probability") +
+  theme_bw()
+```
+
+```{r}
+PMF.plot.0.5 | CDF.plot.0.5
+1-paltbinom(1, n=3, p=0.7, theta = 0.5)
+```
+
+When theta is 0.5, the probability of Player A wins the match is greater than Binomial, Negative Binomial, and Beta-Binomial results.
+
+```{r}
+PMF.plot.1 | CDF.plot.1
+1-paltbinom(1, n=3, p=0.7, theta = 1)
+```
+
+When theta is 1, the probability of Player A wins the match is equal to the Binomial and Negative Binomial results. It is greater than the Beta-Binomial results.
+
+```{r}
+PMF.plot.1.5 | CDF.plot.1.5
+1-paltbinom(1, n=3, p=0.7, theta = 1.5)
+```
+
+When theta is 1.5, the probability of Player A wins the match is less than the Binomial, Negative Binomial and Beta-Binomial results.
+
+# Altham's Multiplicative Beta-Binomial Distribution
+You may have wondered -- "Can we do the Beta thing with Altham's version of the Binomial Distribution?" The answer is yes!
+
+## Probability Mass Function
+The mass function for this distribution is below. 
+$$f_X(x) = \left[\int_{0}^1 \left(\frac{1}{c} {n \choose x} p^x (1-p)^{n-x} \theta^{x(n-x)} \right)\left(\frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)} p^{\alpha-1}(1-p)^{\beta-1}\right)dp\right]I(x \in \{0, 1, ..., n\})$$
+
+**Write a function in `R` called `daltbbinom()` for computing the PMF of this distribution. Use your function to plot the distribution where $\alpha=7$ and $\beta=3$ where $\theta=0.50$, $\theta=1$, and $\theta=1.50$. Comment on the differences in the context of a best two-out-of-three match.**
+
+**Hint**: You can use the `integrate()` in `R` to compute the integral. Note that this requires the function to be vectorized -- it should be unless you have added any block conditionals.
+
+**Solution**
+
+```{r}
+daltbbinom <- function(x, n, theta, alpha, beta){
+  integrate(function(p)daltbinom(x, n, p, theta)
+  *(gamma(alpha + beta)/(gamma(alpha)*gamma(beta))
+  *p^(alpha -1)*(1-p)^(beta -1)), 0, 1)$value
+}
+```
+
+```{r}
+ggdat <- tibble(x = 0: 3) |>
+  rowwise()|>
+  mutate(PMF0.5 = daltbbinom(x, n=3, theta = 0.5, alpha = 7, beta = 3),
+         PMF1 = daltbbinom(x, n=3, theta = 1, alpha = 7, beta = 3),
+         PMF1.5 = daltbbinom(x, n=3, theta = 1.5, alpha = 7, beta = 3))
+
+PMF0.5.plot <- ggplot() +
+  geom_linerange(data = ggdat,
+                 aes(x = x, ymin = 0, ymax = PMF0.5)) +
+  geom_linerange(data = ggdat |> filter(x == 2 | x == 3),
+                 aes(x = x, ymin = 0, ymax = PMF0.5),
+                 color = "darkorchid2", linewidth=2, alpha=0.50) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 0.5", breaks=0:3) +
+  ylab("Probability") +
+  theme_bw()
+
+PMF1.plot <- ggplot() +
+  geom_linerange(data = ggdat,
+                 aes(x = x, ymin = 0, ymax = PMF1)) +
+  geom_linerange(data = ggdat |> filter(x == 2 | x == 3),
+                 aes(x = x, ymin = 0, ymax = PMF1),
+                 color = "darkorchid2", linewidth=2, alpha=0.50) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 1", breaks=0:3) +
+  ylab("Probability") +
+  theme_bw()
+
+PMF1.5.plot <- ggplot() +
+  geom_linerange(data = ggdat,
+                 aes(x = x, ymin = 0, ymax = PMF1.5)) +
+  geom_linerange(data = ggdat |> filter(x == 2 | x == 3),
+                 aes(x = x, ymin = 0, ymax = PMF1.5),
+                 color = "darkorchid2", linewidth=2, alpha=0.50) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous("x\ntheta = 1.5", breaks=0:3) +
+  ylab("Probability") +
+  theme_bw()
+
+PMF0.5.plot | PMF1.plot | PMF1.5.plot
+
+daltbbinom(3, n=3, theta = 0.5, alpha = 7, beta = 3) + 
+  daltbbinom(2, n=3, theta = 0.5, alpha = 7, beta = 3)
+daltbbinom(3, n=3, theta = 1, alpha = 7, beta = 3) + 
+  daltbbinom(2, n=3, theta = 1, alpha = 7, beta = 3)
+daltbbinom(3, n=3, theta = 1.5, alpha = 7, beta = 3) + 
+  daltbbinom(2, n=3, theta = 1.5, alpha = 7, beta = 3)
+```
+
+When theta = 1, the distribution is similar to the beta binomial distribution; when theta = 0.5, the player A has highest probability of winning the game; when theta = 1.5, player A has the lowest probability of winning the game.
+
+# A Comparison
+Compute the probabilities for all outcomes for Player A.
+
+* Loses 0-2 (LL"L", LL"W")
+* Loses 1-2 (WLL, LWL)
+* Wins 2-0 (WW"W", WW"L")
+* Wins 2-1 (LWW, WLW)
+
+**Note**: You'll need to define these outcomes in terms of the random variable. 
+
+**Create a bar plot (or column plot) using `ggplot` to show the probability of each outcome under the following conditions:**
+
+* **Binomial**
+* **Negative Binomial**\
+**Note**: You can compute the lose probabilities the same way as the win probabilities using success probability ($1-p$)
+* **Beta-Binomial**
+* **Althman Binomial with $\theta=0.50$ and $\theta=1.5$**
+* **Althman Beta-Binomial with $\theta=0.50$ and $\theta=1.5$**
+
+**Comment on the differences in the context of a best two-out-of-three match.**
+
+
+**Solution**
+
+**Binomial**
+```{r}
+BL0_2 <- dbinom(0,3,0.7) + dbinom(1,3,0.7) / 3   # P(LLL) + (P(LLW) + P(LWL) + P(WLL)) / 3
+BL1_2 <- (dbinom(1,3,0.7) / 3) * 2               # (P(LLW) + P(LWL) + P(WLL)) / 3 * 2
+BW2_0 <- dbinom(3,3,0.7) + dbinom(2,3,0.7) / 3   # P(WWW) + (P(WWL) + P(WLW) + P(LWW)) / 3 
+BW2_1 <- (dbinom(2,3,0.7) / 3) * 2               # (P(WWL) + P(WLW) + P(LWW)) / 3 * 2
+
+Binomial <- tibble(
+  Outcomes = c("Loses 0-2", "Loses 1-2", "Wins 2-0", "Wins 2-1"),
+  Probability = c(BL0_2, BL1_2, BW2_0, BW2_1)
+)
+
+ggplot(Binomial) + 
+  geom_bar(aes(x = Outcomes, y = Probability), stat = "identity")+
+  geom_hline(yintercept = 0)+
+  theme_bw() +
+  labs(x = "Outcomes", y = "Probability",) + 
+  ggtitle("Binomial distribution")
+
+BL0_2 
+BL1_2 
+BW2_0 
+BW2_1 
+```
+
+
+**Negative Binomeal**
+```{r}
+NBL0_2 <- dnbinom(0,2,0.3)
+NBL1_2 <- dnbinom(1,2,0.3)
+NBW2_0 <- dnbinom(0,2,0.7)
+NBW2_1 <- dnbinom(1,2,0.7)
+
+Binomial <- tibble(
+  Outcomes = c("Loses 0-2", "Loses 1-2", "Wins 2-0", "Wins 2-1"),
+  Probability = c(NBL0_2, NBL1_2, NBW2_0, NBW2_1)
+)
+
+ggplot(Binomial) + 
+  geom_bar(aes(x = Outcomes, y = Probability), stat = "identity")+
+  geom_hline(yintercept = 0)+
+  theme_bw() +
+  labs(x = "Outcomes", y = "Probability",) + 
+  ggtitle("Negative Binomial distribution")
+
+NBL0_2 
+NBL1_2 
+NBW2_0 
+NBW2_1 
+```
+
+
+**Beta Binomial**
+```{r}
+BBL0_2 <- dbbinom(0,3,7,3) + dbbinom(1,3,7,3) / 3
+BBL1_2 <- (dbbinom(1,3,7,3) / 3) * 2
+BBW2_0 <- dbbinom(3,3,7,3) + dbbinom(2,3,7,3) / 3
+BBW2_1 <- (dbbinom(2,3,7,3) / 3) * 2
+
+Binomial <- tibble(
+  Outcomes = c("Loses 0-2", "Loses 1-2", "Wins 2-0", "Wins 2-1"),
+  Probability = c(BBL0_2, BBL1_2, BBW2_0, BBW2_1)
+)
+
+ggplot(Binomial) + 
+  geom_bar(aes(x = Outcomes, y = Probability), stat = "identity")+
+  geom_hline(yintercept = 0)+
+  theme_bw() +
+  labs(x = "Outcomes", y = "Probability",) + 
+  ggtitle("Beta Binomial distribution")
+
+BBL0_2 
+BBL1_2 
+BBW2_0 
+BBW2_1 
+```
+
+
+**Altham Binomial**
+```{r}
+daltBL0_2 <- daltbinom(0,3,0.7,0.5) + daltbinom(1,3,0.7,0.5) / 3
+daltBL1_2 <- (daltbinom(1,3,0.7,0.5) / 3) * 2
+daltBW2_0 <- daltbinom(3,3,0.7,0.5) + daltbinom(2,3,0.7,0.5) / 3
+daltBW2_1 <- (daltbinom(2,3,0.7,0.5) / 3) * 2
+
+Binomial <- tibble(
+  Outcomes = c("Loses 0-2", "Loses 1-2", "Wins 2-0", "Wins 2-1"),
+  Probability = c(daltBL0_2, daltBL1_2, daltBW2_0, daltBW2_1)
+)
+
+ggplot(Binomial) + 
+  geom_bar(aes(x = Outcomes, y = Probability), stat = "identity")+
+  geom_hline(yintercept = 0)+
+  theme_bw() +
+  labs(x = "Outcomes", y = "Probability",) + 
+  ggtitle("Altham Binomial distribution (theta = 0.5)")
+
+daltBL0_2 
+daltBL1_2 
+daltBW2_0 
+daltBW2_1 
+```
+
+```{r}
+daltBL0_2 <- daltbinom(0,3,0.7,1.5) + daltbinom(1,3,0.7,1.5) / 3
+daltBL1_2 <- (daltbinom(1,3,0.7,1.5) / 3) * 2
+daltBW2_0 <- daltbinom(3,3,0.7,1.5) + daltbinom(2,3,0.7,1.5) / 3
+daltBW2_1 <- (daltbinom(2,3,0.7,1.5) / 3) * 2
+
+Binomial <- tibble(
+  Outcomes = c("Loses 0-2", "Loses 1-2", "Wins 2-0", "Wins 2-1"),
+  Probability = c(daltBL0_2, daltBL1_2, daltBW2_0, daltBW2_1)
+)
+
+ggplot(Binomial) + 
+  geom_bar(aes(x = Outcomes, y = Probability), stat = "identity")+
+  geom_hline(yintercept = 0)+
+  theme_bw() +
+  labs(x = "Outcomes", y = "Probability",) + 
+  ggtitle("Altham Binomial distribution (theta = 1.5)")
+
+daltBL0_2 
+daltBL1_2 
+daltBW2_0 
+daltBW2_1 
+```
+
+
+**Altham Beta Binomial**
+```{r}
+daltbBL0_2 <- daltbbinom(0,3,0.5,7,3) + daltbbinom(1,3,0.5,7,3) / 3 
+daltbBL1_2 <- (daltbbinom(1,3,0.5,7,3) / 3) * 2
+daltbBW2_0 <- daltbbinom(3,3,0.5,7,3) + daltbbinom(2,3,0.5,7,3) / 3
+daltbBW2_1 <- (daltbbinom(2,3,0.5,7,3) / 3) * 2
+
+Binomial <- tibble(
+  Outcomes = c("Loses 0-2", "Loses 1-2", "Wins 2-0", "Wins 2-1"),
+  Probability = c(daltbBL0_2, daltbBL1_2, daltbBW2_0, daltbBW2_1)
+)
+
+ggplot(Binomial) + 
+  geom_bar(aes(x = Outcomes, y = Probability), stat = "identity")+
+  geom_hline(yintercept = 0)+
+  theme_bw() +
+  labs(x = "Outcomes", y = "Probability",) + 
+  ggtitle("Altham Beta Binomial distribution (theta = 0.5)")
+
+daltbBL0_2 
+daltbBL1_2 
+daltbBW2_0 
+daltbBW2_1 
+```
+
+```{r}
+daltbBL0_2 <- daltbbinom(0,3,1.5,7,3) + daltbbinom(1,3,1.5,7,3) / 3
+daltbBL1_2 <- (daltbbinom(1,3,1.5,7,3) / 3) * 2
+daltbBW2_0 <- daltbbinom(3,3,1.5,7,3) + daltbbinom(2,3,1.5,7,3) / 3
+daltbBW2_1 <- (daltbbinom(2,3,1.5,7,3) / 3) * 2
+
+Binomial <- tibble(
+  Outcomes = c("Loses 0-2", "Loses 1-2", "Wins 2-0", "Wins 2-1"),
+  Probability = c(daltbBL0_2, daltbBL1_2, daltbBW2_0, daltbBW2_1)
+)
+
+ggplot(Binomial) + 
+  geom_bar(aes(x = Outcomes, y = Probability), stat = "identity")+
+  geom_hline(yintercept = 0)+
+  theme_bw() +
+  labs(x = "Outcomes", y = "Probability",) + 
+  ggtitle("Altham Beta Binomial distribution (theta = 1.5)")
+
+daltbBL0_2 
+daltbBL1_2 
+daltbBW2_0 
+daltbBW2_1 
+```
+
+The probability of each outcome is the same for binomial and negative binomial distribution. The Beta Binomial has relative similar plot, with slightly lower probability of winning the game. 
+
+For Altham binomial distribution and Beta Altham binomial distribution where theta is 0.5, the plot looks similar, where the outcome win 2-0 has a lot higher probabiliy the others, and the winning probability is higher than the binomial distribution. 
+
+For Altham binomial distribution and Beta Altham binomial distribution where theta is 1.5, the probability of each outcome are more even distributed, and the winning probability is lower than the binomial distribution.

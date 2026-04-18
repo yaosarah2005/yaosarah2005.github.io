@@ -11,13 +11,13 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
-      - lab-2-using-libraries-and-objects-in-r-yaosarah2005/Lab2WriteUp.qmd
-      - lab-3-matrices-and-dataframes-yaosarah2005/Lab3WriteUp.qmd
-      - lab-4-coding-structures-yaosarah2005/Lab4WriteUp.qmd
-      - lab-5-6-data-wrangling-yaosarah2005/Lab5WriteUp.qmd
-      - lab-8-probability-lab-yaosarah2005/Lab8WriteUp.qmd
-      - lab-10-point-estimation-yaosarah2005-1/Lab10WriteUp.qmd
-      - lab-11-point-estimation-and-bootstrapping-yaosarah2005-1/Lab11WriteUp.qmd
+      - 02-Lab-ObjectsInR/Lab2WriteUp.qmd
+      - 03-Lab-ObjectsInR2/Lab3WriteUp.qmd
+      - 04-Lab-Programming/Lab4WriteUp.qmd
+      - 05-Lab-DataWrangling/Lab5WriteUp.qmd
+      - 08-Lab-probability/Lab8WriteUp.qmd
+      - 10-Lab-pointestimation/Lab10WriteUp.qmd
+      - 11-Lab-Estimation/Lab11WriteUp.qmd
 
 format:
   html:

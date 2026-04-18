@@ -1,0 +1,1397 @@
+---
+title: Lab Eleven -- Point Estimation and Resampling # Title of the document
+
+# Bibliography Details
+bibliography: Lab11References.bib  # Name of bib file in the same folder 
+bibliographystyle: apa            # Bibliography style
+
+execute:               # Default settings for code blocks
+  warning: false       # Do not print warnings
+  message: false       # Do not print messages
+  size: "scriptsize"   # Set code size to script size
+
+# Below will do html by default. To render the entire project
+# Use the following code:
+# quarto::quarto_render("Lab10WriteUp.qmd")
+format:
+  pdf:        # Specify .pdf formatting options 
+    documentclass: article     # Document Class
+    number-sections: true      # Number Sections
+    reference-section-title: "References" # Title for reference section
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables 
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+  html:       # Specify HTML formatting options 
+    number-sections: true      # Number Sections
+    code-fold: true            # Button to show code
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables and figures
+format-links: [pdf]
+---
+```{r}
+#| echo: false
+
+default_chunk_hook  <- knitr::knit_hooks$get("chunk")
+
+latex_font_size <- c("Huge", "huge", "LARGE", "Large", 
+                     "large", "normalsize", "small", 
+                     "footnotesize", "scriptsize", "tiny")
+
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- default_chunk_hook(x, options)
+  if(options$size %in% latex_font_size) {
+    paste0("\n \\", options$size, "\n\n", 
+      x, 
+      "\n\n \\normalsize"
+    )
+  } else {
+    x
+  }
+})
+```
+
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+library(patchwork)
+```
+
+**Tips**
+
+* Complete the tasks below. Make sure to start your solutions in on a new line that starts with "**Solution**:".
+* Make sure to use the Quarto Cheatsheet. This will make completing and writing up the lab *much* easier.
+* Make sure to use "enter" to make your code readable, so it doesn't run off the page. I switched the Quarto document to automatically render to .pdf, so you can see what you're submitting by default. You can switch back for the highlighting by moving the html block above the pdf block in the YAML header.
+* Don't forget that you can copy-and-paste code when you're doing something similar as we did in class!
+* Make sure to plot all computed probabilities. This is good `ggplot` practice AND will help make sure you don't make a mistake when computing the probability.
+
+
+# Introduction
+When performing point estimation, there isn't just one *right* answer. For example, the Method of Moments (MOM) and Maximum Likelihood Estimates (MLEs) aren't always the same.
+
+One question that comes up, is why we calculate the sample variance as
+$$S_{n-1}^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i -\bar{X})^2,$$
+when it is supposed to be the ``average squared distance from the mean, i.e., 
+$$S_n^2 = \frac{1}{n} \sum_{i=1}^n (X_i -\bar{X})^2.$$
+
+
+# Comparing Estimators
+
+## Initial Simulation
+In this lab, we will explore why we use $S_{n-1}^2$ and not $S_n^2$. To do this, we will generate data from four known distributions:
+
+* Poisson$(\lambda=2)$
+* Binomial$\left(n=50, p=\frac{5-\sqrt{21}}{10}\right)$
+* Normal$(\mu=0, \sigma=\sqrt{2})$
+* Exponential$\left(\lambda = \frac{1}{\sqrt{2}}\right).$
+
+**Remark**: Note that I have selected the parameters so that the true variance for all four models is 2.
+
+For each distribution, write a loop that completes the following 1000 times. Put `set.seed(7272)` at the top of your code chunk.
+
+* Generate a sample of size $n$ from the distribution.
+* Calculate and save $S_{n-1}^2$ and $S_n^2.$
+
+Start with $n=20$. Is there evidence that $S_{n-1}^2$ is a better estimator than $S_n^2$?
+
+
+Create a plot or combination of plots (using patchwork) to show the results across all four distributions. Make sure to create a corresponding table that numerically summarizes the results of the simulation. You should include
+\begin{align*}
+\textrm{Bias} &= \textrm{Average of Estimates} - \textrm{True Value}\\
+\textrm{Precision} &= \frac{1}{\textrm{Variance of Estimates}}\\
+\textrm{Mean Square Error} &= \textrm{Bias}^2 + \textrm{Variance of Estimates}.
+\end{align*}
+
+**Solution**
+```{r}
+set.seed(7272)
+
+# Poisson
+P.S.estimate = rep(NA, 1000)
+P.Sn.estimate = rep(NA, 1000)
+
+for(i in 1:1000){
+  X <- rpois(20, lambda = 2)
+  S <- var(X)
+  Sn <- 19/20 * var(X)
+  P.S.estimate[i] <- S
+  P.Sn.estimate[i] <- Sn
+}
+
+# Binomial
+B.S.estimate = rep(NA, 1000)
+B.Sn.estimate = rep(NA, 1000)
+P = (5 - (21^0.5))/10
+for(i in 1:1000){
+  X <- rbinom(20, 50, P)
+  S <- var(X)
+  Sn <- 19/20 * var(X)
+  B.S.estimate[i] <- S
+  B.Sn.estimate[i] <- Sn
+}
+
+# Normal
+N.S.estimate = rep(NA, 1000)
+N.Sn.estimate = rep(NA, 1000)
+
+for(i in 1:1000){
+  X <- rnorm(20, 0, (2^0.5))
+  S <- var(X)
+  Sn <- 19/20 * var(X)
+  N.S.estimate[i] <- S
+  N.Sn.estimate[i] <- Sn
+}
+
+# Exponential
+E.S.estimate = rep(NA, 1000)
+E.Sn.estimate = rep(NA, 1000)
+
+for(i in 1:1000){
+  X <- rexp(20, 1/(2^0.5))
+  S <- var(X)
+  Sn <- 19/20 * var(X)
+  E.S.estimate[i] <- S
+  E.Sn.estimate[i] <- Sn
+}
+
+results <- tibble(PoissonS = P.S.estimate,
+                 PoissonSn = P.Sn.estimate,
+                 BinomialS = B.S.estimate,
+                 BinomialSn = B.Sn.estimate,
+                 NormalS = N.S.estimate,
+                 NormalSn = N.Sn.estimate,
+                 ExponentialS = E.S.estimate,
+                 ExponentialSn = E.Sn.estimate)
+
+results.long <- results |>
+  pivot_longer(cols = everything(),names_to = "Estimator", values_to = "Estimate")
+
+summary <- results.long |>
+  group_by(Estimator) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2)
+
+Poisson <- results.long |>
+  filter(Estimator == "PoissonS" | Estimator == "PoissonSn") |>
+  mutate(Estimator = recode(Estimator,
+    "PoissonS" = "S[n-1]^2", "PoissonSn" = "S[n]^2"))
+
+Poisson.plot <- ggplot(Poisson) +
+  geom_boxplot(aes(x=Estimator, y=Estimate)) + 
+  geom_hline(yintercept = 2, color = "red", linetype = "dashed") +
+  theme_bw()+
+  labs(title = "Poisson distribution") +
+  scale_x_discrete(labels = function(x) parse(text = x))
+
+
+Binomial <- results.long |>
+  filter(Estimator == "BinomialS" | Estimator == "BinomialSn") |>
+  mutate(Estimator = recode(Estimator, "BinomialS" = "S[n-1]^2", "BinomialSn" = "S[n]^2"))
+
+Binomial.plot <- ggplot(Binomial) +
+  geom_boxplot(aes(x=Estimator, y=Estimate)) + 
+  geom_hline(yintercept = 2, color = "red", linetype = "dashed") +
+  theme_bw()+
+  labs(title = "Binomial distribution") +
+  scale_x_discrete(labels = function(x) parse(text = x))
+
+Normal <- results.long |>
+  filter(Estimator == "NormalS" | Estimator == "NormalSn") |>
+  mutate(Estimator = recode(Estimator,
+    "NormalS" = "S[n-1]^2", "NormalSn" = "S[n]^2"))
+
+Normal.plot <- ggplot(Normal) +
+  geom_boxplot(aes(x=Estimator, y=Estimate)) + 
+  geom_hline(yintercept = 2, color = "red", linetype = "dashed") +
+  theme_bw()+
+  labs(title = "Normal distribution") +
+  scale_x_discrete(labels = function(x) parse(text = x))
+
+
+Exponential <- results.long |>
+  filter(Estimator == "ExponentialS" | Estimator == "ExponentialSn") |>
+  mutate(Estimator = recode(Estimator,
+    "ExponentialS" = "S[n-1]^2", "ExponentialSn" = "S[n]^2"))
+
+Exponential.plot <- ggplot(Exponential) +
+  geom_boxplot(aes(x=Estimator, y=Estimate)) + 
+  geom_hline(yintercept = 2, color = "red", linetype = "dashed") +
+  theme_bw()+
+  labs(title = "Exponential distribution") +
+  scale_x_discrete(labels = function(x) parse(text = x))
+
+Poisson.plot | Binomial.plot
+Normal.plot | Exponential.plot
+```
+
+```{r}
+#| label: summary1
+#| tbl-cap: "Summary table of the simulation"
+#| tbl-align: "center"
+#| echo: false
+summary |>
+    mutate(Estimator = recode(Estimator,
+    "BinomialS" = "$S^2_{n-1}$",
+    "BinomialSn" = "$S^2_n$",
+    "ExponentialS" = "$S^2_{n-1}$",
+    "ExponentialSn" = "$S^2_n$",
+    "NormalS" = "$S^2_{n-1}$",
+    "NormalSn" = "$S^2_n$",
+    "PoissonS" = "$S^2_{n-1}$",
+    "PoissonSn" = "$S^2_n$"),
+    Distribution = c('Binomial', 'Binomial','Exponential','Exponential','Normal','Normal','Poisson','Poisson')) |>
+    select(Distribution, Estimator, mean, variance, bias, precision, mse) |>
+  knitr::kable(digits = 2)
+```
+
+When sample size is 20, there is evidence that $s_{n-1}^2$ is a better estimator than $s_{n}^2$. The mean of estimate for $s_{n-1}^2$ is closer to the real varience compare to the mean of estimate for th $s_{n}^2$. The magnitude of bias is also lower for $s_{n-1}^2$ compare to $s_{n}^2$. However, $s_{n-1}^2$ also has higher variance compare to $s_{n}^2$.
+
+## Simulation over various sample sizes
+Consider the effect of the sample size have on these results. Provide a graphical and numerical summary of what happens as $n$ increases -- say $n=20$, $n=50$, $n=100$, and $n=500$. Does the result in your initial simulation hold across samples? Or, do things change as the sample size changes? Ensure to set your randomization seed.
+
+**Solution**
+
+```{r}
+set.seed(7272)
+
+# Poisson
+
+N = c(20,50,100,500)
+P.S.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+ 
+P.Sn.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+for(j in 1:4){
+  n = N[j]
+  for(i in 1:1000){
+    X <- rpois(n, lambda = 2)
+    S <- var(X)
+    Sn <- (n-1)/n * S
+    P.S.result[[j]][i] <- S
+    P.Sn.result[[j]][i] <- Sn
+  }
+}
+
+P.S.long <- P.S.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+
+P.S.long$Size <- factor(as.character(P.S.long$Size),
+                        levels = c("20","50","100","500"))
+
+P.S.summary <- P.S.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) 
+
+P.Sn.long <- P.Sn.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+
+P.Sn.long$Size <- factor(as.character(P.Sn.long$Size),
+                        levels = c("20","50","100","500"))
+  
+P.Sn.summary <- P.Sn.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) 
+
+
+Plot.P.S <- ggplot(P.S.long) +
+  geom_boxplot(aes(x=Size, y=Estimate)) + 
+  geom_hline(yintercept = 2, color = "red", linetype = "dashed") +
+  theme_bw()+
+  labs(title = bquote("Poisson distribution simulation results: " ~ S[n-1]^2)) 
+
+Plot.P.Sn <- ggplot(P.Sn.long) +
+  geom_boxplot(aes(x=Size, y=Estimate)) + 
+  geom_hline(yintercept = 2, color = "red", linetype = "dashed") +
+  theme_bw()+
+  labs(title = bquote("Poisson distribution simulation results: " ~ S[n]^2)) 
+
+Plot.P.S
+```
+
+```{r}
+#| label: Poisson S
+#| tbl-cap: "Poisson distribution simulation results for $S^2_{n-1}$"
+#| tbl-align: "center"
+#| echo: false
+P.S.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+Plot.P.Sn
+```
+
+```{r}
+#| label: Poisson Sn
+#| tbl-cap: "Poisson distribution simulation results for $S^2_{n}$"
+#| tbl-align: "center"
+#| echo: false
+P.Sn.summary |>
+  knitr::kable(digits = 2)
+```
+
+
+```{r}
+set.seed(7272)
+
+# Binomial
+
+N = c(20,50,100,500)
+B.S.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+ 
+B.Sn.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+for(j in 1:4){
+  n = N[j]
+  P = (5 - (21^0.5))/10
+  for(i in 1:1000){
+    X <- rbinom(n, size = 50, prob = P)
+    S <- var(X)
+    Sn <- (n-1)/n * S
+    B.S.result[[j]][i] <- S
+    B.Sn.result[[j]][i] <- Sn
+  }
+}
+
+B.S.long <- B.S.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate")
+
+B.S.long$Size <- factor(as.character(B.S.long$Size),
+                        levels = c("20","50","100","500"))
+
+B.S.summary <- B.S.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+B.Sn.long <- B.Sn.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+
+B.Sn.long$Size <- factor(as.character(B.Sn.long$Size),
+                        levels = c("20","50","100","500"))
+  
+B.Sn.summary <- B.Sn.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+Plot.B.S <- ggplot(B.S.long) +
+  geom_boxplot(aes(x=Size, y=Estimate)) + 
+  geom_hline(yintercept = 2, color = "red", linetype = "dashed") +
+  theme_bw()+
+  labs(title = bquote("Binomial distribution simulation results: " ~ S[n-1]^2)) 
+
+Plot.B.Sn <- ggplot(B.Sn.long) +
+  geom_boxplot(aes(x=Size, y=Estimate)) + 
+  geom_hline(yintercept = 2, color = "red", linetype = "dashed") +
+  theme_bw()+
+  labs(title = bquote("Binomial distribution simulation results: " ~ S[n]^2)) 
+
+Plot.B.S
+```
+
+```{r}
+#| label: Binomial S
+#| tbl-cap: "Binomial distribution simulation results for $S^2_{n-1}$"
+#| tbl-align: "center"
+#| echo: false
+B.S.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+Plot.B.Sn
+```
+
+```{r}
+#| label: Binomial Sn
+#| tbl-cap: "Binomial distribution simulation results for $S^2_{n}$"
+#| tbl-align: "center"
+#| echo: false
+B.Sn.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+set.seed(7272)
+
+# Normal
+
+N = c(20,50,100,500)
+N.S.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+ 
+N.Sn.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+for(j in 1:4){
+  n = N[j]
+  for(i in 1:1000){
+    X <- rnorm(n, mean = 0, sd = (2^0.5))
+    S <- var(X)
+    Sn <- (n-1)/n * S
+    N.S.result[[j]][i] <- S
+    N.Sn.result[[j]][i] <- Sn
+  }
+}
+
+N.S.long <- N.S.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate")
+
+N.S.long$Size <- factor(as.character(N.S.long$Size),
+                        levels = c("20","50","100","500"))
+
+N.S.summary <- N.S.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+N.Sn.long <- N.Sn.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+
+N.Sn.long$Size <- factor(as.character(N.Sn.long$Size),
+                        levels = c("20","50","100","500"))
+  
+N.Sn.summary <- N.Sn.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+Plot.N.S <- ggplot(N.S.long) +
+  geom_boxplot(aes(x=Size, y=Estimate)) + 
+  geom_hline(yintercept = 2, color = "red", linetype = "dashed") +
+  theme_bw()+
+  labs(title = bquote("Normal distribution simulation results: " ~ S[n-1]^2)) 
+
+Plot.N.Sn <- ggplot(N.Sn.long) +
+  geom_boxplot(aes(x=Size, y=Estimate)) + 
+  geom_hline(yintercept = 2, color = "red", linetype = "dashed") +
+  theme_bw()+
+  labs(title = bquote("Normal distribution simulation results: " ~ S[n]^2)) 
+
+Plot.N.S
+```
+
+```{r}
+#| label: Normal S
+#| tbl-cap: "Normal distribution simulation results for $S^2_{n-1}$"
+#| tbl-align: "center"
+#| echo: false
+N.S.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+Plot.N.Sn
+```
+
+```{r}
+#| label: Normal Sn
+#| tbl-cap: "Normal distribution simulation results for $S^2_{n}$"
+#| tbl-align: "center"
+#| echo: false
+N.Sn.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+set.seed(7272)
+
+# Exponential
+
+N = c(20,50,100,500)
+E.S.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+ 
+E.Sn.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+for(j in 1:4){
+  n = N[j]
+  for(i in 1:1000){
+    X <- rexp(n, rate = 1/(2^0.5))
+    S <- var(X)
+    Sn <- (n-1)/n * S
+    E.S.result[[j]][i] <- S
+    E.Sn.result[[j]][i] <- Sn
+  }
+}
+
+E.S.long <- E.S.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate")
+
+E.S.long$Size <- factor(as.character(E.S.long$Size),
+                        levels = c("20","50","100","500"))
+
+E.S.summary <- E.S.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+E.Sn.long <- E.Sn.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+
+E.Sn.long$Size <- factor(as.character(E.Sn.long$Size),
+                        levels = c("20","50","100","500"))
+  
+E.Sn.summary <- E.Sn.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+Plot.E.S <- ggplot(E.S.long) +
+  geom_boxplot(aes(x=Size, y=Estimate)) + 
+  geom_hline(yintercept = 2, color = "red", linetype = "dashed") +
+  theme_bw()+
+  labs(title = bquote("Exponential distribution simulation results: " ~ S[n-1]^2)) 
+
+Plot.E.Sn <- ggplot(E.Sn.long) +
+  geom_boxplot(aes(x=Size, y=Estimate)) + 
+  geom_hline(yintercept = 2, color = "red", linetype = "dashed") +
+  theme_bw()+
+  labs(title = bquote("Exponential distribution simulation results: " ~ S[n]^2)) 
+
+Plot.E.S
+```
+
+```{r}
+#| label: Exponential S
+#| tbl-cap: "Exponential distribution simulation results for $S^2_{n-1}$"
+#| tbl-align: "center"
+#| echo: false
+E.S.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+Plot.E.Sn
+```
+
+```{r}
+#| label: Exponential Sn
+#| tbl-cap: "Exponential distribution simulation results for $S^2_{n}$"
+#| tbl-align: "center"
+#| echo: false
+E.Sn.summary |>
+  knitr::kable(digits = 2)
+```
+
+As sample size increases, the mean of the estimates for both $s_{n-1}^2$ and $s_{n}^2$ become closer to the true value, and the variance of the estimates decreases. Although there are still some evidence that $s_{n}^2$ is more biased, the difference in bias between the two estimator decreases as sample size increases.
+
+## Simulation
+You have written code to draw a random sample of various sizes from each distribution, and to calculate and store the calculated estimates. Rework your code to produce a density plot of the $s_{n-1}^2$ and $s_{n}^2$. Do you have a guess about their distribution? Ensure to set your randomization seed. 
+
+**Solution**
+
+```{r}
+set.seed(7272)
+
+P.S.plot <- ggplot(P.S.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Poisson distribution simulation results: " ~ S[n-1]^2),
+    x = bquote(S[n-1]^2), y="Density") 
+
+P.Sn.plot <- ggplot(P.Sn.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Poisson distribution simulation results: " ~ S[n]^2),
+    x = bquote(S[n]^2), y="Density")
+
+B.S.plot <- ggplot(B.S.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Binomial distribution simulation results: " ~ S[n-1]^2),
+    x = bquote(S[n-1]^2), y="Density") 
+
+B.Sn.plot <- ggplot(B.Sn.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Binomial distribution simulation results: " ~ S[n]^2),
+    x = bquote(S[n]^2), y="Density") 
+
+N.S.plot <- ggplot(N.S.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Normal distribution simulation results: " ~ S[n-1]^2),
+    x = bquote(S[n-1]^2), y="Density") 
+
+N.Sn.plot <- ggplot(N.Sn.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Normal distribution simulation results: " ~ S[n]^2),
+    x = bquote(S[n]^2), y="Density") 
+
+E.S.plot <- ggplot(E.S.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Exponential distribution simulation results: " ~ S[n-1]^2),
+    x = bquote(S[n-1]^2), y="Density") 
+
+E.Sn.plot <- ggplot(E.Sn.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Exponential distribution simulation results: " ~ S[n]^2),
+    x = bquote(S[n]^2), y="Density") 
+
+P.S.plot
+P.Sn.plot
+B.S.plot
+B.Sn.plot
+N.S.plot
+N.Sn.plot
+E.S.plot
+E.Sn.plot
+```
+
+For the normal distribution, the distribution of sample variance follows chi-square distribution. For other distributions, the distribution of sample variance seem to be right-skewed and as sample size increases, the distribution become centered around the true variance. 
+
+## Bootstrap
+Now, take *one* sample from each distribution. Instead of drawing a random sample at each iteration, sample *with replacement* from the one sample. Produce a density plot of the $s_{n-1}^2$ and $s_{n}^2$. Do we get roughly the same information as we do in the full simulation? Try this over several seeds -- what do you notice? Ensure to set your randomization seed.
+
+```{r}
+set.seed(7272)
+
+# Poisson
+
+N = c(20,50,100,500)
+P.S.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+ 
+P.Sn.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+for(j in 1:4){
+  n = N[j]
+  s = rpois(n, lambda = 2)
+  for(i in 1:1000){
+    X <- sample(s,n,replace = TRUE)
+    S <- var(X)
+    Sn <- (n-1)/n * S
+    P.S.result[[j]][i] <- S
+    P.Sn.result[[j]][i] <- Sn
+  }
+}
+
+P.S.long <- P.S.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate")
+
+P.S.summary <- P.S.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+P.Sn.long <- P.Sn.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+  
+P.Sn.summary <- P.Sn.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+P.S.plot <- ggplot(P.S.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Poisson distribution bootstrapping results: " ~ S[n-1]^2),
+    x = bquote(S[n-1]^2), y="Density") 
+
+P.Sn.plot <- ggplot(P.Sn.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Poisson distribution bootstrapping results: " ~ S[n]^2),
+    x = bquote(S[n]^2), y="Density") 
+
+P.S.plot
+```
+
+```{r}
+#| label: Poisson S.
+#| tbl-cap: "Poisson distribution simulation results for $S^2_{n-1}$"
+#| tbl-align: "center"
+#| echo: false
+P.S.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+P.Sn.plot
+```
+
+```{r}
+#| label: Poisson Sn.
+#| tbl-cap: "Poisson distribution simulation results for $S^2_{n}$"
+#| tbl-align: "center"
+#| echo: false
+P.Sn.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+set.seed(7272)
+
+# Binomial
+
+N = c(20,50,100,500)
+B.S.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+ 
+B.Sn.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+for(j in 1:4){
+  n = N[j]
+  P = (5 - (21^0.5))/10
+  s = rbinom(n, size = 50, prob = P)
+  for(i in 1:1000){
+    X <- sample(s,n,TRUE)
+    S <- var(X)
+    Sn <- (n-1)/n * S
+    B.S.result[[j]][i] <- S
+    B.Sn.result[[j]][i] <- Sn
+  }
+}
+
+B.S.long <- B.S.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate")
+
+B.S.summary <- B.S.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+B.Sn.long <- B.Sn.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+  
+B.Sn.summary <- B.Sn.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+B.S.plot <- ggplot(B.S.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Binomial distribution bootstrapping results: " ~ S[n-1]^2),
+    x = bquote(S[n-1]^2), y="Density") 
+
+B.Sn.plot <- ggplot(B.Sn.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Binomial distribution bootstrapping results: " ~ S[n]^2),
+    x = bquote(S[n]^2), y="Density") 
+
+B.S.plot
+```
+
+```{r}
+#| label: Binomial S.
+#| tbl-cap: "Binomial distribution simulation results for $S^2_{n-1}$"
+#| tbl-align: "center"
+#| echo: false
+B.S.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+B.Sn.plot
+```
+
+```{r}
+#| label: Binomial Sn.
+#| tbl-cap: "Binomial distribution simulation results for $S^2_{n}$"
+#| tbl-align: "center"
+#| echo: false
+B.Sn.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+set.seed(7272)
+
+# Normal
+
+N = c(20,50,100,500)
+N.S.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+ 
+N.Sn.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+for(j in 1:4){
+  n = N[j]
+  s = rnorm(n, mean = 0, sd = (2^0.5))
+  for(i in 1:1000){
+    X <- sample(s,n,TRUE)
+    S <- var(X)
+    Sn <- (n-1)/n * S
+    N.S.result[[j]][i] <- S
+    N.Sn.result[[j]][i] <- Sn
+  }
+}
+
+N.S.long <- N.S.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate")
+
+N.S.summary <- N.S.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+N.Sn.long <- N.Sn.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+  
+N.Sn.summary <- N.Sn.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+N.S.plot <- ggplot(N.S.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Normal distribution bootstrapping results: " ~ S[n-1]^2),
+    x = bquote(S[n-1]^2), y="Density") 
+
+N.Sn.plot <- ggplot(N.Sn.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Normal distribution bootstrapping results: " ~ S[n]^2),
+    x = bquote(S[n]^2), y="Density") 
+
+N.S.plot
+```
+
+```{r}
+#| label: Normal S.
+#| tbl-cap: "Normal distribution simulation results for $S^2_{n-1}$"
+#| tbl-align: "center"
+#| echo: false
+N.S.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+N.Sn.plot
+```
+
+```{r}
+#| label: Normal Sn.
+#| tbl-cap: "Normal distribution simulation results for $S^2_{n}$"
+#| tbl-align: "center"
+#| echo: false
+N.Sn.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+set.seed(7272)
+
+# Exponential
+
+N = c(20,50,100,500)
+E.S.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+ 
+E.Sn.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+for(j in 1:4){
+  n = N[j]
+  sp = rexp(n, rate = 1/(2^0.5))
+  for(i in 1:1000){
+    X <- sample(sp, n,TRUE)
+    S <- var(X)
+    Sn <- (n-1)/n * S
+    E.S.result[[j]][i] <- S
+    E.Sn.result[[j]][i] <- Sn
+  }
+}
+
+E.S.long <- E.S.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate")
+
+E.S.summary <- E.S.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+E.Sn.long <- E.Sn.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+  
+E.Sn.summary <- E.Sn.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+E.S.plot <- ggplot(E.S.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Exponential distribution bootstrapping results: " ~ S[n-1]^2),
+    x = bquote(S[n-1]^2), y="Density") 
+
+E.Sn.plot <- ggplot(E.Sn.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Exponential distribution bootstrapping results: " ~ S[n]^2),
+    x = bquote(S[n]^2), y="Density") 
+
+E.S.plot
+```
+
+```{r}
+#| label: Exponential S.
+#| tbl-cap: "Exponential distribution simulation results for $S^2_{n-1}$"
+#| tbl-align: "center"
+#| echo: false
+E.S.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+E.Sn.plot
+```
+
+```{r}
+#| label: Exponential Sn.
+#| tbl-cap: "Exponential distribution simulation results for $S^2_{n}$"
+#| tbl-align: "center"
+#| echo: false
+E.Sn.summary |>
+  knitr::kable(digits = 2)
+```
+
+
+**Plots with different seeds**
+```{r}
+set.seed(7373)
+
+# Poisson
+
+N = c(20,50,100,500)
+P.S.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+ 
+P.Sn.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+for(j in 1:4){
+  n = N[j]
+  for(i in 1:1000){
+    X <- rpois(n, lambda = 2)
+    S <- var(X)
+    Sn <- (n-1)/n * S
+    P.S.result[[j]][i] <- S
+    P.Sn.result[[j]][i] <- Sn
+  }
+}
+
+P.S.long <- P.S.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate")
+
+P.S.summary <- P.S.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+P.Sn.long <- P.Sn.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+  
+P.Sn.summary <- P.Sn.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+P.S.plot <- ggplot(P.S.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Poisson distribution bootstrapping results: " ~ S[n-1]^2),
+    x = bquote(S[n-1]^2), y="Density") 
+
+P.Sn.plot <- ggplot(P.Sn.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Poisson distribution bootstrapping results: " ~ S[n]^2),
+    x = bquote(S[n]^2), y="Density") 
+
+P.S.plot
+P.Sn.plot
+```
+
+```{r}
+set.seed(7171)
+
+# Binomial
+
+N = c(20,50,100,500)
+B.S.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+ 
+B.Sn.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+for(j in 1:4){
+  n = N[j]
+  P = (5 - (21^0.5))/10
+  s = rbinom(n, size = 50, prob = P)
+  for(i in 1:1000){
+    X <- sample(s,n,TRUE)
+    S <- var(X)
+    Sn <- (n-1)/n * S
+    B.S.result[[j]][i] <- S
+    B.Sn.result[[j]][i] <- Sn
+  }
+}
+
+B.S.long <- B.S.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate")
+
+B.S.summary <- B.S.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+B.Sn.long <- B.Sn.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+  
+B.Sn.summary <- B.Sn.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+B.S.plot <- ggplot(B.S.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Binomial distribution bootstrapping results: " ~ S[n-1]^2),
+    x = bquote(S[n-1]^2), y="Density") 
+
+B.Sn.plot <- ggplot(B.Sn.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Binomial distribution bootstrapping results: " ~ S[n]^2),
+    x = bquote(S[n]^2), y="Density") 
+
+B.S.plot
+B.Sn.plot
+```
+
+```{r}
+set.seed(8484)
+
+# Normal
+
+N = c(20,50,100,500)
+N.S.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+ 
+N.Sn.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+for(j in 1:4){
+  n = N[j]
+  s = rnorm(n, mean = 0, sd = (2^0.5))
+  for(i in 1:1000){
+    X <- sample(s,n,TRUE)
+    S <- var(X)
+    Sn <- (n-1)/n * S
+    N.S.result[[j]][i] <- S
+    N.Sn.result[[j]][i] <- Sn
+  }
+}
+
+N.S.long <- N.S.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate")
+
+N.S.summary <- N.S.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+N.Sn.long <- N.Sn.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+  
+N.Sn.summary <- N.Sn.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+N.S.plot <- ggplot(N.S.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Normal distribution bootstrapping results: " ~ S[n-1]^2),
+    x = bquote(S[n-1]^2), y="Density") 
+
+N.Sn.plot <- ggplot(N.Sn.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Normal distribution bootstrapping results: " ~ S[n]^2),
+    x = bquote(S[n]^2), y="Density") 
+
+N.S.plot
+N.Sn.plot
+```
+
+```{r}
+set.seed(7070)
+
+# Exponential
+
+N = c(20,50,100,500)
+E.S.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+ 
+E.Sn.result <- tibble("20" = rep(NA, 1000),
+                 "50" = rep(NA, 1000),
+                 "100" = rep(NA, 1000),
+                 "500" = rep(NA, 1000))
+for(j in 1:4){
+  n = N[j]
+  sp = rexp(n, rate = 1/(2^0.5))
+  for(i in 1:1000){
+    X <- sample(sp, n,TRUE)
+    S <- var(X)
+    Sn <- (n-1)/n * S
+    E.S.result[[j]][i] <- S
+    E.Sn.result[[j]][i] <- Sn
+  }
+}
+
+E.S.long <- E.S.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate")
+
+E.S.summary <- E.S.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+E.Sn.long <- E.Sn.result |>
+  pivot_longer(cols = everything(),names_to = "Size", values_to = "Estimate") 
+  
+E.Sn.summary <- E.Sn.long|>
+  group_by(Size) |>
+  summarize(mean = mean(Estimate),
+            variance = var(Estimate)) |>
+  mutate(bias = mean-2,
+        precision = 1/variance,
+        mse = variance + bias^2) |>
+  arrange(factor(Size, levels = c("20", "50", "100","500")))
+
+E.S.plot <- ggplot(E.S.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Exponential distribution bootstrapping results: " ~ S[n-1]^2),
+    x = bquote(S[n-1]^2), y="Density") 
+
+E.Sn.plot <- ggplot(E.Sn.long) +
+  stat_density(aes(x=Estimate, color=Size), geom="line", position = "jitter") +
+  geom_vline(xintercept=2, color="red", linetype="dotted")+
+  geom_hline(yintercept=0)+
+  theme_bw()+
+  labs(title = bquote("Exponential distribution bootstrapping results: " ~ S[n]^2),
+    x = bquote(S[n]^2), y="Density") 
+
+E.S.plot
+E.Sn.plot
+```
+
+Under different random seeds, the bootstrapping result is similar to the simulation in the aspect that the center of the distribution approaches the true value as the sample size increases for most distributions, and the statistical table demonstrates that $s_{n-1}^2$ is usually less biased than $s_{n}^2$. However, bootstrapping also generally has higher variance and bias compared to full simulation. 
+
+# Executive Summary
+Summarize the work you've done here to provide a brief (200-300 word) summary of the simulation and the results using your work in Lab 11. Your summary should be professional, clear, and all claims should be corroborated with statistical support.
+
+**Solution**
+
+In this lab, I studied the performance of two variance estimators, $S_{n-1}^2$ and $S_n^2$, and examined whether there is evidence that $S_{n-1}^2$ is a better estimator.
+
+The simulation is conducted across four different distributions: Poisson, Binomial, Normal, and Exponential. Each distribution has selected parameters that the true variance is 2. 
+
+I start with a sample size of 20,  and the variance of 1000 different samples from each distribution is calculated using both estimators. I created summary tables and box plots to visualize the results. The result suggests that $S_{n-1}^2$ is less biased compared to $S_n^2$, and the means of the estimates are closer to the true value. However, $S_{n-1}^2$ estimates also tend to have higher variance. 
+
+Then I utilized different sample sizes, 20, 50, 100, 500, to conduct the simulation. I summarized the result with statistic table and box plots. Similarly, $S_{n-1}^2$ is less biased compared to $S_n^2$, and as sample size increases, the magnitude of bias and the variance decrease for both estimators. The difference in bias between the two estimators also decreases. 
+
+I also created density plots for each distribution. The distribution of sample variance seems to be right-skewed, and as the sample size increases, the distribution becomes more closely centered around the true variance.
+
+I conducted bootstrapping by taking one sample from each distribution and sampling with replacement from that sample. The distribution of the bootstrapping result is similar to the full simulation as the sample size increases, and the statistical table demonstrates that $s_{n-1}^2$ is usually less biased than $s_{n}^2$. 
+
+In general, there is clear evidence that $s_{n-1}^2$ is a better estimator than $s_{n}^2$ when sample size is small. However, as the sample size increases, the difference in bias is less obvious, and the mean of both estimates approaches the true value. 
