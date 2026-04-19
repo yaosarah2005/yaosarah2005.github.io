@@ -9,7 +9,7 @@ about:
       href: https://github.com/yaosarah2005
 ---
 
-Hi, I’m Sarah Yao, an undergraduate student at Colgate University. I'm interested in data analysis, economics, and statistics.
+Hi, I’m Sarah Yao, an undergraduate student at Colgate University. I grow up in Beijing, China. I'm interested in data analysis, economics, and statistics.
 
 ## Education
 
