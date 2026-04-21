@@ -108,9 +108,8 @@ The data need to be cleaned. Note that the sample type (Healthy Donor or THP-1),
 
 **Solution**
 ```{r}
-dat.kitsberg.cleaned <- separate(dat.kitsberg, "sample", 
-                                 c("SampleType", "CellType", "Treatment"),
-                                 sep = "_")
+dat.kitsberg.cleaned <- dat.kitsberg |>
+  separate("sample", c("SampleType", "CellType", "Treatment"), sep = "_")
 ```
 
 ### Part C
@@ -144,7 +143,7 @@ The researchers are only interested in monocytes and macrophages. Remove any oth
 **Solution**
 
 ```{r}
-dat.kitsberg.cleaned <- dat.kitsberg.cleaned |> filter(CellType == "mono" | CellType == "mac")
+dat.kitsberg.cleaned <- dat.kitsberg.cleaned |> filter(CellType %in% c('mono', 'mac'))
 ```
 
 ## Part F
@@ -177,7 +176,7 @@ dat.kitsberg.cleaned <- dat.kitsberg |>
   separate("sample", c("SampleType", "CellType", "Treatment"), sep = "_") |>
   filter(Treatment == "12hpi") |>
   mutate(CellType = case_when(CellType == "MDM" ~ "mac", TRUE ~ CellType)) |>
-  filter(CellType == "mono" | CellType == "mac") |>
+  filter(CellType %in% c('mono', 'mac')) |>
   mutate(SampleType = case_when(SampleType == "primary" ~ "Healthy Donor", 
                                 SampleType == "THP1" ~ "THP-1")) |> 
   mutate(CellType = case_when(CellType == "mono" ~ "Monocytes", 
@@ -196,12 +195,24 @@ Recreate Figure 3b as depicted in the paper (see [https://www.nature.com/article
 **Solution**
 
 ```{r}
+#| label: kitsberg
+#| fig-cap: "HCMV genomes in the nucleus"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 ggplot(dat.kitsberg.cleaned) +
   geom_violin(aes(x = factor(CellType,
                       levels = c("Monocytes", "Macrophages")), 
                   y = viruses.within.nucleus),
                   trim = FALSE,
-                  adjust = 0.6)+
+                  adjust = 0.8)+
+  geom_jitter(aes(x = factor(CellType, levels = c("Monocytes", "Macrophages")),
+                  y = viruses.within.nucleus),
+              width = 0.05,height = 0.2,
+              alpha = 0.4,size = 0.2) +
   theme_bw() + 
   labs(x = "", 
      y = "HCMV genomes in the nucleus") +
@@ -238,6 +249,8 @@ dat.kitsberg.summary <- dat.kitsberg.cleaned |>
 dat.kitsberg.summary |>
   knitr::kable(digits = 2)
 ```
+
+The result suggests that the mean of virus in macrophages is higher than the mean of monocytes, and macrophages also has higher variation. This suggests virus is more prevalent in the nucleus of macrophages. The THP-1 cell has roughly similar mean compare to the healthy donors regarding both macrophages and monocytes, suggesting THP-1 cells is a good stand-in for human cells.
 
 # Ship Valuation
 
@@ -283,7 +296,7 @@ The authors recorded the country that each Supramax or Ultramax ship was built i
 ```{r}
 dat.bal.cleaned <- dat.bal.cleaned |>
   mutate(OriginCountry = case_when(Japan == 1 ~ "Japan",
-                                   China..People.s.Republic.Of == 1 ~ "China, People's Republic Of",
+                                   China..People.s.Republic.Of == 1 ~ "People's Republic Of China",
                                    Philippines == 1 ~ "Philippines",
                                    Korea..South == 1 ~ "Korea, South",
                                    Others.Country.Build == 1 ~ "Others Country Build",
@@ -524,16 +537,27 @@ dat.bal.DWT |>
 ```
 
 ```{r}
+#| label: shipvaluation
+#| fig-cap: "DWT and Ship Prices"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 dat.bal.cleaned <- dat.bal.cleaned |>
   drop_na(DWT,price) |>
   mutate(DWT = as.numeric(str_remove(DWT, ",")))
 ggplot(dat.bal.cleaned)+
-  geom_point(aes(x = DWT, y = price)) +
+  geom_point(aes(x = DWT, y = price, color = Yas)) +
   geom_smooth(aes(x = DWT, y = price)) + 
   theme_bw() +
   labs(x = "DWT", 
-       y = "Ship Prices") +
-  ggtitle("DWT and Ship Prices")
+       y = "Ship Prices") 
 ```
 
-The table and plot shows that the correlation coefficient between DWT and ship prices is small, suggesting the relationship is weak.
+The table and plot shows that the correlation coefficient between DWT and ship prices is small, suggesting the relationship is weak. However, it could be caused by other factors such as the age of the ship. For example, some new ships with lower DWT may have higher price, while some old ships with higher DWT may have lower price. 
+
+
+
+
