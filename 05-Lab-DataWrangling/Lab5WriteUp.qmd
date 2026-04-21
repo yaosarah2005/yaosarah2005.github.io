@@ -498,14 +498,21 @@ dat.bal.manufacturer |>
 ```
 
 ```{r}
+#| label: Manufacturer and Ship Prices
+#| fig-cap: "Manufacturer and Ship Prices"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 ggplot(dat.bal.cleaned) +
   geom_violin(aes(x = Manufacturer, y = price),width = 1.0) +
   geom_boxplot(aes(x = Manufacturer, y = price), width = 0.1) + 
   coord_flip()+
   theme_bw()+
   xlab("Manufacturer")+
-  ylab("Ship price")+
-  ggtitle("Manufacturer and Ship Prices")
+  ylab("Ship price")
 ```
 
 The table shows that there is a notable difference in price level between different manufacturer. MAN-B&W has the highest average price, and Caterpillar has the lowest price. In addition, MAN-B&W and Wartsila, which have relative high average price, also have higher standard deviation. 
