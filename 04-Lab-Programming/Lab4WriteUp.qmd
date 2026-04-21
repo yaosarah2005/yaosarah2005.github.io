@@ -119,7 +119,7 @@ Ask for the column `x1`.
 **Solution**
 ```{r}
 #| size: "scriptsize"
-df[,1]
+df$x1
 ```
 
 ## Part d
@@ -135,7 +135,7 @@ Ask for the the value of `x1` in the fifth row of the data frame.
 
 ```{r}
 #| size: "scriptsize"
-df[5,1]
+df$x1[5]
 ```
 
 ## Part f
@@ -188,7 +188,7 @@ calculate.score <- function(x1,x2,x3){
 for(i in 1:nrow(df3)){
   df3[i,5] <- calculate.score(df3[i,1],df3[i,2],df3[i,3])
 }
-df3[,]
+df3
 ```
 
 ## Part j
@@ -199,7 +199,7 @@ Create a function called `evaluate.row(...)` that takes one argument and returns
 evaluate.row <- function(number){
   if(number < 4){
      "low"
-  }else if (4 < number & number <= 7){
+  }else if (number <= 7){
      "mid"
   }else{
      "high"
@@ -208,7 +208,7 @@ evaluate.row <- function(number){
 df4 <- df3
 df4[,1] <- sapply(df4[,1],evaluate.row) 
 #for(i in 1:length(df4[,1])){evaluate.row(df4[i,1])}
-df4[]
+df4
 ```
 
 ## Part k
@@ -222,7 +222,7 @@ We can use vectorization to atain the same result
 ```{r}
 #| size: "scriptsize"
 df$x12 <- df[,1] * df[,2]   # Create a new column using x1 * x2
-df[]
+df
 ```
 
 Part i
@@ -249,7 +249,7 @@ Install and load the `rvest` package [@rvest].
 ```{r}
 #| size: "scriptsize"
 #| eval: false
-install.packages("rvest")
+# install.packages("rvest")
 library(package = "rvest")
 ```
 
@@ -372,6 +372,10 @@ When you render this document, no code should be visible. Instead, you should se
 
 ## Why a fake website?
 Read [https://www.scrapingbee.com/blog/is-web-scraping-legal/](Is Web Sraping Legal?). Originally, I conceived doing this with recipes from Purple Carrot (my favorite subscription service). Being a large company, their terms of service are *very* long and precluded us from copying their recipes. We also checked a few smaller recipe websites we like and even they had terms of service that restricted automated collection of data.
+
+**Solution**
+
+Although web scraping is not illegal by itself, its legality dependes on lots of conditions, such as what you scrap and how you use the information. Since those companies has restrictions of collecting data from web scrapping, it's better to use a fake website.
 
 ## Conditionals
 Did you use conditional statements in your code? If yes, how. If not, are there places you could have used them but did something else?

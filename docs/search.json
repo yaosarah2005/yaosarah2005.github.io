@@ -144,7 +144,7 @@
     "href": "04-Lab-Programming/Lab4WriteUp.html#part-c",
     "title": "Lab Four – Programming in R",
     "section": "1.4 Part c",
-    "text": "1.4 Part c\nAsk for the column x1.\nSolution\n\n\n\nCode\ndf[,1]\n\n\n [1] 8 3 5 3 2 3 1 2 6 2",
+    "text": "1.4 Part c\nAsk for the column x1.\nSolution\n\n\n\nCode\ndf$x1\n\n\n [1] 8 3 5 3 2 3 1 2 6 2",
     "crumbs": [
       "Lab Four -- Programming in R"
     ]
@@ -164,7 +164,7 @@
     "href": "04-Lab-Programming/Lab4WriteUp.html#part-e",
     "title": "Lab Four – Programming in R",
     "section": "1.6 Part e",
-    "text": "1.6 Part e\nAsk for the the value of x1 in the fifth row of the data frame.\n\n\n\nCode\ndf[5,1]\n\n\n[1] 2",
+    "text": "1.6 Part e\nAsk for the the value of x1 in the fifth row of the data frame.\n\n\n\nCode\ndf$x1[5]\n\n\n[1] 2",
     "crumbs": [
       "Lab Four -- Programming in R"
     ]
@@ -204,7 +204,7 @@
     "href": "04-Lab-Programming/Lab4WriteUp.html#part-i",
     "title": "Lab Four – Programming in R",
     "section": "1.10 Part i",
-    "text": "1.10 Part i\nWrite a function called calculate.score(...) that takes three arguments representing x1, x2, and x3) and returns a single value based on the formula: \\[Score = (x_1 \\times 2) + x_2 - x_3\\] Use your function to create a new column total.score in our data frame df.\n\n\n\nCode\ndf3 &lt;- df2\nn &lt;- nrow(df3)                          # rows we need to fill\ndf3$total.score &lt;- rep(NA, nrow(df3))   # Create an empty column for total.score\n\ncalculate.score &lt;- function(x1,x2,x3){\n   (x1 * 2) + x2 - x3 \n}                                       # create a function to calculate the score\n\nfor(i in 1:nrow(df3)){\n  df3[i,5] &lt;- calculate.score(df3[i,1],df3[i,2],df3[i,3])\n}\ndf3[,]\n\n\n   x1 x2 x3 x12 total.score\n1   8  1  8   8           9\n2   3  7  2  21          11\n3   5  3  3  15          10\n4   3  6  2  18          10\n5   2  2  3   4           3\n6   3  8 10  24           4\n7   1 10  1  10          11\n8   2  6  1  12           9\n9   6  2 10  12           4\n10  2  4  1   8           7",
+    "text": "1.10 Part i\nWrite a function called calculate.score(...) that takes three arguments representing x1, x2, and x3) and returns a single value based on the formula: \\[Score = (x_1 \\times 2) + x_2 - x_3\\] Use your function to create a new column total.score in our data frame df.\n\n\n\nCode\ndf3 &lt;- df2\nn &lt;- nrow(df3)                          # rows we need to fill\ndf3$total.score &lt;- rep(NA, nrow(df3))   # Create an empty column for total.score\n\ncalculate.score &lt;- function(x1,x2,x3){\n   (x1 * 2) + x2 - x3 \n}                                       # create a function to calculate the score\n\nfor(i in 1:nrow(df3)){\n  df3[i,5] &lt;- calculate.score(df3[i,1],df3[i,2],df3[i,3])\n}\ndf3\n\n\n   x1 x2 x3 x12 total.score\n1   8  1  8   8           9\n2   3  7  2  21          11\n3   5  3  3  15          10\n4   3  6  2  18          10\n5   2  2  3   4           3\n6   3  8 10  24           4\n7   1 10  1  10          11\n8   2  6  1  12           9\n9   6  2 10  12           4\n10  2  4  1   8           7",
     "crumbs": [
       "Lab Four -- Programming in R"
     ]
@@ -214,7 +214,7 @@
     "href": "04-Lab-Programming/Lab4WriteUp.html#part-j",
     "title": "Lab Four – Programming in R",
     "section": "1.11 Part j",
-    "text": "1.11 Part j\nCreate a function called evaluate.row(...) that takes one argument and returns “low” when the argument is less than 4, “mid” when the argument is between 4 and 7 (inclusive), and “high” when the arguement is 8 or larger. Then, use sapply(...) to apply it to column x1.\n\n\n\nCode\nevaluate.row &lt;- function(number){\n  if(number &lt; 4){\n     \"low\"\n  }else if (4 &lt; number & number &lt;= 7){\n     \"mid\"\n  }else{\n     \"high\"\n  }\n }   # create a function to evaluate row\ndf4 &lt;- df3\ndf4[,1] &lt;- sapply(df4[,1],evaluate.row) \n#for(i in 1:length(df4[,1])){evaluate.row(df4[i,1])}\ndf4[]\n\n\n     x1 x2 x3 x12 total.score\n1  high  1  8   8           9\n2   low  7  2  21          11\n3   mid  3  3  15          10\n4   low  6  2  18          10\n5   low  2  3   4           3\n6   low  8 10  24           4\n7   low 10  1  10          11\n8   low  6  1  12           9\n9   mid  2 10  12           4\n10  low  4  1   8           7",
+    "text": "1.11 Part j\nCreate a function called evaluate.row(...) that takes one argument and returns “low” when the argument is less than 4, “mid” when the argument is between 4 and 7 (inclusive), and “high” when the arguement is 8 or larger. Then, use sapply(...) to apply it to column x1.\n\n\n\nCode\nevaluate.row &lt;- function(number){\n  if(number &lt; 4){\n     \"low\"\n  }else if (number &lt;= 7){\n     \"mid\"\n  }else{\n     \"high\"\n  }\n }   # create a function to evaluate row\ndf4 &lt;- df3\ndf4[,1] &lt;- sapply(df4[,1],evaluate.row) \n#for(i in 1:length(df4[,1])){evaluate.row(df4[i,1])}\ndf4\n\n\n     x1 x2 x3 x12 total.score\n1  high  1  8   8           9\n2   low  7  2  21          11\n3   mid  3  3  15          10\n4   low  6  2  18          10\n5   low  2  3   4           3\n6   low  8 10  24           4\n7   low 10  1  10          11\n8   low  6  1  12           9\n9   mid  2 10  12           4\n10  low  4  1   8           7",
     "crumbs": [
       "Lab Four -- Programming in R"
     ]
@@ -224,7 +224,7 @@
     "href": "04-Lab-Programming/Lab4WriteUp.html#part-k",
     "title": "Lab Four – Programming in R",
     "section": "1.12 Part k",
-    "text": "1.12 Part k\nDid we need to use loops or functions in (h.)-(j.)? That is, can we use vectorization to attain the same results in 1 line each? Where it is possible, write the line of code. Where it is not, explain why.\nSolution\nPart h\nWe can use vectorization to atain the same result\n\n\n\nCode\ndf$x12 &lt;- df[,1] * df[,2]   # Create a new column using x1 * x2\ndf[]\n\n\n   x1 x2 x3 x12\n1   8  1  8   8\n2   3  7  2  21\n3   5  3  3  15\n4   3  6  2  18\n5   2  2  3   4\n6   3  8 10  24\n7   1 10  1  10\n8   2  6  1  12\n9   6  2 10  12\n10  2  4  1   8\n\n\n\nPart i\nWe can use vectorization to atain the same result\n\n\n\nCode\ndf$total.score &lt;- (df[,1] * 2) + df[,2] - df[,3]   \n# Create a new column using testscore function\ndf[]\n\n\n   x1 x2 x3 x12 total.score\n1   8  1  8   8           9\n2   3  7  2  21          11\n3   5  3  3  15          10\n4   3  6  2  18          10\n5   2  2  3   4           3\n6   3  8 10  24           4\n7   1 10  1  10          11\n8   2  6  1  12           9\n9   6  2 10  12           4\n10  2  4  1   8           7\n\n\n\nPart h\nWe cannot use vectorization here because the function contain more than two conditions, so we cannot use ifelse. We can only use loop or sapply(...) to get the result.",
+    "text": "1.12 Part k\nDid we need to use loops or functions in (h.)-(j.)? That is, can we use vectorization to attain the same results in 1 line each? Where it is possible, write the line of code. Where it is not, explain why.\nSolution\nPart h\nWe can use vectorization to atain the same result\n\n\n\nCode\ndf$x12 &lt;- df[,1] * df[,2]   # Create a new column using x1 * x2\ndf\n\n\n   x1 x2 x3 x12\n1   8  1  8   8\n2   3  7  2  21\n3   5  3  3  15\n4   3  6  2  18\n5   2  2  3   4\n6   3  8 10  24\n7   1 10  1  10\n8   2  6  1  12\n9   6  2 10  12\n10  2  4  1   8\n\n\n\nPart i\nWe can use vectorization to atain the same result\n\n\n\nCode\ndf$total.score &lt;- (df[,1] * 2) + df[,2] - df[,3]   \n# Create a new column using testscore function\ndf[]\n\n\n   x1 x2 x3 x12 total.score\n1   8  1  8   8           9\n2   3  7  2  21          11\n3   5  3  3  15          10\n4   3  6  2  18          10\n5   2  2  3   4           3\n6   3  8 10  24           4\n7   1 10  1  10          11\n8   2  6  1  12           9\n9   6  2 10  12           4\n10  2  4  1   8           7\n\n\n\nPart h\nWe cannot use vectorization here because the function contain more than two conditions, so we cannot use ifelse. We can only use loop or sapply(...) to get the result.",
     "crumbs": [
       "Lab Four -- Programming in R"
     ]
@@ -234,7 +234,7 @@
     "href": "04-Lab-Programming/Lab4WriteUp.html#part-a-1",
     "title": "Lab Four – Programming in R",
     "section": "2.1 Part a",
-    "text": "2.1 Part a\nInstall and load the rvest package (Wickham 2025).\nSolution\n\n\n\nCode\ninstall.packages(\"rvest\")\nlibrary(package = \"rvest\")",
+    "text": "2.1 Part a\nInstall and load the rvest package (Wickham 2025).\nSolution\n\n\n\nCode\n# install.packages(\"rvest\")\nlibrary(package = \"rvest\")",
     "crumbs": [
       "Lab Four -- Programming in R"
     ]
@@ -324,7 +324,7 @@
     "href": "04-Lab-Programming/Lab4WriteUp.html#why-a-fake-website",
     "title": "Lab Four – Programming in R",
     "section": "4.1 Why a fake website?",
-    "text": "4.1 Why a fake website?\nRead https://www.scrapingbee.com/blog/is-web-scraping-legal/. Originally, I conceived doing this with recipes from Purple Carrot (my favorite subscription service). Being a large company, their terms of service are very long and precluded us from copying their recipes. We also checked a few smaller recipe websites we like and even they had terms of service that restricted automated collection of data.",
+    "text": "4.1 Why a fake website?\nRead https://www.scrapingbee.com/blog/is-web-scraping-legal/. Originally, I conceived doing this with recipes from Purple Carrot (my favorite subscription service). Being a large company, their terms of service are very long and precluded us from copying their recipes. We also checked a few smaller recipe websites we like and even they had terms of service that restricted automated collection of data.\nSolution\nAlthough web scraping is not illegal by itself, its legality dependes on lots of conditions, such as what you scrap and how you use the information. Since those companies has restrictions of collecting data from web scrapping, it’s better to use a fake website.",
     "crumbs": [
       "Lab Four -- Programming in R"
     ]
@@ -844,7 +844,7 @@
     "href": "index.html",
     "title": "Sarah Yao",
     "section": "",
-    "text": "Hi, I’m Sarah Yao, an undergraduate student at Colgate University.\nI grow up in Beijing, China. I’m interested in data analysis, economics, and statistics.",
+    "text": "Hi, I’m Sarah Yao, an undergraduate student at Colgate University. I grow up in Beijing, China. I’m interested in data analysis, economics, and statistics.",
     "crumbs": [
       "Home"
     ]

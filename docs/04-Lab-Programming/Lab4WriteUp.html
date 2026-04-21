@@ -390,7 +390,7 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>df[,<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>df<span class="sc">$</span>x1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 8 3 5 3 2 3 1 2 6 2</code></pre>
@@ -421,7 +421,7 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>df[<span class="dv">5</span>,<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>df<span class="sc">$</span>x1[<span class="dv">5</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2</code></pre>
@@ -515,7 +515,7 @@ window.Quarto = {
 <span id="cb19-9"><a href="#cb19-9"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(df3)){</span>
 <span id="cb19-10"><a href="#cb19-10"></a>  df3[i,<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="fu">calculate.score</span>(df3[i,<span class="dv">1</span>],df3[i,<span class="dv">2</span>],df3[i,<span class="dv">3</span>])</span>
 <span id="cb19-11"><a href="#cb19-11"></a>}</span>
-<span id="cb19-12"><a href="#cb19-12"></a>df3[,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb19-12"><a href="#cb19-12"></a>df3</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>   x1 x2 x3 x12 total.score
@@ -543,7 +543,7 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>evaluate.row <span class="ot">&lt;-</span> <span class="cf">function</span>(number){</span>
 <span id="cb21-2"><a href="#cb21-2"></a>  <span class="cf">if</span>(number <span class="sc">&lt;</span> <span class="dv">4</span>){</span>
 <span id="cb21-3"><a href="#cb21-3"></a>     <span class="st">"low"</span></span>
-<span id="cb21-4"><a href="#cb21-4"></a>  }<span class="cf">else</span> <span class="cf">if</span> (<span class="dv">4</span> <span class="sc">&lt;</span> number <span class="sc">&amp;</span> number <span class="sc">&lt;=</span> <span class="dv">7</span>){</span>
+<span id="cb21-4"><a href="#cb21-4"></a>  }<span class="cf">else</span> <span class="cf">if</span> (number <span class="sc">&lt;=</span> <span class="dv">7</span>){</span>
 <span id="cb21-5"><a href="#cb21-5"></a>     <span class="st">"mid"</span></span>
 <span id="cb21-6"><a href="#cb21-6"></a>  }<span class="cf">else</span>{</span>
 <span id="cb21-7"><a href="#cb21-7"></a>     <span class="st">"high"</span></span>
@@ -552,7 +552,7 @@ window.Quarto = {
 <span id="cb21-10"><a href="#cb21-10"></a>df4 <span class="ot">&lt;-</span> df3</span>
 <span id="cb21-11"><a href="#cb21-11"></a>df4[,<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">sapply</span>(df4[,<span class="dv">1</span>],evaluate.row) </span>
 <span id="cb21-12"><a href="#cb21-12"></a><span class="co">#for(i in 1:length(df4[,1])){evaluate.row(df4[i,1])}</span></span>
-<span id="cb21-13"><a href="#cb21-13"></a>df4[]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-13"><a href="#cb21-13"></a>df4</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>     x1 x2 x3 x12 total.score
@@ -581,7 +581,7 @@ window.Quarto = {
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>df<span class="sc">$</span>x12 <span class="ot">&lt;-</span> df[,<span class="dv">1</span>] <span class="sc">*</span> df[,<span class="dv">2</span>]   <span class="co"># Create a new column using x1 * x2</span></span>
-<span id="cb23-2"><a href="#cb23-2"></a>df[]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb23-2"><a href="#cb23-2"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>   x1 x2 x3 x12
@@ -637,7 +637,7 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">install.packages</span>(<span class="st">"rvest"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="co"># install.packages("rvest")</span></span>
 <span id="cb27-2"><a href="#cb27-2"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">"rvest"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
@@ -789,6 +789,8 @@ window.Quarto = {
 <section id="why-a-fake-website" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="why-a-fake-website"><span class="header-section-number">4.1</span> Why a fake website?</h2>
 <p>Read <a href="Is Web Sraping Legal?">https://www.scrapingbee.com/blog/is-web-scraping-legal/</a>. Originally, I conceived doing this with recipes from Purple Carrot (my favorite subscription service). Being a large company, their terms of service are <em>very</em> long and precluded us from copying their recipes. We also checked a few smaller recipe websites we like and even they had terms of service that restricted automated collection of data.</p>
+<p><strong>Solution</strong></p>
+<p>Although web scraping is not illegal by itself, its legality dependes on lots of conditions, such as what you scrap and how you use the information. Since those companies has restrictions of collecting data from web scrapping, it’s better to use a fake website.</p>
 </section>
 <section id="conditionals" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="conditionals"><span class="header-section-number">4.2</span> Conditionals</h2>
