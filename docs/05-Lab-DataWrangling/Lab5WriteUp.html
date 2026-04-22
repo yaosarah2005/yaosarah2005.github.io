@@ -353,9 +353,8 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>dat.kitsberg.cleaned <span class="ot">&lt;-</span> <span class="fu">separate</span>(dat.kitsberg, <span class="st">"sample"</span>, </span>
-<span id="cb2-2"><a href="#cb2-2"></a>                                 <span class="fu">c</span>(<span class="st">"SampleType"</span>, <span class="st">"CellType"</span>, <span class="st">"Treatment"</span>),</span>
-<span id="cb2-3"><a href="#cb2-3"></a>                                 <span class="at">sep =</span> <span class="st">"_"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>dat.kitsberg.cleaned <span class="ot">&lt;-</span> dat.kitsberg <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">separate</span>(<span class="st">"sample"</span>, <span class="fu">c</span>(<span class="st">"SampleType"</span>, <span class="st">"CellType"</span>, <span class="st">"Treatment"</span>), <span class="at">sep =</span> <span class="st">"_"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p></p>
@@ -399,7 +398,7 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>dat.kitsberg.cleaned <span class="ot">&lt;-</span> dat.kitsberg.cleaned <span class="sc">|&gt;</span> <span class="fu">filter</span>(CellType <span class="sc">==</span> <span class="st">"mono"</span> <span class="sc">|</span> CellType <span class="sc">==</span> <span class="st">"mac"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>dat.kitsberg.cleaned <span class="ot">&lt;-</span> dat.kitsberg.cleaned <span class="sc">|&gt;</span> <span class="fu">filter</span>(CellType <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'mono'</span>, <span class="st">'mac'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p></p>
@@ -438,7 +437,7 @@ window.Quarto = {
 <span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">separate</span>(<span class="st">"sample"</span>, <span class="fu">c</span>(<span class="st">"SampleType"</span>, <span class="st">"CellType"</span>, <span class="st">"Treatment"</span>), <span class="at">sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">filter</span>(Treatment <span class="sc">==</span> <span class="st">"12hpi"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb7-5"><a href="#cb7-5"></a>  <span class="fu">mutate</span>(<span class="at">CellType =</span> <span class="fu">case_when</span>(CellType <span class="sc">==</span> <span class="st">"MDM"</span> <span class="sc">~</span> <span class="st">"mac"</span>, <span class="cn">TRUE</span> <span class="sc">~</span> CellType)) <span class="sc">|&gt;</span></span>
-<span id="cb7-6"><a href="#cb7-6"></a>  <span class="fu">filter</span>(CellType <span class="sc">==</span> <span class="st">"mono"</span> <span class="sc">|</span> CellType <span class="sc">==</span> <span class="st">"mac"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a>  <span class="fu">filter</span>(CellType <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'mono'</span>, <span class="st">'mac'</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb7-7"><a href="#cb7-7"></a>  <span class="fu">mutate</span>(<span class="at">SampleType =</span> <span class="fu">case_when</span>(SampleType <span class="sc">==</span> <span class="st">"primary"</span> <span class="sc">~</span> <span class="st">"Healthy Donor"</span>, </span>
 <span id="cb7-8"><a href="#cb7-8"></a>                                SampleType <span class="sc">==</span> <span class="st">"THP1"</span> <span class="sc">~</span> <span class="st">"THP-1"</span>)) <span class="sc">|&gt;</span> </span>
 <span id="cb7-9"><a href="#cb7-9"></a>  <span class="fu">mutate</span>(<span class="at">CellType =</span> <span class="fu">case_when</span>(CellType <span class="sc">==</span> <span class="st">"mono"</span> <span class="sc">~</span> <span class="st">"Monocytes"</span>, </span>
@@ -457,7 +456,7 @@ window.Quarto = {
 <p><strong>Hint</strong>: I would use <code>geom_violin(...)</code> for Figure 3b I also expect your plots to look nicer – better labels, better scaling, etc. Don’t forget to use the proper formatting using the syntax in the Quarto cheatsheet.</p>
 <p><strong>Solution</strong></p>
 <p></p>
-<div class="cell">
+<div class="cell" data-layout-align="center" data-scale="80%">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">ggplot</span>(dat.kitsberg.cleaned) <span class="sc">+</span></span>
@@ -465,16 +464,21 @@ window.Quarto = {
 <span id="cb8-3"><a href="#cb8-3"></a>                      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Monocytes"</span>, <span class="st">"Macrophages"</span>)), </span>
 <span id="cb8-4"><a href="#cb8-4"></a>                  <span class="at">y =</span> viruses.within.nucleus),</span>
 <span id="cb8-5"><a href="#cb8-5"></a>                  <span class="at">trim =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb8-6"><a href="#cb8-6"></a>                  <span class="at">adjust =</span> <span class="fl">0.6</span>)<span class="sc">+</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb8-8"><a href="#cb8-8"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, </span>
-<span id="cb8-9"><a href="#cb8-9"></a>     <span class="at">y =</span> <span class="st">"HCMV genomes in the nucleus"</span>) <span class="sc">+</span></span>
-<span id="cb8-10"><a href="#cb8-10"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>SampleType)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-6"><a href="#cb8-6"></a>                  <span class="at">adjust =</span> <span class="fl">0.8</span>)<span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(CellType, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Monocytes"</span>, <span class="st">"Macrophages"</span>)),</span>
+<span id="cb8-8"><a href="#cb8-8"></a>                  <span class="at">y =</span> viruses.within.nucleus),</span>
+<span id="cb8-9"><a href="#cb8-9"></a>              <span class="at">width =</span> <span class="fl">0.05</span>,<span class="at">height =</span> <span class="fl">0.2</span>,</span>
+<span id="cb8-10"><a href="#cb8-10"></a>              <span class="at">alpha =</span> <span class="fl">0.4</span>,<span class="at">size =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb8-12"><a href="#cb8-12"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, </span>
+<span id="cb8-13"><a href="#cb8-13"></a>     <span class="at">y =</span> <span class="st">"HCMV genomes in the nucleus"</span>) <span class="sc">+</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>SampleType)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Lab5WriteUp_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>HCMV genomes in the nucleus</figcaption>
+<p><img src="Lab5WriteUp_files/figure-html/kitsberg-1.png" class="img-fluid figure-img" width="480"></p>
 </figure>
 </div>
 </div>
@@ -584,6 +588,7 @@ Table&nbsp;1: HCMV genomes levels in the nucleus and cytoplasm of infected monoc
 </div>
 </div>
 <p></p>
+<p>The result suggests that the mean of virus in macrophages is higher than the mean of monocytes, and macrophages also has higher variation. This suggests virus is more prevalent in the nucleus of macrophages. The THP-1 cell has roughly similar mean compare to the healthy donors regarding both macrophages and monocytes, suggesting THP-1 cells is a good stand-in for human cells.</p>
 </section>
 </section>
 </section>
@@ -638,7 +643,7 @@ Table&nbsp;1: HCMV genomes levels in the nucleus and cytoplasm of infected monoc
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>dat.bal.cleaned <span class="ot">&lt;-</span> dat.bal.cleaned <span class="sc">|&gt;</span></span>
 <span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">mutate</span>(<span class="at">OriginCountry =</span> <span class="fu">case_when</span>(Japan <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Japan"</span>,</span>
-<span id="cb12-3"><a href="#cb12-3"></a>                                   China..People.s.Republic.Of <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"China, People's Republic Of"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3"></a>                                   China..People.s.Republic.Of <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"People's Republic Of China"</span>,</span>
 <span id="cb12-4"><a href="#cb12-4"></a>                                   Philippines <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Philippines"</span>,</span>
 <span id="cb12-5"><a href="#cb12-5"></a>                                   Korea..South <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Korea, South"</span>,</span>
 <span id="cb12-6"><a href="#cb12-6"></a>                                   Others.Country.Build <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Others Country Build"</span>,</span>
@@ -913,7 +918,7 @@ Table&nbsp;2: Ship Prices by Manufacturer.
 </div>
 <p></p>
 <p></p>
-<div class="cell">
+<div class="cell" data-layout-align="center" data-scale="80%">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">ggplot</span>(dat.bal.cleaned) <span class="sc">+</span></span>
@@ -922,13 +927,13 @@ Table&nbsp;2: Ship Prices by Manufacturer.
 <span id="cb19-4"><a href="#cb19-4"></a>  <span class="fu">coord_flip</span>()<span class="sc">+</span></span>
 <span id="cb19-5"><a href="#cb19-5"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
 <span id="cb19-6"><a href="#cb19-6"></a>  <span class="fu">xlab</span>(<span class="st">"Manufacturer"</span>)<span class="sc">+</span></span>
-<span id="cb19-7"><a href="#cb19-7"></a>  <span class="fu">ylab</span>(<span class="st">"Ship price"</span>)<span class="sc">+</span></span>
-<span id="cb19-8"><a href="#cb19-8"></a>  <span class="fu">ggtitle</span>(<span class="st">"Manufacturer and Ship Prices"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb19-7"><a href="#cb19-7"></a>  <span class="fu">ylab</span>(<span class="st">"Ship price"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Lab5WriteUp_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Manufacturer and Ship Prices</figcaption>
+<p><img src="Lab5WriteUp_files/figure-html/Manufacturer and Ship Prices-1.png" class="img-fluid figure-img" width="480"></p>
 </figure>
 </div>
 </div>
@@ -988,30 +993,30 @@ Table&nbsp;3: Relationship Between DWT and Ship Prices.
 </div>
 <p></p>
 <p></p>
-<div class="cell">
+<div class="cell" data-layout-align="center" data-scale="80%">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>dat.bal.cleaned <span class="ot">&lt;-</span> dat.bal.cleaned <span class="sc">|&gt;</span></span>
 <span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">drop_na</span>(DWT,price) <span class="sc">|&gt;</span></span>
 <span id="cb21-3"><a href="#cb21-3"></a>  <span class="fu">mutate</span>(<span class="at">DWT =</span> <span class="fu">as.numeric</span>(<span class="fu">str_remove</span>(DWT, <span class="st">","</span>)))</span>
 <span id="cb21-4"><a href="#cb21-4"></a><span class="fu">ggplot</span>(dat.bal.cleaned)<span class="sc">+</span></span>
-<span id="cb21-5"><a href="#cb21-5"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> DWT, <span class="at">y =</span> price)) <span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> DWT, <span class="at">y =</span> price, <span class="at">color =</span> Yas)) <span class="sc">+</span></span>
 <span id="cb21-6"><a href="#cb21-6"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> DWT, <span class="at">y =</span> price)) <span class="sc">+</span> </span>
 <span id="cb21-7"><a href="#cb21-7"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
 <span id="cb21-8"><a href="#cb21-8"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"DWT"</span>, </span>
-<span id="cb21-9"><a href="#cb21-9"></a>       <span class="at">y =</span> <span class="st">"Ship Prices"</span>) <span class="sc">+</span></span>
-<span id="cb21-10"><a href="#cb21-10"></a>  <span class="fu">ggtitle</span>(<span class="st">"DWT and Ship Prices"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-9"><a href="#cb21-9"></a>       <span class="at">y =</span> <span class="st">"Ship Prices"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Lab5WriteUp_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>DWT and Ship Prices</figcaption>
+<p><img src="Lab5WriteUp_files/figure-html/shipvaluation-1.png" class="img-fluid figure-img" width="480"></p>
 </figure>
 </div>
 </div>
 </div>
 <p></p>
-<p>The table and plot shows that the correlation coefficient between DWT and ship prices is small, suggesting the relationship is weak.</p>
+<p>The table and plot shows that the correlation coefficient between DWT and ship prices is small, suggesting the relationship is weak. However, it could be caused by other factors such as the age of the ship. For example, some new ships with lower DWT may have higher price, while some old ships with higher DWT may have lower price.</p>
 
 
 
