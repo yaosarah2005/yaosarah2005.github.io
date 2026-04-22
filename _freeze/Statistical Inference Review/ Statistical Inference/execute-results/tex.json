@@ -1,0 +1,15 @@
+{
+  "hash": "c742a87db81b82d0937efb47d576eab7",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: Statistical Inference Review # Title of the document\n\n# Bibliography Details\nbibliography: review.bib  # Name of bib file in the same folder \nbibliographystyle: apa                   # Bibliography style\n\nexecute:\n  warning: false\n  message: false\n\n# Below will do html by default. To render the entire project\n# Use the following code:\n# quarto::quarto_render(\"Lab2WriteUp.qmd\")\n\nformat:\n  html: \n    number-sections: TRUE\n    code-fold: TRUE\n    code-line-numbers: TRUE\n    cap-location: top \n  pdf:\n    documentclass: article\n    number-sections: TRUE\n    reference-section-title: \"References\" \n    code-line-numbers: TRUE\n    cap-location: top \n    include-in-header:\n      - text: |\n          \\usepackage{amsmath}\n          \\usepackage[dvipsnames]{xcolor}\n          \\usepackage[shortlabels]{enumitem}\n          \\usepackage{parskip}\n          \\usepackage{hyperref}\n          \\usepackage{geometry}\n          \\usepackage{float}\n    geometry:\n      - top=0.75in\n      - left=0.75in\n      - bottom=0.75in\n      - right=0.75in\nformat-links: [pdf]\n---\n\n \\normalsize\n\n\n::: {.cell}\n\n:::\n\n\n \\normalsize",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": null,
+    "postProcess": false
+  }
+}
