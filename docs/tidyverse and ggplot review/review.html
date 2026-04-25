@@ -360,7 +360,7 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/Brockmann96.csv'</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'Brockmann96.csv'</span>)</span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
 <span id="cb1-3"><a href="#cb1-3"></a>data.summary <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
 <span id="cb1-4"><a href="#cb1-4"></a>  <span class="fu">count</span>(color) <span class="sc">|&gt;</span></span>
@@ -723,7 +723,7 @@ IQR = Q_3 - Q_1
 <p>In my econometric class, I conduct a research project that studied how does the changes in petroleum price affects PM2.5 levels in the air. I used R to conduct lots of data cleaning and summarizing process, and I think those data serve as a good example of reviewing concepts about tidyverse and ggplot.</p>
 <p>PM2.5 refers to airborne particulate matter with a diameter of 2.5 micrometers or smaller. These fine particles can penetrate deep into the lungs and even enter the bloodstream, posing significant risks to respiratory and cardiovascular health.</p>
 <p>In theory, a higher petroleum price will decrease consumption and thus decrease pollutants such as PM2.5 in the air. However, whether this causal relationship applies to reality and the extent of this impact remains uncertain.</p>
-<p>I obtain data of PM2.5 level from the United States Environmental Protection Agency <span class="citation" data-cites="epa">(<a href="#ref-epa" role="doc-biblioref">Agency 2026</a>)</span> and petroleum price data from U.S. Energy Information Administration <span class="citation" data-cites="eia">(<a href="#ref-eia" role="doc-biblioref">Administration 2026</a>)</span></p>
+<p>I obtain data of PM2.5 level from the United States Environmental Protection Agency <span class="citation" data-cites="epa">(<a href="#ref-epa" role="doc-biblioref">U.S. Environmental Protection Agency 2026</a>)</span> and petroleum price data from U.S. Energy Information Administration <span class="citation" data-cites="eia">(<a href="#ref-eia" role="doc-biblioref">U.S. Energy Information Administration 2026</a>)</span></p>
 <section id="loading-the-data" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="loading-the-data"><span class="header-section-number">5.1</span> Loading the Data</h2>
 <p>We can use <code>read.csv()</code> to read csv.files</p>
@@ -732,7 +732,7 @@ IQR = Q_3 - Q_1
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>dat.air <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="st">'/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/EPA2000.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>dat.air <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="st">'EPA2000.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p></p>
@@ -844,7 +844,7 @@ IQR = Q_3 - Q_1
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>data.total <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="st">'/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/totaldata.csv'</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>data.total <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="st">'totaldata.csv'</span>)</span>
 <span id="cb17-2"><a href="#cb17-2"></a></span>
 <span id="cb17-3"><a href="#cb17-3"></a><span class="fu">head</span>(data.total)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
@@ -1080,14 +1080,14 @@ IQR = Q_3 - Q_1
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-eia" class="csl-entry" role="listitem">
-Administration, U. S. Energy Information. 2026. <span>“State Energy Data System (SEDS): Prices and Expenditures Data.”</span> <a href="https://www.eia.gov/state/seds/seds-data-complete.php#PricesExpenditures">https://www.eia.gov/state/seds/seds-data-complete.php#PricesExpenditures</a>.
-</div>
-<div id="ref-epa" class="csl-entry" role="listitem">
-Agency, U. S. Environmental Protection. 2026. <span>“AirData Download Files.”</span> <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html">https://aqs.epa.gov/aqsweb/airdata/download_files.html</a>.
-</div>
 <div id="ref-brockmann1996" class="csl-entry" role="listitem">
 Brockmann, H Jane. 1996. <span>“Satellite Male Groups in Horseshoe Crabs, Limulus Polyphemus.”</span> <em>Ethology</em> 102 (1): 1–21.
+</div>
+<div id="ref-eia" class="csl-entry" role="listitem">
+U.S. Energy Information Administration. 2026. <span>“State Energy Data System (SEDS): Prices and Expenditures Data.”</span> <a href="https://www.eia.gov/state/seds/seds-data-complete.php#PricesExpenditures">https://www.eia.gov/state/seds/seds-data-complete.php#PricesExpenditures</a>.
+</div>
+<div id="ref-epa" class="csl-entry" role="listitem">
+U.S. Environmental Protection Agency. 2026. <span>“AirData Download Files.”</span> <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html">https://aqs.epa.gov/aqsweb/airdata/download_files.html</a>.
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

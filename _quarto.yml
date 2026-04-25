@@ -17,6 +17,7 @@ website:
       - 08-Lab-probability/Lab8WriteUp.qmd
       - 10-Lab-pointestimation/Lab10WriteUp.qmd
       - 11-Lab-Estimation/Lab11WriteUp.qmd
+      - tidyverse and ggplot review/review.qmd
 
 format:
   html:

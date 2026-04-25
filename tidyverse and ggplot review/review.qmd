@@ -145,7 +145,7 @@ Two Categorical Variable
 If we want to know the distribution of crab color in the data, we could create a summary table and a bar plot.
 
 ```{r}
-data <- read.csv('/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/Brockmann96.csv')
+data <- read.csv('Brockmann96.csv')
 
 data.summary <- data |>
   count(color) |>
@@ -345,7 +345,7 @@ We can use `read.csv()` to read csv.files
 
 For example, I have data of average air pollutants in the air by county in 2000 from the EPA(cite).
 ```{r}
-dat.air <- read.csv(file = '/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/EPA2000.csv')
+dat.air <- read.csv(file = 'EPA2000.csv')
 ```
 
 
@@ -406,7 +406,7 @@ head(dat.air.clean)
 We can use `summarize()` to create a summary table. Here I will use the fully clean version of data that contain information of year, petroleum price, PM2.5 level, state name, and county code. 
 
 ```{r}
-data.total <- read.csv(file = '/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/totaldata.csv')
+data.total <- read.csv(file = 'totaldata.csv')
 
 head(data.total)
 
