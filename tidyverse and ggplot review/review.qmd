@@ -1,0 +1,522 @@
+---
+title: Tidyverse and ggplot Review # Title of the document
+
+# Bibliography Details
+bibliography: /Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/review.bib  # Name of bib file in the same folder 
+bibliographystyle: apa            # Bibliography style
+
+execute:               # Default settings for code blocks
+  warning: false       # Do not print warnings
+  message: false       # Do not print messages
+  size: "scriptsize"   # Set code size to script size
+
+# Below will do html by default. To render the entire project
+# Use the following code:
+# quarto::quarto_render("review.qmd")
+format:
+  pdf:        # Specify .pdf formatting options 
+    documentclass: article     # Document Class
+    number-sections: true      # Number Sections
+    reference-section-title: "References" # Title for reference section
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables 
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+  html:       # Specify HTML formatting options 
+    number-sections: true      # Number Sections
+    code-fold: true            # Button to show code
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables and figures
+format-links: [pdf]
+---
+```{r}
+#| echo: false
+
+default_chunk_hook  <- knitr::knit_hooks$get("chunk")
+
+latex_font_size <- c("Huge", "huge", "LARGE", "Large", 
+                     "large", "normalsize", "small", 
+                     "footnotesize", "scriptsize", "tiny")
+
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- default_chunk_hook(x, options)
+  if(options$size %in% latex_font_size) {
+    paste0("\n \\", options$size, "\n\n", 
+      x, 
+      "\n\n \\normalsize"
+    )
+  } else {
+    x
+  }
+})
+```
+
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+library(patchwork)
+```
+
+
+# Data Cleaning
+
+## Summarizing important Operator in Tidyverse
+
+`tibble()`, constructs a tibble, an enhanced data frame
+
+`read_csv()`, like read.csv, but quicker and returns a tibble
+
+`mutate()`, used to create new variables or edit old variables
+
+`filter()`, select rows that satisfy provided condition(s)
+
+`group_by()`, for specifying a group variable for data operations
+
+`|>` pipes, takes the result on the left and passes it as the first argument to the function on the right.
+
+`select()`, select one or more columns as a data frame
+
+`case_when()`, create a new variable by assigning different values based on multiple conditions.
+
+`summarise()`, allows us to ask for statistics calculated on
+selected column(s)
+
+* `mean()`
+
+* `sd()`
+
+* `min()`
+
+* `quantile()`
+
+* `median()`
+
+* `max()`
+
+* `IQR()`
+
+* `e1071::skewness()`
+
+* `e1071::kurtosis()`
+
+
+# Categorical Data
+
+Categorical variable places observations into one of several groups or categories.
+
+* Nominal: assumes groups are made up of named categories.
+
+* Ordinal: assumes groups are made up of ordered categories
+
+## Numerical Summary
+We want to compute the sample proportion of observations that belong to each level of the categorical variable.
+
+$$\hat{p} = \frac{x}{n}$$
+
+* x is the count of observations in the specified level
+
+* n is the count of observations in total
+
+## Graphical Summary
+
+One Categorical Variable
+
+* Bar plot: `geom_bar()`
+
+* Pie chart: `geom_bar()` + `coord_polar("y", start=0)`
+
+* Doughnut Plot: `geom_bar()` + `coord_polar("y", start=0)` + `xlim(0.5, 2.5)`
+
+Two Categorical Variable
+
+* Grouped bar plot: `geom_bar()` + `facet_wrap()` or `geom_bar(...fill = )`
+
+* Grouped pie chart: `geom_bar()` + `coord_polar("y", start=0)` + `facet_wrap()`
+
+
+# Example of Summarizing Categorical and Continuous Data
+
+@brockmann1996 collected data on the mating behavior of nesting female horseshoe crabs, and their research question is what attributes of a female horseshoe crab lead to having more satellites.
+
+If we want to know the distribution of crab color in the data, we could create a summary table and a bar plot.
+
+```{r}
+data <- read.csv('/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/Brockmann96.csv')
+
+data.summary <- data |>
+  count(color) |>
+  mutate(Proportion = n/sum(n))
+```
+
+```{r}
+#| label: colortable1
+#| tbl-cap: "Colors of crabs in the data"
+#| tbl-align: "center"
+#| echo: false
+data.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+#| label: colorsummary
+#| fig-cap: "Colors of crabs in the data"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
+ggplot(data) + 
+  geom_bar(aes(x = color, 
+               y = after_stat(count/sum(count)))) + 
+  geom_hline(yintercept = 0)+ 
+  theme_bw() + 
+  labs(x = "Color", 
+       y = "Proportion")
+```
+
+We can also summarize data of the spine condition of each color of the crabs.
+
+```{r}
+data.summary <- data |> 
+  count(color, spine) |> 
+  mutate(prop = n / sum(n), .by = color) 
+```
+
+```{r}
+#| label: colortable2
+#| tbl-cap: "Colors and spine conditions of crabs in the data"
+#| tbl-align: "center"
+#| echo: false
+data.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+#| label: colorsummary2
+#| fig-cap: "Colors and spine conditions of crabs in the data"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
+ggplot(data.summary) + 
+  geom_bar(aes(x = color, 
+               y = prop, fill = factor(spine)),
+               stat="identity") + 
+  geom_hline(yintercept = 0)+ 
+  theme_bw() + 
+  labs(x = "Color", 
+       y = "Proportion") 
+```
+
+To answer the research question, we can create a grouped box plot and comparing how does difference in color contributes to the difference in number of satellites.
+
+```{r}
+data.summary <- data|>
+  group_by(color) |>
+  summarize(
+    Mean = mean(num.satellites),
+    SD = sd(num.satellites),
+    Median = median(num.satellites),
+    IQR = IQR(num.satellites),
+    Skewness = e1071::skewness(num.satellites),
+    "Excess Kurtosis" = e1071::kurtosis(num.satellites)
+)
+```
+
+```{r}
+#| label: colortable3
+#| tbl-cap: "Colors and number of satellites of crabs"
+#| tbl-align: "center"
+#| echo: false
+data.summary |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+#| label: colorsummary3
+#| fig-cap: "Colors and number of satellites of crabs"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
+ggplot(data) + 
+  geom_boxplot(aes(x = factor(color), 
+                   y = num.satellites), width = 0.5)+
+  theme_bw() + 
+  labs(x = "color", 
+       y = "Number of satellites") 
+```
+
+Color number 1-5 represent from light to dark, and the statistic and graph seem to suggests that crabs with lighter color tend to have higher number of satellites, although there are also some outliers in darker color crabs.
+
+# Quantitative Data
+
+## Numerical Summary
+
+* Mean: 
+
+$$ 
+\bar{x} = \frac{x_1 + x_2 + \cdots + x_n}{n} = \frac{\sum_{i=1}^n x_i}{n}
+$$
+
+* Sample Variance: 
+
+$$
+s^2 = \frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n - 1}
+$$
+
+* Sample standard deviation:
+
+$$
+s = \sqrt{\frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n - 1}}
+$$
+
+* Median:
+
+  * The median is the observation in the middle of the data when placed in ascending order.
+
+* Interquatile Range:
+
+  * The first quartile $Q_1$ is the median of the lower half of the observations, making it the 25th percentile.
+
+  * The third quartile $Q_3$ is the median of the upper half, making it the 75th percentile.
+
+$$
+IQR = Q_3 - Q_1
+$$
+
+* Skewness
+
+  * When skewness < 0, there are more observations for high values and fewer with low values.
+
+  * When skewness = 0, the data are symmetric – this means that the data are symmetrically distributed around the mean.
+
+  * When skewness > 0, there are more observations for low values and fewer with high values.
+
+* Excess Kurtosis
+
+  * The excess kurtosis describes how peaked data are in relation to the Gaussian distribution (the bell-shaped curve) with the same mean and variance.
+
+  * When excess kurtosis < 0, the data are platykurtic – the data have a flatter peak and exhibit more variability.
+
+  * When excess kurtosis = 0, the data are mesokurtic – the data have a peak and tails similar to the Gaussian distribution.
+
+  * When excess kurtosis > 0, the data are leptokurtic – the data have a more pronounced peak and exhibit less variability.
+
+
+## Graphical Summary
+
+One continuous variable
+
+* Histogram: `geom_histogram()`
+
+* Violin Plot: `geom_violin()`
+
+* Box Plot: `geom_boxplot()`
+
+Two continuous variable
+
+* Scatter Plot: `geom_point()` + `geom_smooth()`
+
+
+# Example of Data Cleaning and Summarizing Quantitative Data
+
+In my econometric class, I conduct a research project that studied how does the changes in petroleum price affects PM2.5 levels in the air. I used R to conduct lots of data cleaning and summarizing process, and I think those data serve as a good example of reviewing concepts about tidyverse and ggplot.
+
+PM2.5 refers to airborne particulate matter with a diameter of 2.5 micrometers or smaller. These fine particles can penetrate deep into the lungs and even enter the bloodstream, posing significant risks to respiratory and cardiovascular health.
+
+In theory, a higher petroleum price will decrease consumption and thus decrease pollutants such as PM2.5 in the air. However, whether this causal relationship applies to reality and the extent of this impact remains uncertain. 
+
+I obtain data of PM2.5 level from the United States Environmental Protection Agency [@epa] and petroleum price data from U.S. Energy Information Administration [@eia]
+
+
+## Loading the Data
+
+We can use `read.csv()` to read csv.files
+
+For example, I have data of average air pollutants in the air by county in 2000 from the EPA(cite).
+```{r}
+dat.air <- read.csv(file = '/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/EPA2000.csv')
+```
+
+
+## Selecting columns
+
+We can use `data$column` to select column of the data.
+
+```{r}
+state <- dat.air$State.Name
+```
+
+If we are only need information about the county code, state name, parameter name, and arithmetic mean,  we can use `select()` to select multiple columns. We can use `head()` to check the head of the data 
+
+```{r}
+dat.air.clean <- dat.air |> select('County.Code', 'State.Name', 'Parameter.Name', 'Arithmetic.Mean')
+head(dat.air.clean)
+```
+
+## Filtering Data
+
+Since we only want the data of PM2.5, we can use `filter()` to exclude any other parameter.
+
+```{r}
+dat.air.clean <- dat.air.clean |> filter(Parameter.Name == 'PM2.5 - Local Conditions')
+```
+
+We also want to only include observations within the U.S.
+
+```{r}
+dat.air.clean <- dat.air.clean |> filter(!State.Name %in% c(
+    "Canada",
+    "Country Of Mexico",
+    "Puerto Rico",
+    "Virgin Islands"
+  ))
+```
+
+We can also use `filter()` to drop NAs. `is.na()` will return whether the value the NA.
+
+```{r}
+dat.air.clean <- dat.air.clean |> filter(!is.na(Arithmetic.Mean))
+head(dat.air.clean)
+```
+
+## Mutate
+
+Each county has lots of different measurement of the arithmetic mean, and I want to add a new column that contain the average level of PM2.5 of that county. We can use `group_by()` and `mutate()` to accomplish this task. If the data still contain empty value, we need to set `na.rm = TRUE` so that we do not get empty values.
+
+```{r}
+dat.air.clean <- dat.air.clean |>
+    mutate(pm25_avg = mean(Arithmetic.Mean, na.rm = TRUE), 
+           .by = County.Code)
+head(dat.air.clean)
+```
+
+## Numerical Summary
+
+We can use `summarize()` to create a summary table. Here I will use the fully clean version of data that contain information of year, petroleum price, PM2.5 level, state name, and county code. 
+
+```{r}
+data.total <- read.csv(file = '/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/totaldata.csv')
+
+head(data.total)
+
+data.summary <- data.total |>
+  drop_na(PM2.5) |>
+  summarize(
+    Mean = mean(PM2.5),
+    SD = sd(PM2.5),
+    Median = median(PM2.5),
+    IQR = IQR(PM2.5),
+    Skewness = e1071::skewness(PM2.5),
+    "Excess Kurtosis" = e1071::kurtosis(PM2.5)
+  )
+```
+
+```{r}
+#| label: summarytable1
+#| tbl-cap: "Summary of PM2.5 levels"
+#| tbl-align: "center"
+#| echo: false
+data.summary |>
+  knitr::kable(digits = 2)
+```
+
+Since the data contain information of PM2.5 in each year, we can create summary table that is grouped by year.
+
+```{r}
+data.summary <- data.total |>
+  filter(year <= 2003) |>       # I only include 4 years in the summary 
+  drop_na(PM2.5) |>
+  group_by(year) |>
+  summarize(
+    Mean = mean(PM2.5),
+    SD = sd(PM2.5),
+    Median = median(PM2.5),
+    IQR = IQR(PM2.5),
+    Skewness = e1071::skewness(PM2.5),
+    "Excess Kurtosis" = e1071::kurtosis(PM2.5)
+  )
+```
+
+```{r}
+#| label: summarytable2
+#| tbl-cap: "Summary of PM2.5 levels2"
+#| tbl-align: "center"
+#| echo: false
+data.summary |>
+  knitr::kable(digits = 2)
+```
+
+## Graphical Summary
+
+We can create box plot or violin plot to graphical illustrates the distribution of average PM2.5 in each year.
+
+```{r}
+#| label: PM2.5summary
+#| fig-cap: "Yearly PM2.5 Concentration Distribution"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
+data.new <- data.total |>
+  filter(year <= 2003)
+
+ggplot(data.new) + 
+  geom_violin(aes(x = factor(year), y = PM2.5), 
+              fill = "lightgrey", alpha=0.5) + 
+  geom_boxplot(aes(x = factor(year), y = PM2.5),width = 0.1)+
+  theme_bw() + 
+  labs(x = "Year", y = "PM2.5") 
+```
+
+We can create a scatter plot to see if there is a correlation between petroleum price and PM2.5 level.
+
+```{r}
+#| label: PM2.5 and Petroleum Price
+#| fig-cap: "Petroleum Price and PM2.5 level in the air"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
+ggplot(data.total) + 
+  geom_point(aes(x = Petroleum.Price, y = PM2.5), size = 0.1) +
+  geom_smooth(aes(x = Petroleum.Price, y = PM2.5), 
+                  method = "lm", color = "black") + 
+  theme_bw() 
+```
+
+The estimate coefficient is biased here because I did not add any control variable and time state fixed effect in this model. However, this still serve as an example of how we summary two continuous variable data.
+
+```{r}
+data.summary <- data.total |>
+  drop_na(Petroleum.Price, PM2.5) |>
+  summarize(
+    Pearson = cor(Petroleum.Price, PM2.5, method="pearson"),
+    Spearman = cor(Petroleum.Price, PM2.5, method="spearman"),
+    Kendall = cor(Petroleum.Price, PM2.5, method="kendall")
+)
+```
+
+```{r}
+#| label: summarytable3
+#| tbl-cap: "Correlation between Petroleum Price and PM2.5 levels"
+#| tbl-align: "center"
+#| echo: false
+data.summary |>
+  knitr::kable(digits = 2)
+```
+

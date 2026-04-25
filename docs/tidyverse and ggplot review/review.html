@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Tidyverse and ggplot Review – Portfolio</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-a2a938b4dd5711f7a799c87bd16ba44c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      Portfolio
+      </li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Portfolio</a> 
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../02-Lab-ObjectsInR/Lab2WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Two – Basic Tasks in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../03-Lab-ObjectsInR2/Lab3WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Three – Matrices and Data Frames in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../04-Lab-Programming/Lab4WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Four – Programming in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../05-Lab-DataWrangling/Lab5WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Five-Six – Data Wrangling in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../08-Lab-probability/Lab8WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Eight – Probability</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../10-Lab-pointestimation/Lab10WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Ten – Point Estimation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../11-Lab-Estimation/Lab11WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Eleven – Point Estimation and Resampling</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link active" data-scroll-target="#data-cleaning"><span class="header-section-number">1</span> Data Cleaning</a>
+  <ul class="collapse">
+  <li><a href="#summarizing-important-operator-in-tidyverse" id="toc-summarizing-important-operator-in-tidyverse" class="nav-link" data-scroll-target="#summarizing-important-operator-in-tidyverse"><span class="header-section-number">1.1</span> Summarizing important Operator in Tidyverse</a></li>
+  </ul></li>
+  <li><a href="#categorical-data" id="toc-categorical-data" class="nav-link" data-scroll-target="#categorical-data"><span class="header-section-number">2</span> Categorical Data</a>
+  <ul class="collapse">
+  <li><a href="#numerical-summary" id="toc-numerical-summary" class="nav-link" data-scroll-target="#numerical-summary"><span class="header-section-number">2.1</span> Numerical Summary</a></li>
+  <li><a href="#graphical-summary" id="toc-graphical-summary" class="nav-link" data-scroll-target="#graphical-summary"><span class="header-section-number">2.2</span> Graphical Summary</a></li>
+  </ul></li>
+  <li><a href="#example-of-summarizing-categorical-and-continuous-data" id="toc-example-of-summarizing-categorical-and-continuous-data" class="nav-link" data-scroll-target="#example-of-summarizing-categorical-and-continuous-data"><span class="header-section-number">3</span> Example of Summarizing Categorical and Continuous Data</a></li>
+  <li><a href="#quantitative-data" id="toc-quantitative-data" class="nav-link" data-scroll-target="#quantitative-data"><span class="header-section-number">4</span> Quantitative Data</a>
+  <ul class="collapse">
+  <li><a href="#numerical-summary-1" id="toc-numerical-summary-1" class="nav-link" data-scroll-target="#numerical-summary-1"><span class="header-section-number">4.1</span> Numerical Summary</a></li>
+  <li><a href="#graphical-summary-1" id="toc-graphical-summary-1" class="nav-link" data-scroll-target="#graphical-summary-1"><span class="header-section-number">4.2</span> Graphical Summary</a></li>
+  </ul></li>
+  <li><a href="#example-of-data-cleaning-and-summarizing-quantitative-data" id="toc-example-of-data-cleaning-and-summarizing-quantitative-data" class="nav-link" data-scroll-target="#example-of-data-cleaning-and-summarizing-quantitative-data"><span class="header-section-number">5</span> Example of Data Cleaning and Summarizing Quantitative Data</a>
+  <ul class="collapse">
+  <li><a href="#loading-the-data" id="toc-loading-the-data" class="nav-link" data-scroll-target="#loading-the-data"><span class="header-section-number">5.1</span> Loading the Data</a></li>
+  <li><a href="#selecting-columns" id="toc-selecting-columns" class="nav-link" data-scroll-target="#selecting-columns"><span class="header-section-number">5.2</span> Selecting columns</a></li>
+  <li><a href="#filtering-data" id="toc-filtering-data" class="nav-link" data-scroll-target="#filtering-data"><span class="header-section-number">5.3</span> Filtering Data</a></li>
+  <li><a href="#mutate" id="toc-mutate" class="nav-link" data-scroll-target="#mutate"><span class="header-section-number">5.4</span> Mutate</a></li>
+  <li><a href="#numerical-summary-2" id="toc-numerical-summary-2" class="nav-link" data-scroll-target="#numerical-summary-2"><span class="header-section-number">5.5</span> Numerical Summary</a></li>
+  <li><a href="#graphical-summary-2" id="toc-graphical-summary-2" class="nav-link" data-scroll-target="#graphical-summary-2"><span class="header-section-number">5.6</span> Graphical Summary</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="review.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Tidyverse and ggplot Review</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p></p>
+<p></p>
+<section id="data-cleaning" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Data Cleaning</h1>
+<section id="summarizing-important-operator-in-tidyverse" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="summarizing-important-operator-in-tidyverse"><span class="header-section-number">1.1</span> Summarizing important Operator in Tidyverse</h2>
+<p><code>tibble()</code>, constructs a tibble, an enhanced data frame</p>
+<p><code>read_csv()</code>, like read.csv, but quicker and returns a tibble</p>
+<p><code>mutate()</code>, used to create new variables or edit old variables</p>
+<p><code>filter()</code>, select rows that satisfy provided condition(s)</p>
+<p><code>group_by()</code>, for specifying a group variable for data operations</p>
+<p><code>|&gt;</code> pipes, takes the result on the left and passes it as the first argument to the function on the right.</p>
+<p><code>select()</code>, select one or more columns as a data frame</p>
+<p><code>case_when()</code>, create a new variable by assigning different values based on multiple conditions.</p>
+<p><code>summarise()</code>, allows us to ask for statistics calculated on selected column(s)</p>
+<ul>
+<li><p><code>mean()</code></p></li>
+<li><p><code>sd()</code></p></li>
+<li><p><code>min()</code></p></li>
+<li><p><code>quantile()</code></p></li>
+<li><p><code>median()</code></p></li>
+<li><p><code>max()</code></p></li>
+<li><p><code>IQR()</code></p></li>
+<li><p><code>e1071::skewness()</code></p></li>
+<li><p><code>e1071::kurtosis()</code></p></li>
+</ul>
+</section>
+</section>
+<section id="categorical-data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Categorical Data</h1>
+<p>Categorical variable places observations into one of several groups or categories.</p>
+<ul>
+<li><p>Nominal: assumes groups are made up of named categories.</p></li>
+<li><p>Ordinal: assumes groups are made up of ordered categories</p></li>
+</ul>
+<section id="numerical-summary" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="numerical-summary"><span class="header-section-number">2.1</span> Numerical Summary</h2>
+<p>We want to compute the sample proportion of observations that belong to each level of the categorical variable.</p>
+<p><span class="math display">\[\hat{p} = \frac{x}{n}\]</span></p>
+<ul>
+<li><p>x is the count of observations in the specified level</p></li>
+<li><p>n is the count of observations in total</p></li>
+</ul>
+</section>
+<section id="graphical-summary" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="graphical-summary"><span class="header-section-number">2.2</span> Graphical Summary</h2>
+<p>One Categorical Variable</p>
+<ul>
+<li><p>Bar plot: <code>geom_bar()</code></p></li>
+<li><p>Pie chart: <code>geom_bar()</code> + <code>coord_polar("y", start=0)</code></p></li>
+<li><p>Doughnut Plot: <code>geom_bar()</code> + <code>coord_polar("y", start=0)</code> + <code>xlim(0.5, 2.5)</code></p></li>
+</ul>
+<p>Two Categorical Variable</p>
+<ul>
+<li><p>Grouped bar plot: <code>geom_bar()</code> + <code>facet_wrap()</code> or <code>geom_bar(...fill = )</code></p></li>
+<li><p>Grouped pie chart: <code>geom_bar()</code> + <code>coord_polar("y", start=0)</code> + <code>facet_wrap()</code></p></li>
+</ul>
+</section>
+</section>
+<section id="example-of-summarizing-categorical-and-continuous-data" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Example of Summarizing Categorical and Continuous Data</h1>
+<p><span class="citation" data-cites="brockmann1996">Brockmann (<a href="#ref-brockmann1996" role="doc-biblioref">1996</a>)</span> collected data on the mating behavior of nesting female horseshoe crabs, and their research question is what attributes of a female horseshoe crab lead to having more satellites.</p>
+<p>If we want to know the distribution of crab color in the data, we could create a summary table and a bar plot.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/Brockmann96.csv'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a>data.summary <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>  <span class="fu">count</span>(color) <span class="sc">|&gt;</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>  <span class="fu">mutate</span>(<span class="at">Proportion =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p></p>
+<div class="cell" data-tbl-cap="Colors of crabs in the data" data-tbl-align="center">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Colors of crabs in the data</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">color</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">Proportion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.07</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">95</td>
+<td style="text-align: right;">0.55</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">0.13</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell" data-layout-align="center" data-scale="80%">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">ggplot</span>(data) <span class="sc">+</span> </span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> color, </span>
+<span id="cb2-3"><a href="#cb2-3"></a>               <span class="at">y =</span> <span class="fu">after_stat</span>(count<span class="sc">/</span><span class="fu">sum</span>(count)))) <span class="sc">+</span> </span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>)<span class="sc">+</span> </span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb2-6"><a href="#cb2-6"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Color"</span>, </span>
+<span id="cb2-7"><a href="#cb2-7"></a>       <span class="at">y =</span> <span class="st">"Proportion"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Colors of crabs in the data</figcaption>
+<p><img src="review_files/figure-html/colorsummary-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>We can also summarize data of the spine condition of each color of the crabs.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>data.summary <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">count</span>(color, spine) <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="at">.by =</span> color) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p></p>
+<div class="cell" data-tbl-cap="Colors and spine conditions of crabs in the data" data-tbl-align="center">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Colors and spine conditions of crabs in the data</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">color</th>
+<th style="text-align: right;">spine</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0.75</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.08</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.08</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">0.66</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.07</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.09</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">0.84</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.05</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.05</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.91</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell" data-layout-align="center" data-scale="80%">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">ggplot</span>(data.summary) <span class="sc">+</span> </span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> color, </span>
+<span id="cb4-3"><a href="#cb4-3"></a>               <span class="at">y =</span> prop, <span class="at">fill =</span> <span class="fu">factor</span>(spine)),</span>
+<span id="cb4-4"><a href="#cb4-4"></a>               <span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span> </span>
+<span id="cb4-5"><a href="#cb4-5"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>)<span class="sc">+</span> </span>
+<span id="cb4-6"><a href="#cb4-6"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb4-7"><a href="#cb4-7"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Color"</span>, </span>
+<span id="cb4-8"><a href="#cb4-8"></a>       <span class="at">y =</span> <span class="st">"Proportion"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Colors and spine conditions of crabs in the data</figcaption>
+<p><img src="review_files/figure-html/colorsummary2-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>To answer the research question, we can create a grouped box plot and comparing how does difference in color contributes to the difference in number of satellites.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>data.summary <span class="ot">&lt;-</span> data<span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>  <span class="fu">group_by</span>(color) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb5-4"><a href="#cb5-4"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(num.satellites),</span>
+<span id="cb5-5"><a href="#cb5-5"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(num.satellites),</span>
+<span id="cb5-6"><a href="#cb5-6"></a>    <span class="at">Median =</span> <span class="fu">median</span>(num.satellites),</span>
+<span id="cb5-7"><a href="#cb5-7"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(num.satellites),</span>
+<span id="cb5-8"><a href="#cb5-8"></a>    <span class="at">Skewness =</span> e1071<span class="sc">::</span><span class="fu">skewness</span>(num.satellites),</span>
+<span id="cb5-9"><a href="#cb5-9"></a>    <span class="st">"Excess Kurtosis"</span> <span class="ot">=</span> e1071<span class="sc">::</span><span class="fu">kurtosis</span>(num.satellites)</span>
+<span id="cb5-10"><a href="#cb5-10"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p></p>
+<div class="cell" data-tbl-cap="Colors and number of satellites of crabs" data-tbl-align="center">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Colors and number of satellites of crabs</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">color</th>
+<th style="text-align: right;">Mean</th>
+<th style="text-align: right;">SD</th>
+<th style="text-align: right;">Median</th>
+<th style="text-align: right;">IQR</th>
+<th style="text-align: right;">Skewness</th>
+<th style="text-align: right;">Excess Kurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4.08</td>
+<td style="text-align: right;">3.12</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">-0.04</td>
+<td style="text-align: right;">-1.49</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3.29</td>
+<td style="text-align: right;">3.21</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">1.11</td>
+<td style="text-align: right;">1.48</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2.23</td>
+<td style="text-align: right;">2.60</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.12</td>
+<td style="text-align: right;">0.66</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2.05</td>
+<td style="text-align: right;">3.62</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.54</td>
+<td style="text-align: right;">1.09</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell" data-layout-align="center" data-scale="80%">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">ggplot</span>(data) <span class="sc">+</span> </span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(color), </span>
+<span id="cb6-3"><a href="#cb6-3"></a>                   <span class="at">y =</span> num.satellites), <span class="at">width =</span> <span class="fl">0.5</span>)<span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"color"</span>, </span>
+<span id="cb6-6"><a href="#cb6-6"></a>       <span class="at">y =</span> <span class="st">"Number of satellites"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Colors and number of satellites of crabs</figcaption>
+<p><img src="review_files/figure-html/colorsummary3-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Color number 1-5 represent from light to dark, and the statistic and graph seem to suggests that crabs with lighter color tend to have higher number of satellites, although there are also some outliers in darker color crabs.</p>
+</section>
+<section id="quantitative-data" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Quantitative Data</h1>
+<section id="numerical-summary-1" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="numerical-summary-1"><span class="header-section-number">4.1</span> Numerical Summary</h2>
+<ul>
+<li>Mean:</li>
+</ul>
+<p><span class="math display">\[
+\bar{x} = \frac{x_1 + x_2 + \cdots + x_n}{n} = \frac{\sum_{i=1}^n x_i}{n}
+\]</span></p>
+<ul>
+<li>Sample Variance:</li>
+</ul>
+<p><span class="math display">\[
+s^2 = \frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n - 1}
+\]</span></p>
+<ul>
+<li>Sample standard deviation:</li>
+</ul>
+<p><span class="math display">\[
+s = \sqrt{\frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n - 1}}
+\]</span></p>
+<ul>
+<li><p>Median:</p>
+<ul>
+<li>The median is the observation in the middle of the data when placed in ascending order.</li>
+</ul></li>
+<li><p>Interquatile Range:</p>
+<ul>
+<li><p>The first quartile <span class="math inline">\(Q_1\)</span> is the median of the lower half of the observations, making it the 25th percentile.</p></li>
+<li><p>The third quartile <span class="math inline">\(Q_3\)</span> is the median of the upper half, making it the 75th percentile.</p></li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+IQR = Q_3 - Q_1
+\]</span></p>
+<ul>
+<li><p>Skewness</p>
+<ul>
+<li><p>When skewness &lt; 0, there are more observations for high values and fewer with low values.</p></li>
+<li><p>When skewness = 0, the data are symmetric – this means that the data are symmetrically distributed around the mean.</p></li>
+<li><p>When skewness &gt; 0, there are more observations for low values and fewer with high values.</p></li>
+</ul></li>
+<li><p>Excess Kurtosis</p>
+<ul>
+<li><p>The excess kurtosis describes how peaked data are in relation to the Gaussian distribution (the bell-shaped curve) with the same mean and variance.</p></li>
+<li><p>When excess kurtosis &lt; 0, the data are platykurtic – the data have a flatter peak and exhibit more variability.</p></li>
+<li><p>When excess kurtosis = 0, the data are mesokurtic – the data have a peak and tails similar to the Gaussian distribution.</p></li>
+<li><p>When excess kurtosis &gt; 0, the data are leptokurtic – the data have a more pronounced peak and exhibit less variability.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="graphical-summary-1" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="graphical-summary-1"><span class="header-section-number">4.2</span> Graphical Summary</h2>
+<p>One continuous variable</p>
+<ul>
+<li><p>Histogram: <code>geom_histogram()</code></p></li>
+<li><p>Violin Plot: <code>geom_violin()</code></p></li>
+<li><p>Box Plot: <code>geom_boxplot()</code></p></li>
+</ul>
+<p>Two continuous variable</p>
+<ul>
+<li>Scatter Plot: <code>geom_point()</code> + <code>geom_smooth()</code></li>
+</ul>
+</section>
+</section>
+<section id="example-of-data-cleaning-and-summarizing-quantitative-data" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Example of Data Cleaning and Summarizing Quantitative Data</h1>
+<p>In my econometric class, I conduct a research project that studied how does the changes in petroleum price affects PM2.5 levels in the air. I used R to conduct lots of data cleaning and summarizing process, and I think those data serve as a good example of reviewing concepts about tidyverse and ggplot.</p>
+<p>PM2.5 refers to airborne particulate matter with a diameter of 2.5 micrometers or smaller. These fine particles can penetrate deep into the lungs and even enter the bloodstream, posing significant risks to respiratory and cardiovascular health.</p>
+<p>In theory, a higher petroleum price will decrease consumption and thus decrease pollutants such as PM2.5 in the air. However, whether this causal relationship applies to reality and the extent of this impact remains uncertain.</p>
+<p>I obtain data of PM2.5 level from the United States Environmental Protection Agency <span class="citation" data-cites="epa">(<a href="#ref-epa" role="doc-biblioref">Agency 2026</a>)</span> and petroleum price data from U.S. Energy Information Administration <span class="citation" data-cites="eia">(<a href="#ref-eia" role="doc-biblioref">Administration 2026</a>)</span></p>
+<section id="loading-the-data" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="loading-the-data"><span class="header-section-number">5.1</span> Loading the Data</h2>
+<p>We can use <code>read.csv()</code> to read csv.files</p>
+<p>For example, I have data of average air pollutants in the air by county in 2000 from the EPA(cite).</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>dat.air <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="st">'/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/EPA2000.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+</section>
+<section id="selecting-columns" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="selecting-columns"><span class="header-section-number">5.2</span> Selecting columns</h2>
+<p>We can use <code>data$column</code> to select column of the data.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>state <span class="ot">&lt;-</span> dat.air<span class="sc">$</span>State.Name</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p>If we are only need information about the county code, state name, parameter name, and arithmetic mean, we can use <code>select()</code> to select multiple columns. We can use <code>head()</code> to check the head of the data</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>dat.air.clean <span class="ot">&lt;-</span> dat.air <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="st">'County.Code'</span>, <span class="st">'State.Name'</span>, <span class="st">'Parameter.Name'</span>, <span class="st">'Arithmetic.Mean'</span>)</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="fu">head</span>(dat.air.clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  County.Code State.Name       Parameter.Name Arithmetic.Mean
+1           3    Alabama                Ozone        0.061870
+2           3    Alabama                Ozone        0.054953
+3           3    Alabama                Ozone        0.054953
+4           3    Alabama                Ozone        0.054835
+5           3    Alabama Sample Flow Rate- CV        0.288660
+6           3    Alabama        Sample Volume       23.985567</code></pre>
+</div>
+</div>
+<p></p>
+</section>
+<section id="filtering-data" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="filtering-data"><span class="header-section-number">5.3</span> Filtering Data</h2>
+<p>Since we only want the data of PM2.5, we can use <code>filter()</code> to exclude any other parameter.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>dat.air.clean <span class="ot">&lt;-</span> dat.air.clean <span class="sc">|&gt;</span> <span class="fu">filter</span>(Parameter.Name <span class="sc">==</span> <span class="st">'PM2.5 - Local Conditions'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p>We also want to only include observations within the U.S.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>dat.air.clean <span class="ot">&lt;-</span> dat.air.clean <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span>State.Name <span class="sc">%in%</span> <span class="fu">c</span>(</span>
+<span id="cb12-2"><a href="#cb12-2"></a>    <span class="st">"Canada"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3"></a>    <span class="st">"Country Of Mexico"</span>,</span>
+<span id="cb12-4"><a href="#cb12-4"></a>    <span class="st">"Puerto Rico"</span>,</span>
+<span id="cb12-5"><a href="#cb12-5"></a>    <span class="st">"Virgin Islands"</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a>  ))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p>We can also use <code>filter()</code> to drop NAs. <code>is.na()</code> will return whether the value the NA.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>dat.air.clean <span class="ot">&lt;-</span> dat.air.clean <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Arithmetic.Mean))</span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">head</span>(dat.air.clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  County.Code State.Name           Parameter.Name Arithmetic.Mean
+1           3    Alabama PM2.5 - Local Conditions        14.83412
+2           3    Alabama PM2.5 - Local Conditions        14.83412
+3           3    Alabama PM2.5 - Local Conditions        14.83412
+4           3    Alabama PM2.5 - Local Conditions        14.83412
+5           3    Alabama PM2.5 - Local Conditions        14.83412
+6           3    Alabama PM2.5 - Local Conditions        14.83412</code></pre>
+</div>
+</div>
+<p></p>
+</section>
+<section id="mutate" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="mutate"><span class="header-section-number">5.4</span> Mutate</h2>
+<p>Each county has lots of different measurement of the arithmetic mean, and I want to add a new column that contain the average level of PM2.5 of that county. We can use <code>group_by()</code> and <code>mutate()</code> to accomplish this task. If the data still contain empty value, we need to set <code>na.rm = TRUE</code> so that we do not get empty values.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>dat.air.clean <span class="ot">&lt;-</span> dat.air.clean <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a>    <span class="fu">mutate</span>(<span class="at">pm25_avg =</span> <span class="fu">mean</span>(Arithmetic.Mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb15-3"><a href="#cb15-3"></a>           <span class="at">.by =</span> County.Code)</span>
+<span id="cb15-4"><a href="#cb15-4"></a><span class="fu">head</span>(dat.air.clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  County.Code State.Name           Parameter.Name Arithmetic.Mean pm25_avg
+1           3    Alabama PM2.5 - Local Conditions        14.83412 11.93812
+2           3    Alabama PM2.5 - Local Conditions        14.83412 11.93812
+3           3    Alabama PM2.5 - Local Conditions        14.83412 11.93812
+4           3    Alabama PM2.5 - Local Conditions        14.83412 11.93812
+5           3    Alabama PM2.5 - Local Conditions        14.83412 11.93812
+6           3    Alabama PM2.5 - Local Conditions        14.83412 11.93812</code></pre>
+</div>
+</div>
+<p></p>
+</section>
+<section id="numerical-summary-2" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="numerical-summary-2"><span class="header-section-number">5.5</span> Numerical Summary</h2>
+<p>We can use <code>summarize()</code> to create a summary table. Here I will use the fully clean version of data that contain information of year, petroleum price, PM2.5 level, state name, and county code.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>data.total <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="st">'/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/tidyverse and ggplot review/totaldata.csv'</span>)</span>
+<span id="cb17-2"><a href="#cb17-2"></a></span>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">head</span>(data.total)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  year Petroleum.Price State.Name County.Code     PM2.5 Natural.Gas.Price
+1 2000            8.54     Alaska          20  5.670303              1.97
+2 2000            8.54     Alaska          68  1.619042              1.97
+3 2000            8.54     Alaska          90 14.447360              1.97
+4 2000            8.54     Alaska         110  5.926137              1.97
+5 2000            8.54     Alaska         130  5.885000              1.97
+6 2000            8.54     Alaska         170  4.547621              1.97
+  Coal.Price  log_pm25 log_ptroleum
+1       1.87 1.7352426     2.144761
+2       1.87 0.4818348     2.144761
+3       1.87 2.6705117     2.144761
+4       1.87 1.7793726     2.144761
+5       1.87 1.7724067     2.144761
+6       1.87 1.5146043     2.144761</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>data.summary <span class="ot">&lt;-</span> data.total <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">drop_na</span>(PM2<span class="fl">.5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb19-4"><a href="#cb19-4"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(PM2<span class="fl">.5</span>),</span>
+<span id="cb19-5"><a href="#cb19-5"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(PM2<span class="fl">.5</span>),</span>
+<span id="cb19-6"><a href="#cb19-6"></a>    <span class="at">Median =</span> <span class="fu">median</span>(PM2<span class="fl">.5</span>),</span>
+<span id="cb19-7"><a href="#cb19-7"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(PM2<span class="fl">.5</span>),</span>
+<span id="cb19-8"><a href="#cb19-8"></a>    <span class="at">Skewness =</span> e1071<span class="sc">::</span><span class="fu">skewness</span>(PM2<span class="fl">.5</span>),</span>
+<span id="cb19-9"><a href="#cb19-9"></a>    <span class="st">"Excess Kurtosis"</span> <span class="ot">=</span> e1071<span class="sc">::</span><span class="fu">kurtosis</span>(PM2<span class="fl">.5</span>)</span>
+<span id="cb19-10"><a href="#cb19-10"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p></p>
+<div class="cell" data-tbl-cap="Summary of PM2.5 levels" data-tbl-align="center">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Summary of PM2.5 levels</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Mean</th>
+<th style="text-align: right;">SD</th>
+<th style="text-align: right;">Median</th>
+<th style="text-align: right;">IQR</th>
+<th style="text-align: right;">Skewness</th>
+<th style="text-align: right;">Excess Kurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">9.81</td>
+<td style="text-align: right;">2.49</td>
+<td style="text-align: right;">9.49</td>
+<td style="text-align: right;">3.46</td>
+<td style="text-align: right;">0.64</td>
+<td style="text-align: right;">4.03</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p></p>
+<p>Since the data contain information of PM2.5 in each year, we can create summary table that is grouped by year.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>data.summary <span class="ot">&lt;-</span> data.total <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">filter</span>(year <span class="sc">&lt;=</span> <span class="dv">2003</span>) <span class="sc">|&gt;</span>       <span class="co"># I only include 4 years in the summary </span></span>
+<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">drop_na</span>(PM2<span class="fl">.5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb20-6"><a href="#cb20-6"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(PM2<span class="fl">.5</span>),</span>
+<span id="cb20-7"><a href="#cb20-7"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(PM2<span class="fl">.5</span>),</span>
+<span id="cb20-8"><a href="#cb20-8"></a>    <span class="at">Median =</span> <span class="fu">median</span>(PM2<span class="fl">.5</span>),</span>
+<span id="cb20-9"><a href="#cb20-9"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(PM2<span class="fl">.5</span>),</span>
+<span id="cb20-10"><a href="#cb20-10"></a>    <span class="at">Skewness =</span> e1071<span class="sc">::</span><span class="fu">skewness</span>(PM2<span class="fl">.5</span>),</span>
+<span id="cb20-11"><a href="#cb20-11"></a>    <span class="st">"Excess Kurtosis"</span> <span class="ot">=</span> e1071<span class="sc">::</span><span class="fu">kurtosis</span>(PM2<span class="fl">.5</span>)</span>
+<span id="cb20-12"><a href="#cb20-12"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p></p>
+<div class="cell" data-tbl-cap="Summary of PM2.5 levels2" data-tbl-align="center">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Summary of PM2.5 levels2</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">year</th>
+<th style="text-align: right;">Mean</th>
+<th style="text-align: right;">SD</th>
+<th style="text-align: right;">Median</th>
+<th style="text-align: right;">IQR</th>
+<th style="text-align: right;">Skewness</th>
+<th style="text-align: right;">Excess Kurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">13.10</td>
+<td style="text-align: right;">2.56</td>
+<td style="text-align: right;">13.37</td>
+<td style="text-align: right;">2.63</td>
+<td style="text-align: right;">-1.39</td>
+<td style="text-align: right;">3.55</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2001</td>
+<td style="text-align: right;">12.27</td>
+<td style="text-align: right;">2.32</td>
+<td style="text-align: right;">12.48</td>
+<td style="text-align: right;">2.35</td>
+<td style="text-align: right;">-1.47</td>
+<td style="text-align: right;">3.94</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2002</td>
+<td style="text-align: right;">11.96</td>
+<td style="text-align: right;">2.25</td>
+<td style="text-align: right;">12.22</td>
+<td style="text-align: right;">2.01</td>
+<td style="text-align: right;">-0.94</td>
+<td style="text-align: right;">4.98</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2003</td>
+<td style="text-align: right;">11.55</td>
+<td style="text-align: right;">2.06</td>
+<td style="text-align: right;">11.81</td>
+<td style="text-align: right;">1.96</td>
+<td style="text-align: right;">-1.42</td>
+<td style="text-align: right;">3.97</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p></p>
+</section>
+<section id="graphical-summary-2" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="graphical-summary-2"><span class="header-section-number">5.6</span> Graphical Summary</h2>
+<p>We can create box plot or violin plot to graphical illustrates the distribution of average PM2.5 in each year.</p>
+<p></p>
+<div class="cell" data-layout-align="center" data-scale="80%">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>data.new <span class="ot">&lt;-</span> data.total <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">filter</span>(year <span class="sc">&lt;=</span> <span class="dv">2003</span>)</span>
+<span id="cb21-3"><a href="#cb21-3"></a></span>
+<span id="cb21-4"><a href="#cb21-4"></a><span class="fu">ggplot</span>(data.new) <span class="sc">+</span> </span>
+<span id="cb21-5"><a href="#cb21-5"></a>  <span class="fu">geom_violin</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(year), <span class="at">y =</span> PM2<span class="fl">.5</span>), </span>
+<span id="cb21-6"><a href="#cb21-6"></a>              <span class="at">fill =</span> <span class="st">"lightgrey"</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb21-7"><a href="#cb21-7"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(year), <span class="at">y =</span> PM2<span class="fl">.5</span>),<span class="at">width =</span> <span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb21-9"><a href="#cb21-9"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"PM2.5"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Yearly PM2.5 Concentration Distribution</figcaption>
+<p><img src="review_files/figure-html/PM2.5summary-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>We can create a scatter plot to see if there is a correlation between petroleum price and PM2.5 level.</p>
+<p></p>
+<div class="cell" data-layout-align="center" data-scale="80%">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">ggplot</span>(data.total) <span class="sc">+</span> </span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> Petroleum.Price, <span class="at">y =</span> PM2<span class="fl">.5</span>), <span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> Petroleum.Price, <span class="at">y =</span> PM2<span class="fl">.5</span>), </span>
+<span id="cb22-4"><a href="#cb22-4"></a>                  <span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb22-5"><a href="#cb22-5"></a>  <span class="fu">theme_bw</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Petroleum Price and PM2.5 level in the air</figcaption>
+<p><img src="review_files/figure-html/PM2.5 and Petroleum Price-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>The estimate coefficient is biased here because I did not add any control variable and time state fixed effect in this model. However, this still serve as an example of how we summary two continuous variable data.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>data.summary <span class="ot">&lt;-</span> data.total <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">drop_na</span>(Petroleum.Price, PM2<span class="fl">.5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb23-4"><a href="#cb23-4"></a>    <span class="at">Pearson =</span> <span class="fu">cor</span>(Petroleum.Price, PM2<span class="fl">.5</span>, <span class="at">method=</span><span class="st">"pearson"</span>),</span>
+<span id="cb23-5"><a href="#cb23-5"></a>    <span class="at">Spearman =</span> <span class="fu">cor</span>(Petroleum.Price, PM2<span class="fl">.5</span>, <span class="at">method=</span><span class="st">"spearman"</span>),</span>
+<span id="cb23-6"><a href="#cb23-6"></a>    <span class="at">Kendall =</span> <span class="fu">cor</span>(Petroleum.Price, PM2<span class="fl">.5</span>, <span class="at">method=</span><span class="st">"kendall"</span>)</span>
+<span id="cb23-7"><a href="#cb23-7"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p></p>
+<div class="cell" data-tbl-cap="Correlation between Petroleum Price and PM2.5 levels" data-tbl-align="center">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Correlation between Petroleum Price and PM2.5 levels</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Pearson</th>
+<th style="text-align: right;">Spearman</th>
+<th style="text-align: right;">Kendall</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">-0.43</td>
+<td style="text-align: right;">-0.41</td>
+<td style="text-align: right;">-0.28</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p></p>
+
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-eia" class="csl-entry" role="listitem">
+Administration, U. S. Energy Information. 2026. <span>“State Energy Data System (SEDS): Prices and Expenditures Data.”</span> <a href="https://www.eia.gov/state/seds/seds-data-complete.php#PricesExpenditures">https://www.eia.gov/state/seds/seds-data-complete.php#PricesExpenditures</a>.
+</div>
+<div id="ref-epa" class="csl-entry" role="listitem">
+Agency, U. S. Environmental Protection. 2026. <span>“AirData Download Files.”</span> <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html">https://aqs.epa.gov/aqsweb/airdata/download_files.html</a>.
+</div>
+<div id="ref-brockmann1996" class="csl-entry" role="listitem">
+Brockmann, H Jane. 1996. <span>“Satellite Male Groups in Horseshoe Crabs, Limulus Polyphemus.”</span> <em>Ethology</em> 102 (1): 1–21.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
