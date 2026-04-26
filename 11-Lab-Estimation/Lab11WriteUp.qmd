@@ -108,6 +108,13 @@ Create a plot or combination of plots (using patchwork) to show the results acro
 
 **Solution**
 ```{r}
+#| label: figure1
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 set.seed(7272)
 
 # Poisson
@@ -259,6 +266,13 @@ Consider the effect of the sample size have on these results. Provide a graphica
 **Solution**
 
 ```{r}
+#| label: figure2
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 set.seed(7272)
 
 # Poisson
@@ -338,6 +352,13 @@ P.S.summary |>
 ```
 
 ```{r}
+#| label: figure3
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 Plot.P.Sn
 ```
 
@@ -352,6 +373,13 @@ P.Sn.summary |>
 
 
 ```{r}
+#| label: figure4
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 set.seed(7272)
 
 # Binomial
@@ -433,6 +461,12 @@ B.S.summary |>
 ```
 
 ```{r}
+#| label: figure5
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
 Plot.B.Sn
 ```
 
@@ -446,6 +480,13 @@ B.Sn.summary |>
 ```
 
 ```{r}
+#| label: figure6
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 set.seed(7272)
 
 # Normal
@@ -526,6 +567,13 @@ N.S.summary |>
 ```
 
 ```{r}
+#| label: figure7
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 Plot.N.Sn
 ```
 
@@ -539,6 +587,13 @@ N.Sn.summary |>
 ```
 
 ```{r}
+#| label: figure8
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 set.seed(7272)
 
 # Exponential
@@ -619,6 +674,13 @@ E.S.summary |>
 ```
 
 ```{r}
+#| label: figure9
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 Plot.E.Sn
 ```
 
@@ -639,6 +701,13 @@ You have written code to draw a random sample of various sizes from each distrib
 **Solution**
 
 ```{r}
+#| label: figure10
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 set.seed(7272)
 
 P.S.plot <- ggplot(P.S.long) +
@@ -721,6 +790,13 @@ For the normal distribution, the distribution of sample variance follows chi-squ
 Now, take *one* sample from each distribution. Instead of drawing a random sample at each iteration, sample *with replacement* from the one sample. Produce a density plot of the $s_{n-1}^2$ and $s_{n}^2$. Do we get roughly the same information as we do in the full simulation? Try this over several seeds -- what do you notice? Ensure to set your randomization seed.
 
 ```{r}
+#| label: figure11
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 set.seed(7272)
 
 # Poisson
@@ -800,6 +876,13 @@ P.S.summary |>
 ```
 
 ```{r}
+#| label: figure12
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 P.Sn.plot
 ```
 
@@ -813,6 +896,13 @@ P.Sn.summary |>
 ```
 
 ```{r}
+#| label: figure13
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 set.seed(7272)
 
 # Binomial
@@ -893,6 +983,13 @@ B.S.summary |>
 ```
 
 ```{r}
+#| label: figure14
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 B.Sn.plot
 ```
 
@@ -906,6 +1003,13 @@ B.Sn.summary |>
 ```
 
 ```{r}
+#| label: figure15
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 set.seed(7272)
 
 # Normal
@@ -985,6 +1089,12 @@ N.S.summary |>
 ```
 
 ```{r}
+#| label: figure16
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
 N.Sn.plot
 ```
 
@@ -998,6 +1108,12 @@ N.Sn.summary |>
 ```
 
 ```{r}
+#| label: figure17
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
 set.seed(7272)
 
 # Exponential
@@ -1077,6 +1193,12 @@ E.S.summary |>
 ```
 
 ```{r}
+#| label: figure18
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
 E.Sn.plot
 ```
 
@@ -1092,6 +1214,12 @@ E.Sn.summary |>
 
 **Plots with different seeds**
 ```{r}
+#| label: figure19
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
 set.seed(7373)
 
 # Poisson
@@ -1162,6 +1290,12 @@ P.Sn.plot
 ```
 
 ```{r}
+#| label: figure20
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
 set.seed(7171)
 
 # Binomial
@@ -1234,6 +1368,12 @@ B.Sn.plot
 ```
 
 ```{r}
+#| label: figure21
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
 set.seed(8484)
 
 # Normal
@@ -1305,6 +1445,12 @@ N.Sn.plot
 ```
 
 ```{r}
+#| label: figure22
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
 set.seed(7070)
 
 # Exponential

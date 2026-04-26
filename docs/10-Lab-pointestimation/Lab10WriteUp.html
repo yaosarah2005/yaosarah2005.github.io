@@ -360,7 +360,7 @@ window.Quarto = {
 <p>Suppose a player has a 50% chance of winning a specific leg, that is let <span class="math inline">\(p=0.50\)</span>. Let’s look at the probability they win (<span class="math inline">\(x=6\)</span>) legs in the match. Compute this probability over a sequence from <span class="math inline">\(\theta=0.5\)</span> to <span class="math inline">\(\theta=1.5\)</span> and plot it using a line where the <span class="math inline">\(x\)</span>-axis is <span class="math inline">\(\theta\)</span> and the <span class="math inline">\(y\)</span>-axis is <span class="math inline">\(P(X=6)\)</span>.</p>
 <p><strong>Solution</strong></p>
 <p></p>
-<div class="cell">
+<div class="cell" data-layout-align="center" data-scale="80%">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>ggdat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">theta =</span> <span class="fu">seq</span>(<span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">0.001</span>)) <span class="sc">|&gt;</span></span>
@@ -376,9 +376,9 @@ window.Quarto = {
 <span id="cb3-11"><a href="#cb3-11"></a>plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Lab10WriteUp_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Lab10WriteUp_files/figure-html/figure1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
 </figure>
 </div>
 </div>
@@ -390,7 +390,7 @@ window.Quarto = {
 <p>Now, plot Altham’s Multiplicative Binomial Distribution under the same parameters with <span class="math inline">\(\theta=0.50\)</span>, <span class="math inline">\(\theta=1\)</span>, and <span class="math inline">\(\theta=1.5\)</span>. Use <code>ncol=1</code> in <code>facet_wrap()</code> to plot the PMFs in a single column for comparing.</p>
 <p><strong>Solution</strong></p>
 <p></p>
-<div class="cell">
+<div class="cell" data-layout-align="center" data-scale="80%">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>ggdat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">rep</span>(<span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">11</span>, <span class="dv">1</span>),<span class="dv">3</span>), <span class="at">theta =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="fl">0.5</span>, <span class="dv">12</span>),<span class="fu">rep</span>(<span class="dv">1</span>,<span class="dv">12</span>),<span class="fu">rep</span>(<span class="fl">1.5</span>,<span class="dv">12</span>)))<span class="sc">|&gt;</span></span>
@@ -409,9 +409,9 @@ window.Quarto = {
 <span id="cb4-14"><a href="#cb4-14"></a>PMF.plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Lab10WriteUp_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Lab10WriteUp_files/figure-html/figure2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
 </figure>
 </div>
 </div>
@@ -688,15 +688,15 @@ window.Quarto = {
 </div>
 <p></p>
 <p></p>
-<div class="cell">
+<div class="cell" data-layout-align="center" data-scale="80%">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>match.plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Lab10WriteUp_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Lab10WriteUp_files/figure-html/figure3-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
 </figure>
 </div>
 </div>
@@ -770,15 +770,15 @@ window.Quarto = {
 </div>
 <p></p>
 <p></p>
-<div class="cell">
+<div class="cell" data-layout-align="center" data-scale="80%">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>leg.plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Lab10WriteUp_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Lab10WriteUp_files/figure-html/figure4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
 </figure>
 </div>
 </div>
@@ -1096,7 +1096,7 @@ sd(X) &amp;= \sqrt{\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}}
 </div>
 <p></p>
 <p></p>
-<div class="cell">
+<div class="cell" data-layout-align="center" data-scale="80%">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>Beta.plot <span class="ot">&lt;-</span> <span class="cf">function</span>(i){</span>
@@ -1118,9 +1118,9 @@ sd(X) &amp;= \sqrt{\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}}
 <span id="cb13-17"><a href="#cb13-17"></a><span class="fu">Beta.plot</span>(<span class="dv">1</span>) <span class="sc">|</span> <span class="fu">Beta.plot</span>(<span class="dv">2</span>) <span class="sc">|</span> <span class="fu">Beta.plot</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Lab10WriteUp_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Lab10WriteUp_files/figure-html/figure5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
 </figure>
 </div>
 </div>
@@ -1129,9 +1129,9 @@ sd(X) &amp;= \sqrt{\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}}
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">Beta.plot</span>(<span class="dv">4</span>) <span class="sc">|</span> <span class="fu">Beta.plot</span>(<span class="dv">5</span>) <span class="sc">|</span> <span class="fu">Beta.plot</span>(<span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Lab10WriteUp_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Lab10WriteUp_files/figure-html/figure5-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
 </figure>
 </div>
 </div>
@@ -1140,9 +1140,9 @@ sd(X) &amp;= \sqrt{\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}}
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">Beta.plot</span>(<span class="dv">7</span>) <span class="sc">|</span> <span class="fu">Beta.plot</span>(<span class="dv">8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Lab10WriteUp_files/figure-html/unnamed-chunk-14-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Lab10WriteUp_files/figure-html/figure5-3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
 </figure>
 </div>
 </div>

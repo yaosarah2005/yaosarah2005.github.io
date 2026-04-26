@@ -139,6 +139,13 @@ Suppose a player has a 50\% chance of winning a specific leg, that is let $p=0.5
 **Solution**
 
 ```{r}
+#| label: figure1
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 ggdat <- tibble(theta = seq(0.5, 1.5, 0.001)) |>
   mutate(Probability = daltbinom(6, size = 11, prob= 0.5, theta = theta))
 
@@ -158,6 +165,13 @@ Now, plot Altham's Multiplicative Binomial Distribution under the same parameter
 **Solution**
 
 ```{r}
+#| label: figure2
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 ggdat <- tibble(x = rep(seq(0, 11, 1),3), theta = c(rep(0.5, 12),rep(1,12),rep(1.5,12)))|>
   mutate(PMF= daltbinom(x,11,0.5,theta))
 
@@ -349,6 +363,13 @@ match.summary |>
 ```
 
 ```{r}
+#| label: figure3
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 match.plot
 ```
 
@@ -362,6 +383,13 @@ leg.summary |>
 ```
 
 ```{r}
+#| label: figure4
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 leg.plot
 ```
 
@@ -549,6 +577,13 @@ MLE.summary |>
 ```
 
 ```{r}
+#| label: figure5
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
 Beta.plot <- function(i){
   alpha <- MLE.summary$Alpha[i]
   beta <- MLE.summary$Beta[i]
