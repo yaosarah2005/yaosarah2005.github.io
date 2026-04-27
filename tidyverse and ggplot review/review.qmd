@@ -61,6 +61,10 @@ library(tidyverse)
 library(patchwork)
 ```
 
+# Overview
+
+This is a review of important concepts in tidyverse and ggplot that can be used to summarize data. It covers three main sections: data cleaning, summarizing categorical data, and summarizing continuous data, followed by two real-world examples of how these tools can be applied.
+
 
 # Data Cleaning
 
@@ -113,6 +117,7 @@ Categorical variable places observations into one of several groups or categorie
 * Ordinal: assumes groups are made up of ordered categories
 
 ## Numerical Summary
+
 We want to compute the sample proportion of observations that belong to each level of the categorical variable.
 
 $$\hat{p} = \frac{x}{n}$$
@@ -260,6 +265,12 @@ Color number 1-5 represent from light to dark, and the statistic and graph seem 
 
 # Quantitative Data
 
+Quantitative Data assumes numerical values
+
+* Continuous: assumes the variable is double measured
+ 
+* Discrete: assumes the variable is countable
+
 ## Numerical Summary
 
 * Mean: 
@@ -330,7 +341,7 @@ Two continuous variable
 
 # Example of Data Cleaning and Summarizing Quantitative Data
 
-In my econometric class, I conduct a research project that studied how does the changes in petroleum price affects PM2.5 levels in the air. I used R to conduct lots of data cleaning and summarizing process, and I think those data serve as a good example of reviewing concepts about tidyverse and ggplot.
+In my econometric class, I worked on a research project that studied how does the changes in petroleum price affects PM2.5 levels in the air. I used R to conduct lots of data cleaning and summarizing process, and I think those data serve as a good example of reviewing concepts about tidyverse and ggplot.
 
 PM2.5 refers to airborne particulate matter with a diameter of 2.5 micrometers or smaller. These fine particles can penetrate deep into the lungs and even enter the bloodstream, posing significant risks to respiratory and cardiovascular health.
 

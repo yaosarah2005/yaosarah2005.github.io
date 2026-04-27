@@ -13,6 +13,8 @@ Hi, I’m Sarah Yao, an undergraduate student at Colgate University.
 
 I grow up in Beijing, China. I'm interested in data analysis, economics, and statistics.
 
+This is a wibsite for my work in the course Computational Statistics with R.
+
 ## Education
 
 Colgate University ｜ Aug 2023 - May 2027 | B.A. in Economics | Minor in Applied Mathematics
