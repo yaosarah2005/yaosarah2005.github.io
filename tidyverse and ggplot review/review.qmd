@@ -70,6 +70,8 @@ This is a review of important concepts in tidyverse and ggplot that can be used 
 
 ## Summarizing important Operator in Tidyverse
 
+When we want to analyze data, the real-world data is often messy and unstructured. We can use operators in the tidyverse to clean and filter the data to extract what we need, and at the same time compute the statistics we are interested in.
+
 `tibble()`, constructs a tibble, an enhanced data frame
 
 `read_csv()`, like read.csv, but quicker and returns a tibble
@@ -87,7 +89,7 @@ This is a review of important concepts in tidyverse and ggplot that can be used 
 `case_when()`, create a new variable by assigning different values based on multiple conditions.
 
 `summarise()`, allows us to ask for statistics calculated on
-selected column(s)
+selected column(s). Those statistics includes: 
 
 * `mean()`
 
@@ -110,7 +112,7 @@ selected column(s)
 
 # Categorical Data
 
-Categorical variable places observations into one of several groups or categories.
+Categorical variable places observations into one of several groups or categories. 
 
 * Nominal: assumes groups are made up of named categories.
 
@@ -118,7 +120,7 @@ Categorical variable places observations into one of several groups or categorie
 
 ## Numerical Summary
 
-We want to compute the sample proportion of observations that belong to each level of the categorical variable.
+When summarizing data, We want to compute the sample proportion of observations that belong to each level of the categorical variable.
 
 $$\hat{p} = \frac{x}{n}$$
 
@@ -126,9 +128,13 @@ $$\hat{p} = \frac{x}{n}$$
 
 * n is the count of observations in total
 
+We can use `group_by()` to group the data into the level we need.
+
 ## Graphical Summary
 
-One Categorical Variable
+One Categorical Variable:
+
+We can use a bar plot, pie chart, or doughnut plot to visualize the data. It is important to note that we need to set the y-axis to proportions instead of counts, because we want to understand each category relative to the overall population rather than just the raw frequency.
 
 * Bar plot: `geom_bar()`
 
@@ -136,7 +142,9 @@ One Categorical Variable
 
 * Doughnut Plot: `geom_bar()` + `coord_polar("y", start=0)` + `xlim(0.5, 2.5)`
 
-Two Categorical Variable
+Two Categorical Variable:
+
+We are usually interested in understanding how the distribution of one variable changes across the levels of another variable. This is typically done by creating a contingency table, where we count the number of observations for each combination of categories. Graphically we can create grouped bar plot or grouped pie chart.
 
 * Grouped bar plot: `geom_bar()` + `facet_wrap()` or `geom_bar(...fill = )`
 
@@ -265,13 +273,15 @@ Color number 1-5 represent from light to dark, and the statistic and graph seem 
 
 # Quantitative Data
 
-Quantitative Data assumes numerical values
+Quantitative data refers to numerical variables that represent measurable quantities.
 
 * Continuous: assumes the variable is double measured
  
 * Discrete: assumes the variable is countable
 
 ## Numerical Summary
+
+When summarizing numerical data, we are interested in describing its center, such as the mean and median, its variability, such as the standard deviation, and its distributional shape, such as skewness and kurtosis.
 
 * Mean: 
 
@@ -315,7 +325,7 @@ $$
 
 * Excess Kurtosis
 
-  * The excess kurtosis describes how peaked data are in relation to the Gaussian distribution (the bell-shaped curve) with the same mean and variance.
+  The excess kurtosis describes how peaked data are in relation to the Gaussian distribution (the bell-shaped curve) with the same mean and variance.
 
   * When excess kurtosis < 0, the data are platykurtic – the data have a flatter peak and exhibit more variability.
 
@@ -323,10 +333,22 @@ $$
 
   * When excess kurtosis > 0, the data are leptokurtic – the data have a more pronounced peak and exhibit less variability.
 
+* Correlation
+
+  We can use `cor(... method = '')` to measure the correlation between two continuous variables.
+
+  * Pearson Correlation Coefficient (r)
+
+  * Spearman’s Rank Correlation (ρ)
+
+  * Kendall’s Tau (τ)
+
 
 ## Graphical Summary
 
-One continuous variable
+One continuous variable：
+
+If we are interested in the distributiton shape, we can create a histogram or a violin plot. If we are interested in key statistics such as the median, quartiles, and potential outliers, we can create a box plot. We can also create a box plot and violin plot together if we want to know both. 
 
 * Histogram: `geom_histogram()`
 
@@ -335,6 +357,8 @@ One continuous variable
 * Box Plot: `geom_boxplot()`
 
 Two continuous variable
+
+We are generally interested in the correlation between the two variable, so we can create a scatter plot to see whether they move in the same direction.
 
 * Scatter Plot: `geom_point()` + `geom_smooth()`
 

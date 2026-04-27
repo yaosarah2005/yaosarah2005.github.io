@@ -308,6 +308,7 @@ window.Quarto = {
 <h1 data-number="2"><span class="header-section-number">2</span> Data Cleaning</h1>
 <section id="summarizing-important-operator-in-tidyverse" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="summarizing-important-operator-in-tidyverse"><span class="header-section-number">2.1</span> Summarizing important Operator in Tidyverse</h2>
+<p>When we want to analyze data, the real-world data is often messy and unstructured. We can use operators in the tidyverse to clean and filter the data to extract what we need, and at the same time compute the statistics we are interested in.</p>
 <p><code>tibble()</code>, constructs a tibble, an enhanced data frame</p>
 <p><code>read_csv()</code>, like read.csv, but quicker and returns a tibble</p>
 <p><code>mutate()</code>, used to create new variables or edit old variables</p>
@@ -316,7 +317,7 @@ window.Quarto = {
 <p><code>|&gt;</code> pipes, takes the result on the left and passes it as the first argument to the function on the right.</p>
 <p><code>select()</code>, select one or more columns as a data frame</p>
 <p><code>case_when()</code>, create a new variable by assigning different values based on multiple conditions.</p>
-<p><code>summarise()</code>, allows us to ask for statistics calculated on selected column(s)</p>
+<p><code>summarise()</code>, allows us to ask for statistics calculated on selected column(s). Those statistics includes:</p>
 <ul>
 <li><p><code>mean()</code></p></li>
 <li><p><code>sd()</code></p></li>
@@ -339,22 +340,25 @@ window.Quarto = {
 </ul>
 <section id="numerical-summary" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="numerical-summary"><span class="header-section-number">3.1</span> Numerical Summary</h2>
-<p>We want to compute the sample proportion of observations that belong to each level of the categorical variable.</p>
+<p>When summarizing data, We want to compute the sample proportion of observations that belong to each level of the categorical variable.</p>
 <p><span class="math display">\[\hat{p} = \frac{x}{n}\]</span></p>
 <ul>
 <li><p>x is the count of observations in the specified level</p></li>
 <li><p>n is the count of observations in total</p></li>
 </ul>
+<p>We can use <code>group_by()</code> to group the data into the level we need.</p>
 </section>
 <section id="graphical-summary" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="graphical-summary"><span class="header-section-number">3.2</span> Graphical Summary</h2>
-<p>One Categorical Variable</p>
+<p>One Categorical Variable:</p>
+<p>We can use a bar plot, pie chart, or doughnut plot to visualize the data. It is important to note that we need to set the y-axis to proportions instead of counts, because we want to understand each category relative to the overall population rather than just the raw frequency.</p>
 <ul>
 <li><p>Bar plot: <code>geom_bar()</code></p></li>
 <li><p>Pie chart: <code>geom_bar()</code> + <code>coord_polar("y", start=0)</code></p></li>
 <li><p>Doughnut Plot: <code>geom_bar()</code> + <code>coord_polar("y", start=0)</code> + <code>xlim(0.5, 2.5)</code></p></li>
 </ul>
-<p>Two Categorical Variable</p>
+<p>Two Categorical Variable:</p>
+<p>We are usually interested in understanding how the distribution of one variable changes across the levels of another variable. This is typically done by creating a contingency table, where we count the number of observations for each combination of categories. Graphically we can create grouped bar plot or grouped pie chart.</p>
 <ul>
 <li><p>Grouped bar plot: <code>geom_bar()</code> + <code>facet_wrap()</code> or <code>geom_bar(...fill = )</code></p></li>
 <li><p>Grouped pie chart: <code>geom_bar()</code> + <code>coord_polar("y", start=0)</code> + <code>facet_wrap()</code></p></li>
@@ -663,13 +667,14 @@ window.Quarto = {
 </section>
 <section id="quantitative-data" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Quantitative Data</h1>
-<p>Quantitative Data assumes numerical values</p>
+<p>Quantitative data refers to numerical variables that represent measurable quantities.</p>
 <ul>
 <li><p>Continuous: assumes the variable is double measured</p></li>
 <li><p>Discrete: assumes the variable is countable</p></li>
 </ul>
 <section id="numerical-summary-1" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="numerical-summary-1"><span class="header-section-number">5.1</span> Numerical Summary</h2>
+<p>When summarizing numerical data, we are interested in describing its center, such as the mean and median, its variability, such as the standard deviation, and its distributional shape, such as skewness and kurtosis.</p>
 <ul>
 <li>Mean:</li>
 </ul>
@@ -710,23 +715,32 @@ IQR = Q_3 - Q_1
 <li><p>When skewness &gt; 0, there are more observations for low values and fewer with high values.</p></li>
 </ul></li>
 <li><p>Excess Kurtosis</p>
+<p>The excess kurtosis describes how peaked data are in relation to the Gaussian distribution (the bell-shaped curve) with the same mean and variance.</p>
 <ul>
-<li><p>The excess kurtosis describes how peaked data are in relation to the Gaussian distribution (the bell-shaped curve) with the same mean and variance.</p></li>
 <li><p>When excess kurtosis &lt; 0, the data are platykurtic – the data have a flatter peak and exhibit more variability.</p></li>
 <li><p>When excess kurtosis = 0, the data are mesokurtic – the data have a peak and tails similar to the Gaussian distribution.</p></li>
 <li><p>When excess kurtosis &gt; 0, the data are leptokurtic – the data have a more pronounced peak and exhibit less variability.</p></li>
+</ul></li>
+<li><p>Correlation</p>
+<p>We can use <code>cor(... method = '')</code> to measure the correlation between two continuous variables.</p>
+<ul>
+<li><p>Pearson Correlation Coefficient (r)</p></li>
+<li><p>Spearman’s Rank Correlation (ρ)</p></li>
+<li><p>Kendall’s Tau (τ)</p></li>
 </ul></li>
 </ul>
 </section>
 <section id="graphical-summary-1" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="graphical-summary-1"><span class="header-section-number">5.2</span> Graphical Summary</h2>
-<p>One continuous variable</p>
+<p>One continuous variable：</p>
+<p>If we are interested in the distributiton shape, we can create a histogram or a violin plot. If we are interested in key statistics such as the median, quartiles, and potential outliers, we can create a box plot. We can also create a box plot and violin plot together if we want to know both.</p>
 <ul>
 <li><p>Histogram: <code>geom_histogram()</code></p></li>
 <li><p>Violin Plot: <code>geom_violin()</code></p></li>
 <li><p>Box Plot: <code>geom_boxplot()</code></p></li>
 </ul>
 <p>Two continuous variable</p>
+<p>We are generally interested in the correlation between the two variable, so we can create a scatter plot to see whether they move in the same direction.</p>
 <ul>
 <li>Scatter Plot: <code>geom_point()</code> + <code>geom_smooth()</code></li>
 </ul>
