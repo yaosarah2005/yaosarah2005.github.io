@@ -193,7 +193,7 @@ What is your best assessment of what $\theta$ is doing in this setting. Consider
 **Note:** In lab 8, we saw that small $\theta$ meant wins came in bunches (clumped together), so there were more 2-0 wins in a best of three series.
 
 **Solution**
-When theta is greater, x, or the number of matches win, are likely to have higher probability at the center, which means wining 5 or 6 matches are more likely. This means when theta is lower, 6-0 is more likely and when theta is higher, 6-5 are more likely.
+When $\theta$ is greater, x, or the number of matches win, are likely to have higher probability at the center, which means wining 5 or 6 matches are more likely. This means when $\theta$ is lower, 6-0 is more likely and when theta is higher, 6-5 are more likely.
 
 # Question 2
 
@@ -205,9 +205,9 @@ Altham's Multiplicative Binomial Distribution does not typically simplify to the
 $E(X^K) = \sum_{i=0}^{11} i^k f_x(i)$
 
 ```{r}
-momdaltbinom <- function(p, theta, k){
-  x <- 0:11
-  sum(x^k*daltbinom(x,11,p,theta))
+momdaltbinom <- function(p, theta, k, size){
+  x <- 0:size
+  sum(x^k*daltbinom(x,size,p,theta))
 }
 ```
 
@@ -224,10 +224,10 @@ Write a function that computes the log-likelihood for Altham's Multiplicative Bi
 **Solution**
 
 ```{r}
-lldaltbinom <- function(par, data, MLE = F){
+lldaltbinom <- function(par, data, size, MLE = F){
   p <- ifelse(MLE, 1/(1+exp(-par[1])), par[1])
   theta <- ifelse(MLE, exp(par[2]), par[2])
-  ll <- sum(log(daltbinom(data,11,p,theta)))
+  ll <- sum(log(daltbinom(data,size,p,theta)))
   ifelse(MLE, -ll, ll)
 }
 ```
@@ -237,7 +237,7 @@ Describe how you can use your answer to part c to find Maximum Likelihood estima
 
 **Solution**
 
-Use optim() to find the parameter that allows the log likelihood function to have the greatest value, and set MLE in the function equal to True.
+Use optim() to find the parameter that allows the log likelihood function to have the greatest value, and set MLE in the argument equal to True.
 
 # Lab 10
 Peter "Snakebite" Wright is a two-time Professional Darts Corporation World Champion (2020, 2022) and a former World No. 1. He is one of the sport's most decorated players, winning nearly 50 PDC titles including the World Matchplay, UK Open, and multiple European Championships. 
@@ -272,7 +272,7 @@ Summarize the data. What do the data tell us about the breakdown of the results?
 **Solution**
 
 ```{r}
-dat.pdc <- read_csv("pdc2024.csv")
+dat.pdc <- read_csv("/Users/jiayinyao/Desktop/Computational Statistics with R/yaosarah2005.github.io/10-Lab-pointestimation/pdc2024.csv")
 
 dat.pdc.clean <- dat.pdc |>
   filter(Score != "w/o") |>
@@ -281,8 +281,9 @@ dat.pdc.clean <- dat.pdc |>
          LoserLegs  = as.numeric(str_split(Score, "-", simplify = TRUE)[,2]))
 ```
 
-```{r}
+First I calculate the total number of match won by each player, and the total number of match played by each player.
 
+```{r}
 Matchwins <- function(name){
   win <- 0
   for(i in 1:nrow(dat.pdc.clean)){
@@ -302,7 +303,11 @@ total <- function(name){
   }
   total 
 }
+```
 
+I also calculate the number of leg won by each player and the total number of legs played by each player.
+
+```{r}
 legwins <- function(name){
   legwin <- 0
   for(i in 1:nrow(dat.pdc.clean)){
@@ -325,7 +330,11 @@ legtotal <- function(name){
   }
   total 
 }
+```
 
+I created summary tables and bar plots to illustrate the distribution of the proportion of matches won and the proportion of legs won for each player.
+
+```{r}
 player.turns <- table(c(dat.pdc.clean$Winner, dat.pdc.clean$Loser)) 
 match.summary <- tibble(Name = names(player.turns),
                   Match.Win = sapply(names(player.turns), Matchwins),
@@ -340,6 +349,7 @@ leg.summary <-  tibble(Name = names(player.turns),
 match.plot <- ggplot(data = match.summary) +
   geom_bar(aes(x = Name, y = Proportion), stat = "identity") +
   geom_hline(yintercept = 0) +
+  coord_cartesian(ylim = c(0, 1)) +
   theme_bw() +
   labs(x = "Player Name", y = "Winning Matches Proportion") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10))
@@ -347,6 +357,7 @@ match.plot <- ggplot(data = match.summary) +
 leg.plot <- ggplot(data = leg.summary) +
   geom_bar(aes(x = Name, y = Proportion), stat = "identity") +
   geom_hline(yintercept = 0) +
+  coord_cartesian(ylim = c(0, 1)) +
   theme_bw() +
   labs(x = "Player Name", y = "Winning Legs Proportion") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10))
@@ -411,61 +422,42 @@ For each player in the 2024 season, use the number of legs won in each match to 
 
 ```{r}
 player.turns <- table(c(dat.pdc.clean$Winner, dat.pdc.clean$Loser)) 
+```
 
-# This function returns a data frame that contains two column. 
-# First column is number of legs the player wins in each match, 
-# and the second column is the total legs that the player played for each match.
+This function returns a vector that contains the total legs that the player played for each match.
+
+```{r}
 Win.each <- function(name){                      
   total.turn <- as.numeric(player.turns[name])
-  win.each <- tibble(Win = rep(NA, total.turn),
-                    Total = rep(NA, total.turn))
+  win.each <- rep(NA, total.turn)
   n <- 1
   for(i in 1:nrow(dat.pdc.clean)){
     if(dat.pdc.clean$Winner[i]==name){ # If the player is the winner
-      win.each$Win[n] <- 6
-      win.each$Total[n] <- dat.pdc.clean$LoserLegs[i] + dat.pdc.clean$WinnerLegs[i]
+      win.each[n] <- 6
       n <- n + 1
     }
     else if(dat.pdc.clean$Loser[i]==name){ # If the player is the loser
-      win.each$Win[n] <- dat.pdc.clean$LoserLegs[i]
-      win.each$Total[n] <- dat.pdc.clean$LoserLegs[i] + dat.pdc.clean$WinnerLegs[i]
+      win.each[n] <- dat.pdc.clean$LoserLegs[i]
       n <- n + 1 
     }
   }
   win.each
 }
+```
 
-# This function calculates the probability of the player 
-# winning x time in n legs with given probability and theta. 
-# If the player win the match, it ensures the last leg is a win, 
-# If the player lose the match, it ensures the last leg is a lose.
-# Since player did not play 11 legs, size is also a vector that contains different total legs each player played.
 
-Prob.daltbinom <- function(x, size, prob, theta){  
-  sapply(1:length(x), function(i){  # Ensure it works on a vector
-    xi <- x[i]  
-    si <- size[i]  
-    if(xi == 6){  # If the player win the match
-      # Calculate the probability and ensuring the last leg is win
-      (choose(si-1,5)/choose(si, xi)) * daltbinom(xi, si, prob, theta) 
-    } else {  # If the player lose the match
-      # Calculate the probability and ensuring the last leg is lose
-      (choose(si-1, xi)/choose(si, xi)) * daltbinom(xi, si, prob, theta)  
-    }  
-  })  
-}
+This function calculates the log likelihood of different parameters. In order to make it easier for optimization, it returns the negative log likelihood.
 
-# This function calculates the log likelihood of different parameters. 
-# In order to make it easier for optimization, it returns the negative log likelihood.
+```{r}
 llProb.daltbinom <- function(par, data){
   p <- 1/(1+exp(-par[1]))  # Ensures probability is between 0 and 1
   theta <- exp(par[2])     # Ensures theta is greater than 0
-  x <- data$Win
-  size <- data$Total
-  ll <- sum(log(Prob.daltbinom(x,size,p,theta)))
+  ll <- sum(log(daltbinom(x = data,11,p,theta)))
   -ll
 }
+```
 
+```{r}
 # Create a summary table for the result
 MLE.summary <- tibble(Name = names(player.turns),
                       P = NA,
@@ -512,37 +504,20 @@ For each player in the 2024 season, use the number of legs won in each match to 
 **Note**: The players alternate who throws first in a leg has the mathematical "head start" to reach a finish before their opponent can take another turn. Players alternate who throws first with each leg.
 
 **Solution**
+
+This function calculates the log likelihood of different parameters. In order to make it easier for optimization, it returns the negative log likelihood.
+
 ```{r}
-# This function calculates the probability of the player 
-# wins x time with given alpha, beta, and theta. 
-Prob.daltbbinom <- function(x, size, alpha, beta, theta){  
-  sapply(1:length(x), function(i){  # Ensure it works on a vector
-    xi <- x[i]  
-    si <- size[i]  
-    if(xi == 6){  # If the player win the match
-      # Calculate the probability and ensuring the last leg is win
-      (choose(si-1,5)/choose(si, xi)) * daltbbinom(xi, si, alpha, beta, theta) 
-    } else {  # If the player lose the match
-      # Calculate the probability and ensuring the last leg is lose
-      (choose(si-1, xi)/choose(si, xi)) * daltbbinom(xi, si, alpha, beta, theta)  
-    }  
-  })  
-}
-
-
-
-# This function calculates the log likelihood of different parameters. 
-# In order to make it easier for optimization, it returns the negative log likelihood.
 llProb.daltbbinom <- function(par, data){
   alpha <- exp(par[1])
   beta <- exp(par[2]) 
   theta <- exp(par[3])    
-  x <- data$Win
-  size <- data$Total
-  ll <- sum(log(Prob.daltbbinom(x,size,alpha, beta,theta)))
+  ll <- sum(log(daltbbinom(x = data, size = 11, alpha, beta, theta)))
   -ll
 }
+```
 
+```{r}
 # Create a summary table for the result
 MLE.summary <- tibble(Name = names(player.turns),
                       Alpha = NA,
@@ -555,7 +530,7 @@ MLE.summary <- tibble(Name = names(player.turns),
 for(i in 1:nrow(MLE.summary)){
   name <- MLE.summary$Name[i]
   win.each <- Win.each(name) 
-  mle <- optim(par = c(0,0,0), fn = llProb.daltbbinom, 
+  mle <- optim(par = c(1,1,1), fn = llProb.daltbbinom, 
              data = win.each)
   alpha <- exp(mle$par[1])
   beta <- exp(mle$par[2])
@@ -605,7 +580,7 @@ Beta.plot(4) | Beta.plot(5) | Beta.plot(6)
 Beta.plot(7) | Beta.plot(8)
 ```
 
-The data represent the maximum likelihood of alpha, beta, and theta for each player. Alpha and beta determines the probability of winning each match for the player if their results follows Altham's Multiplicative Beta Binomial Distribution. 
+The data represent the maximum likelihood of $\alpha$, $\beta$, and $\theta$ for each player. $\alpha$, $\beta$, and $\theta$ determines the probability of winning each match for the player if their results follows Altham's Multiplicative Beta Binomial Distribution. 
 
 ## Executive Summary
 Summarize the work you've done here to provide a brief (200-300 word) data-driven summary of the 2024 Premier League season using your work in Lab 10. Your summary should be professional, clear, and all claims should be corroborated with statistical support.
