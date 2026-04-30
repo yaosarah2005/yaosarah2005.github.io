@@ -989,7 +989,7 @@ sd(X) &amp;= \sqrt{\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}}
 <span id="cb18-10"><a href="#cb18-10"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(MLE.summary)){</span>
 <span id="cb18-11"><a href="#cb18-11"></a>  name <span class="ot">&lt;-</span> MLE.summary<span class="sc">$</span>Name[i]</span>
 <span id="cb18-12"><a href="#cb18-12"></a>  win.each <span class="ot">&lt;-</span> <span class="fu">Win.each</span>(name) </span>
-<span id="cb18-13"><a href="#cb18-13"></a>  mle <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">fn =</span> llProb.daltbbinom, </span>
+<span id="cb18-13"><a href="#cb18-13"></a>  mle <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">fn =</span> llProb.daltbbinom, </span>
 <span id="cb18-14"><a href="#cb18-14"></a>             <span class="at">data =</span> win.each)</span>
 <span id="cb18-15"><a href="#cb18-15"></a>  alpha <span class="ot">&lt;-</span> <span class="fu">exp</span>(mle<span class="sc">$</span>par[<span class="dv">1</span>])</span>
 <span id="cb18-16"><a href="#cb18-16"></a>  beta <span class="ot">&lt;-</span> <span class="fu">exp</span>(mle<span class="sc">$</span>par[<span class="dv">2</span>])</span>
@@ -1020,11 +1020,11 @@ sd(X) &amp;= \sqrt{\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}}
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Gerwyn Price</td>
-<td style="text-align: right;">0.26</td>
-<td style="text-align: right;">0.92</td>
-<td style="text-align: right;">3.18</td>
-<td style="text-align: right;">0.22</td>
-<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">1.83</td>
+<td style="text-align: right;">1.76</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.23</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Luke Humphries</td>
@@ -1036,49 +1036,49 @@ sd(X) &amp;= \sqrt{\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}}
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Luke Littler</td>
-<td style="text-align: right;">0.28</td>
-<td style="text-align: right;">0.38</td>
-<td style="text-align: right;">10.80</td>
-<td style="text-align: right;">0.42</td>
-<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">0.62</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">3.37</td>
+<td style="text-align: right;">0.43</td>
+<td style="text-align: right;">0.32</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Michael Smith</td>
-<td style="text-align: right;">0.53</td>
-<td style="text-align: right;">1.07</td>
-<td style="text-align: right;">2.24</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.65</td>
+<td style="text-align: right;">3.46</td>
+<td style="text-align: right;">0.32</td>
 <td style="text-align: right;">0.33</td>
-<td style="text-align: right;">0.29</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Michael van Gerwen</td>
 <td style="text-align: right;">0.22</td>
 <td style="text-align: right;">0.45</td>
-<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">5.01</td>
 <td style="text-align: right;">0.33</td>
 <td style="text-align: right;">0.36</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Nathan Aspinall</td>
-<td style="text-align: right;">2.47</td>
-<td style="text-align: right;">4.34</td>
-<td style="text-align: right;">1.49</td>
+<td style="text-align: right;">2.55</td>
+<td style="text-align: right;">4.47</td>
+<td style="text-align: right;">1.48</td>
 <td style="text-align: right;">0.36</td>
 <td style="text-align: right;">0.17</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Peter Wright</td>
-<td style="text-align: right;">1.79</td>
-<td style="text-align: right;">7.29</td>
-<td style="text-align: right;">1.21</td>
+<td style="text-align: right;">1.75</td>
+<td style="text-align: right;">7.20</td>
+<td style="text-align: right;">1.22</td>
 <td style="text-align: right;">0.20</td>
 <td style="text-align: right;">0.13</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Rob Cross</td>
-<td style="text-align: right;">0.27</td>
-<td style="text-align: right;">0.81</td>
-<td style="text-align: right;">3.20</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">3.26</td>
 <td style="text-align: right;">0.25</td>
 <td style="text-align: right;">0.30</td>
 </tr>
@@ -1140,7 +1140,7 @@ sd(X) &amp;= \sqrt{\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}}
 </div>
 </div>
 <p></p>
-<p>The data represent the maximum likelihood of <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, and <span class="math inline">\(\theta\)</span> for each player. <span class="math inline">\(\Alpha\)</span>, <span class="math inline">\(\beta\)</span>, and <span class="math inline">\(\theta\)</span> determines the probability of winning each match for the player if their results follows Altham’s Multiplicative Beta Binomial Distribution.</p>
+<p>The data represent the maximum likelihood of <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, and <span class="math inline">\(\theta\)</span> for each player. <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, and <span class="math inline">\(\theta\)</span> determines the probability of winning each match for the player if their results follows Altham’s Multiplicative Beta Binomial Distribution.</p>
 </section>
 <section id="executive-summary" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="executive-summary"><span class="header-section-number">5.4</span> Executive Summary</h2>
