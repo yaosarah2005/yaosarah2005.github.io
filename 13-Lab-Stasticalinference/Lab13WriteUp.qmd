@@ -1,0 +1,470 @@
+---
+title: Lab Thirteen -- Statistical Inference # Title of the document
+
+# Bibliography Details
+bibliography: Lab13References.bib  # Name of bib file in the same folder 
+bibliographystyle: apa            # Bibliography style
+
+execute:               # Default settings for code blocks
+  warning: false       # Do not print warnings
+  message: false       # Do not print messages
+  size: "scriptsize"   # Set code size to script size
+
+# Below will do html by default. To render the entire project
+# Use the following code:
+# quarto::quarto_render("Lab10WriteUp.qmd")
+format:
+  pdf:        # Specify .pdf formatting options 
+    documentclass: article     # Document Class
+    number-sections: true      # Number Sections
+    reference-section-title: "References" # Title for reference section
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables 
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+  html:       # Specify HTML formatting options 
+    number-sections: true      # Number Sections
+    code-fold: true            # Button to show code
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables and figures
+format-links: [pdf]
+---
+
+```{r}
+#| echo: false
+
+default_chunk_hook  <- knitr::knit_hooks$get("chunk")
+
+latex_font_size <- c("Huge", "huge", "LARGE", "Large", 
+                     "large", "normalsize", "small", 
+                     "footnotesize", "scriptsize", "tiny")
+
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- default_chunk_hook(x, options)
+  if(options$size %in% latex_font_size) {
+    paste0("\n \\", options$size, "\n\n", 
+      x, 
+      "\n\n \\normalsize"
+    )
+  } else {
+    x
+  }
+})
+```
+
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+library(patchwork)
+library(effectsize)
+```
+
+# Remaining Portfolio Work!
+
+**By 5p 4/27** Email me a link to your GitHub page with all polished labs rendered, and your review material (at least one unit). In the email, you should include a reflection about the processes involved in creating this portfolio and what you learned as a result. If you're having trouble reflecting, consider Fink's Taxonomy of Significant Learning (Google Fink taxonomy aligned self-reflection questions). In the email, let me know whether you would be comfortable sharing your page -- I'm hoping that together we can get a good study guide for the final.
+
+# Statistical Inference
+
+@Kasdin25 show that dopamine in the brains of young zebra finches acts as 
+a learning signal, increasing when they sing closer to their adult song and 
+decreasing when they sing further away, effectively guiding their vocal 
+development through trial-and-error. This suggests that complex natural 
+behaviors, like learning to sing, are shaped by dopamine-driven reinforcement 
+learning, similar to how artificial intelligence learns. You can find the 
+paper at this link: [https://www.nature.com/articles/s41586-025-08729-1](https://www.nature.com/articles/s41586-025-08729-1).
+
+Note that the measurement is rather complicated. First, the measurements are taken on syllables of a bird song. When discussing bird songs, the term syllable refers to a single, distinct, uninterrupted sound that is part of a
+possibly complex bird song.
+
+They initially describe their measurement as follows. They compare the sound of the developing zebra finches to the median sound of adult zebra finches, that act as a "goal" sound.
+\begin{quote}
+"For each syllable rendition, we calculated the proximity (Euclidean distance) to the median of the adult renditions of the syllable (age $>$ 90 days) in feature space (Fig. 2a,b)."
+\end{quote}
+
+They contextualize that measurement by computing a "relative quality" that takes into account their current ability (e.g., are they getting closer or further compared to their previous 14 renditions).
+\begin{quote}
+"Because dopamine is hypothesized to encode the relative value of performance, we defined the 'relative quality' of a syllable as proximity to the adult version of the syllable relative to the mean of the previous 14 renditions (Methods)."
+\end{quote}
+
+They define the "closer" measurements as the 10% of syllable renditions with the highest relative quality and the "further" as the lowest 10%.
+\begin{quote}
+"To test for online error responses, for each day we compared the dopamine activity associated with the 10% of syllable renditions with the highest relative quality with that of the 10% of renditions with the lowest relative quality (Fig. 2c–g)."
+\end{quote}
+
+Note that the data are measures of dopamine change, they use fibre photometry, changes in the fluorescence indicate dopamine changes in realtime. Their specific measurement considers the percent change in flourescence in 100-ms windows between 200 and 300 ms from the start of singing, averaged across development.
+
+Finally, the researchers note that they adjust the observations to correct for the increased dopamine for singing at all (whether it is close or far).
+\begin{quote}
+"As previously reported, the baseline level of dopamine in Area X is known to increase during singing; to isolate the effect of syllable quality from these singing-related dopamine increases, we subtracted the mean dopamine response across all renditions of a syllable on each day from the dopamine response for each rendition."
+\end{quote}
+
+So, the random variables we are working with are:
+\begin{align*}
+X_{\text{close}} &= \text{average \% change in fluorescence for the top 10\% syllable renditions} \\
+&\quad \text{relative to distance from adult sound (corrected for singing)} \\[1ex]
+X_{\text{far}} &= \text{average \% change in fluorescence for the bottom 10\% syllable renditions} \\
+&\quad \text{relative to distance from adult sound (corrected for singing)}
+\end{align*}
+
+That is, the unit of measure is the syllable as measured on six birds, and the measurement is somewhat complicated.
+
+## Part a
+Using the `pwr` package for \texttt{R} [@pwr], conduct a power analysis. How many observations would the researchers need to detect a moderate-to-large effect ($d=0.65$) when using $\alpha=0.05$ and default power (0.80) for a two-sided one sample $t$ test.
+
+**Solution**
+
+```{r}
+library(pwr)
+pwr.t.test(d = 0.65, power = 0.80,alternative = "two.sided", type="one.sample")
+```
+
+21 observations needed
+
+## Part b
+Click the link to go to the paper. Find the source data for Figure 2. Download the Excel file. Describe what you needed to do to collect the data for Figure 2(g). Note that you only need the `closer_vals` and `further_vals`. Ensure to `mutate()` the data to get a difference (e.g., `closer_vals - further_vals`).
+
+**Solution**
+
+```{r}
+library(readxl)
+further <- read_excel("data.xlsx", sheet = "g.Farther_vals", col_names = FALSE)
+closer <- read_excel("data.xlsx", sheet = "g.Closer_vals", col_names = FALSE)
+data <- tibble(closer_vals = closer$...1,
+               further_vals = further$...1)
+data <- data |>
+  mutate(difference = closer_vals - further_vals)
+```
+
+We need to read the excel file and get the sheet named 'Farther_vals' and 'Closer_vals'. Stored the data and combine it into a new data frame, and use `mutate()` to add the column of difference.
+
+## Part c
+Summarize the data.
+
+* Summarize the further data. Do the data suggest that dopamine in the brains of young zebra finches decreases when they sing further away?
+* Summarize the closer data. Do the data suggest that dopamine in the brains of young zebra finches increases when they sing closer to their adult song?
+* Summarize the paired differences. Do the data suggest that there is a difference between dopamine in the brains of young zebra finches when they sing further away compared to closer to their adult song?
+* **Optional Challenge** Can you reproduce Figure 2(g)? Note that the you can use \texttt{geom\_errorbar()} to plot the range created by adding the mean $\pm$ one standard deviation.
+
+**Solution**
+
+```{r}
+further.summary <- data |>
+  summarize(
+    mean = mean(further_vals),
+    sd = sd(further_vals),
+    median = median(further_vals),
+    IQR = IQR(further_vals),
+    skew = e1071::skewness(further_vals),
+    e.kurt = e1071::kurtosis(further_vals)
+  )
+
+closer.summary <- data |>
+  summarize(
+    mean = mean(closer_vals),
+    sd = sd(closer_vals),
+    median = median(closer_vals),
+    IQR = IQR(closer_vals),
+    skew = e1071::skewness(closer_vals),
+    e.kurt = e1071::kurtosis(closer_vals)
+  )
+
+difference.summary <- data |>
+  summarize(
+    mean = mean(difference),
+    sd = sd(difference),
+    median = median(difference),
+    IQR = IQR(difference),
+    skew = e1071::skewness(difference),
+    e.kurt = e1071::kurtosis(difference)
+  )
+```
+
+```{r}
+#| label: table1
+#| tbl-cap: "Summary table of the further data"
+#| tbl-align: "center"
+#| echo: false
+further.summary |>
+  knitr::kable(digits = 2)
+```
+
+The mean and median are both below zero, which suggests the dopamine in the brains may decreases when they sing further away.
+
+```{r}
+#| label: table2
+#| tbl-cap: "Summary table of the closer data"
+#| tbl-align: "center"
+#| echo: false
+closer.summary |>
+  knitr::kable(digits = 2)
+```
+
+The mean and median are both above zero, which suggests the dopamine in the brains may increase when they sing closer to their adult song.
+
+```{r}
+#| label: table3
+#| tbl-cap: "Summary table of the difference data"
+#| tbl-align: "center"
+#| echo: false
+difference.summary |>
+  knitr::kable(digits = 2)
+```
+
+The mean and median of the difference are greater than 0, which suggests it is possible that there is a difference between dopamine in the brains of young zebra finches.
+
+```{r}
+#| label: figure2(g)
+#| fig-cap: "Recreating Figure 2(g)"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
+summary <- bind_rows(further.summary, closer.summary) 
+summary <- summary |>
+  mutate(condition = c('Further','Closer'))
+
+dgraph <- data |>
+  mutate(id = 1:25) |>
+  pivot_longer(cols = c(further_vals, closer_vals),
+               names_to = "condition",
+               values_to = "value")  |>
+  mutate(condition = recode(condition,
+                            "further_vals" = "Further",
+                            "closer_vals" = "Closer"))
+
+ggplot() +
+  geom_line(data = dgraph,
+            aes(x = factor(condition, levels = c('Further','Closer')), y = value, group = id),
+            color = "grey70", alpha = 0.7, linewidth = 0.5) +
+  
+  geom_point(data = dgraph,
+             aes(x = factor(condition, levels = c('Further','Closer')), y = value, color = condition), shape = 1,
+             size = 2) +
+  
+  geom_errorbar(data = summary,
+                aes(x = factor(condition, levels = c('Further','Closer')),
+                    ymin = mean - sd,
+                    ymax = mean + sd),
+                width = 0.1,
+                linewidth = 1,
+                color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey60") +
+  geom_line(data = summary,
+            aes(x = factor(condition, levels = c('Further','Closer')),
+                y = mean, group = 1),
+            color = "black",
+            linewidth = 1) +
+
+  theme_bw() +
+  labs(y = expression(Delta*F/F*"(%)"), x = NULL)
+```
+
+## Part d
+Conduct the inferences they do in the paper. Make sure to report the results a little more comprehensively -- that is your parenthetical should look something like: ($t=23.99$, $p<0.0001$; $g=1.34$; 95% CI: 4.43, 4.60). Ensure to verify any conditions for use.\
+**Note**: Your numbers will vary slightly because they reported two-sided test $p$-values instead of the specified one-sided tests. 
+
+* "The close responses differed significantly from 0 ($p=1.63 \times 10^{-8}$).''\
+**Note**: Use the appropriate one-sided test.
+
+**Solution**
+
+($t=9.16$, $p=1.33 \times 10^{-9}$; $g=1.77$; 95% CI: 0.138, 0.219)
+
+```{r}
+t.test(x=data$closer_vals, mu=0, alternative="two.sided")$conf.int
+t.test(x=data$closer_vals, mu=0, alternative="greater")
+hedges_g(x=data$closer_vals, mu = 0)
+```
+
+
+* "The far responses differed significantly from 0 ($p=5.17 \times 10^{-8}$).''\
+**Note**: Use the appropriate one-sided test.
+
+**Solution**
+
+($t=-7.92$, $p=1.87 \times 10^{-8}$; $g=-1.53$; 95% CI: -0.268, -0.157)
+
+```{r}
+t.test(x=data$further_vals, mu=0, alternative="two.sided")$conf.int
+t.test(x=data$further_vals, mu=0, alternative="less")
+hedges_g(x=data$further_vals, mu = 0)
+```
+
+* "The difference between populations was significant ($p=1.04 \times10^{-8}$).''\
+**Note**: Use the two-sided test.
+
+**Solution**
+
+($t=9.1428$, $p=2.75 \times 10^{-9}$; $g=1.77$; 95% CI: 0.303, 0.480)
+
+```{r}
+t.test(x=data$difference, mu=0, alternative="two.sided")
+hedges_g(x=data$difference, mu = 0)
+```
+
+
+## Part e 
+
+For each hypothesis test in the previous question, plot the null $T$ 
+distribution and the observed $t$ statistic. Ensure to use \texttt{geom\_ribbon()} 
+to highlight the rejection region and the $p$-value. Additionally, add the 
+resampling distribution for $T$ to the chart to demonstrate any differences 
+between the null distribution and the distribution suggested by the data.
+
+**Solution**
+
+The close responses differed significantly from 0
+
+```{r}
+#| label: close response
+#| fig-cap: "Hypothesis test for the close responses differed significantly from 0"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
+ggdat <- tibble(t = seq(-4, 15, length.out=1000)) |>
+  mutate(pdf.h0 = dt(x=t, df=24))
+
+s <- sd(data$closer_vals)
+# create vector of axis ticks
+t.breaks <- seq(-24, 24, 4)
+xbar.breaks <- round(t.breaks * (s/sqrt(25)), 2)
+
+# resampling
+ts <- rep(NA, 1000)
+s <- sd(data$closer_vals)
+n <- 25
+for(i in 1:1000){
+   curr.sample <- sample(data$closer_vals, size=n, replace=T)
+   ts[i] <- (mean(curr.sample))/(s/sqrt(n))
+  }
+
+t.critical <- qt(1-0.05, df=24)
+t.stat = 9.16
+
+ggplot(ggdat) +
+  geom_line(aes(x=t, y=pdf.h0))+ # plot distribution of T under H0
+  stat_density(data=tibble(t=ts), aes(x=t), color="grey", geom="line")+
+  geom_hline(yintercept=0) +
+  geom_ribbon(data=ggdat |> filter(t >= t.critical),
+              aes(x=t, ymin=0, ymax= pdf.h0, fill="Rejection Region"), alpha=0.3) +
+  geom_ribbon(data=ggdat |> filter(t >= t.stat),
+              aes(x=t, ymin=0, ymax= pdf.h0, fill="P value"), alpha=0.3) +
+  # Plot observation
+  geom_point(data=tibble(x=t.stat, y=0),
+             aes(x=x, y=y), color="red", size=2) +
+  theme_bw()+
+  # Specify axis ticks
+  scale_x_continuous("t", breaks=t.breaks, sec.axis = sec_axis(~., bquote(bar(x)),
+                     breaks=t.breaks, labels=xbar.breaks)) +
+  labs(y="Density")
+```
+
+
+The far responses differed significantly from 0
+```{r}
+#| label: far response
+#| fig-cap: "Hypothesis test for the far responses differed significantly from 0"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
+ggdat <- tibble(t = seq(-15, 4, length.out=1000)) |>
+  mutate(pdf.h0 = dt(x=t, df=24))
+
+s <- sd(data$further_vals)
+# create vector of axis ticks
+t.breaks <- seq(-24, 24, 4)
+xbar.breaks <- round(t.breaks * (s/sqrt(25)), 2)
+
+# resampling
+ts <- rep(NA, 1000)
+s <- sd(data$further_vals)
+n <- 25
+for(i in 1:1000){
+   curr.sample <- sample(data$further_vals, size=n, replace=T)
+   ts[i] <- (mean(curr.sample))/(s/sqrt(n))
+  }
+
+t.critical <- qt(0.05, df=24)
+t.stat = -7.92
+
+ggplot(ggdat) +
+  geom_line(aes(x=t, y=pdf.h0))+ # plot distribution of T under H0
+  stat_density(data=tibble(t=ts), aes(x=t), color="grey", geom="line")+
+  geom_hline(yintercept=0) +
+  geom_ribbon(data=ggdat |> filter(t <= t.critical),
+              aes(x=t, ymin=0, ymax= pdf.h0, fill="Rejection Region"), alpha=0.3) +
+  geom_ribbon(data=ggdat |> filter(t <= t.stat),
+              aes(x=t, ymin=0, ymax= pdf.h0, fill="P value"), alpha=0.3) +
+  # Plot observation
+  geom_point(data=tibble(x=t.stat, y=0),
+             aes(x=x, y=y), color="red", size=2) +
+  theme_bw()+
+  # Specify axis ticks
+  scale_x_continuous("t", breaks=t.breaks, sec.axis = sec_axis(~., bquote(bar(x)),
+                     breaks=t.breaks, labels=xbar.breaks)) +
+  labs(y="Density")
+```
+
+```{r}
+#| label: difference
+#| fig-cap: "Hypothesis test for the difference between populations is significant"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
+ggdat <- tibble(t = seq(-6, 10, length.out=1000)) |>
+  mutate(pdf.h0 = dt(x=t, df=24))
+
+s <- sd(data$difference)
+# create vector of axis ticks
+t.breaks <- seq(-24, 24, 4)
+xbar.breaks <- round(t.breaks * (s/sqrt(25)), 2)
+
+# resampling
+ts <- rep(NA, 1000)
+s <- sd(data$difference)
+n <- 25
+for(i in 1:1000){
+   curr.sample <- sample(data$difference, size=n, replace=T)
+   ts[i] <- (mean(curr.sample))/(s/sqrt(n))
+  }
+
+t.critical1 <- qt(0.975, df=24)
+t.critical2 <- qt(0.025, df=24)
+t.stat = 9.1428
+
+ggplot(ggdat) +
+  geom_line(aes(x=t, y=pdf.h0))+ # plot distribution of T under H0
+  stat_density(data=tibble(t=ts), aes(x=t), color="grey", geom="line")+
+  geom_hline(yintercept=0) +
+  geom_ribbon(data=ggdat |> filter(t <= t.critical2), # rejection region
+              aes(x=t, ymin=0, ymax= pdf.h0, fill="Rejection Region"), alpha=0.3) +
+  geom_ribbon(data=ggdat |> filter(t >= t.critical1), # rejection region
+              aes(x=t, ymin=0, ymax= pdf.h0, fill="Rejection Region"), alpha=0.3) +
+  geom_ribbon(data=ggdat |> filter(t >= t.stat), # P value
+              aes(x=t, ymin=0, ymax= pdf.h0, fill="P value"), alpha=0.3) +
+  geom_ribbon(data=ggdat |> filter(t <= -t.stat), # P value
+              aes(x=t, ymin=0, ymax= pdf.h0, fill="P value"), alpha=0.3) +
+  # Plot observation
+  geom_point(data=tibble(x=t.stat, y=0),
+             aes(x=x, y=y), color="red", size=2) +
+  theme_bw()+
+  # Specify axis ticks
+  scale_x_continuous("t", breaks=t.breaks, sec.axis = sec_axis(~., bquote(bar(x)),
+                     breaks=t.breaks, labels=xbar.breaks)) +
+  labs(y="Density")
+```

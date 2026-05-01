@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lab Thirteen – Statistical Inference – Portfolio</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-a2a938b4dd5711f7a799c87bd16ba44c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      Portfolio
+      </li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Portfolio</a> 
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../02-Lab-ObjectsInR/Lab2WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Two – Basic Tasks in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../03-Lab-ObjectsInR2/Lab3WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Three – Matrices and Data Frames in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../04-Lab-Programming/Lab4WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Four – Programming in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../05-Lab-DataWrangling/Lab5WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Five-Six – Data Wrangling in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../08-Lab-probability/Lab8WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Eight – Probability</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../10-Lab-pointestimation/Lab10WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Ten – Point Estimation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../11-Lab-Estimation/Lab11WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab Eleven – Point Estimation and Resampling</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tidyverse and ggplot review/review.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tidyverse and ggplot Review</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#remaining-portfolio-work" id="toc-remaining-portfolio-work" class="nav-link active" data-scroll-target="#remaining-portfolio-work"><span class="header-section-number">1</span> Remaining Portfolio Work!</a></li>
+  <li><a href="#statistical-inference" id="toc-statistical-inference" class="nav-link" data-scroll-target="#statistical-inference"><span class="header-section-number">2</span> Statistical Inference</a>
+  <ul class="collapse">
+  <li><a href="#part-a" id="toc-part-a" class="nav-link" data-scroll-target="#part-a"><span class="header-section-number">2.1</span> Part a</a></li>
+  <li><a href="#part-b" id="toc-part-b" class="nav-link" data-scroll-target="#part-b"><span class="header-section-number">2.2</span> Part b</a></li>
+  <li><a href="#part-c" id="toc-part-c" class="nav-link" data-scroll-target="#part-c"><span class="header-section-number">2.3</span> Part c</a></li>
+  <li><a href="#part-d" id="toc-part-d" class="nav-link" data-scroll-target="#part-d"><span class="header-section-number">2.4</span> Part d</a></li>
+  <li><a href="#part-e" id="toc-part-e" class="nav-link" data-scroll-target="#part-e"><span class="header-section-number">2.5</span> Part e</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="Lab13WriteUp.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lab Thirteen – Statistical Inference</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p></p>
+<p></p>
+<section id="remaining-portfolio-work" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Remaining Portfolio Work!</h1>
+<p><strong>By 5p 4/27</strong> Email me a link to your GitHub page with all polished labs rendered, and your review material (at least one unit). In the email, you should include a reflection about the processes involved in creating this portfolio and what you learned as a result. If you’re having trouble reflecting, consider Fink’s Taxonomy of Significant Learning (Google Fink taxonomy aligned self-reflection questions). In the email, let me know whether you would be comfortable sharing your page – I’m hoping that together we can get a good study guide for the final.</p>
+</section>
+<section id="statistical-inference" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Statistical Inference</h1>
+<p><span class="citation" data-cites="Kasdin25">Kasdin et al. (<a href="#ref-Kasdin25" role="doc-biblioref">2025</a>)</span> show that dopamine in the brains of young zebra finches acts as a learning signal, increasing when they sing closer to their adult song and decreasing when they sing further away, effectively guiding their vocal development through trial-and-error. This suggests that complex natural behaviors, like learning to sing, are shaped by dopamine-driven reinforcement learning, similar to how artificial intelligence learns. You can find the paper at this link: <a href="https://www.nature.com/articles/s41586-025-08729-1">https://www.nature.com/articles/s41586-025-08729-1</a>.</p>
+<p>Note that the measurement is rather complicated. First, the measurements are taken on syllables of a bird song. When discussing bird songs, the term syllable refers to a single, distinct, uninterrupted sound that is part of a possibly complex bird song.</p>
+They initially describe their measurement as follows. They compare the sound of the developing zebra finches to the median sound of adult zebra finches, that act as a “goal” sound.
+They contextualize that measurement by computing a “relative quality” that takes into account their current ability (e.g., are they getting closer or further compared to their previous 14 renditions).
+They define the “closer” measurements as the 10% of syllable renditions with the highest relative quality and the “further” as the lowest 10%.
+<p>Note that the data are measures of dopamine change, they use fibre photometry, changes in the fluorescence indicate dopamine changes in realtime. Their specific measurement considers the percent change in flourescence in 100-ms windows between 200 and 300 ms from the start of singing, averaged across development.</p>
+Finally, the researchers note that they adjust the observations to correct for the increased dopamine for singing at all (whether it is close or far).
+<p>So, the random variables we are working with are: <span class="math display">\[\begin{align*}
+X_{\text{close}} &amp;= \text{average \% change in fluorescence for the top 10\% syllable renditions} \\
+&amp;\quad \text{relative to distance from adult sound (corrected for singing)} \\[1ex]
+X_{\text{far}} &amp;= \text{average \% change in fluorescence for the bottom 10\% syllable renditions} \\
+&amp;\quad \text{relative to distance from adult sound (corrected for singing)}
+\end{align*}\]</span></p>
+<p>That is, the unit of measure is the syllable as measured on six birds, and the measurement is somewhat complicated.</p>
+<section id="part-a" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="part-a"><span class="header-section-number">2.1</span> Part a</h2>
+<p>Using the <code>pwr</code> package for <span class="citation" data-cites="pwr">(<a href="#ref-pwr" role="doc-biblioref">Champely 2020</a>)</span>, conduct a power analysis. How many observations would the researchers need to detect a moderate-to-large effect (<span class="math inline">\(d=0.65\)</span>) when using <span class="math inline">\(\alpha=0.05\)</span> and default power (0.80) for a two-sided one sample <span class="math inline">\(t\)</span> test.</p>
+<p><strong>Solution</strong></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(pwr)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">pwr.t.test</span>(<span class="at">d =</span> <span class="fl">0.65</span>, <span class="at">power =</span> <span class="fl">0.80</span>,<span class="at">alternative =</span> <span class="st">"two.sided"</span>, <span class="at">type=</span><span class="st">"one.sample"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     One-sample t test power calculation 
+
+              n = 20.58039
+              d = 0.65
+      sig.level = 0.05
+          power = 0.8
+    alternative = two.sided</code></pre>
+</div>
+</div>
+<p></p>
+<p>21 observations needed</p>
+</section>
+<section id="part-b" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="part-b"><span class="header-section-number">2.2</span> Part b</h2>
+<p>Click the link to go to the paper. Find the source data for Figure 2. Download the Excel file. Describe what you needed to do to collect the data for Figure 2(g). Note that you only need the <code>closer_vals</code> and <code>further_vals</code>. Ensure to <code>mutate()</code> the data to get a difference (e.g., <code>closer_vals - further_vals</code>).</p>
+<p><strong>Solution</strong></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>further <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"g.Farther_vals"</span>, <span class="at">col_names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a>closer <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"g.Closer_vals"</span>, <span class="at">col_names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">closer_vals =</span> closer<span class="sc">$</span>...<span class="dv">1</span>,</span>
+<span id="cb3-5"><a href="#cb3-5"></a>               <span class="at">further_vals =</span> further<span class="sc">$</span>...<span class="dv">1</span>)</span>
+<span id="cb3-6"><a href="#cb3-6"></a>data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>  <span class="fu">mutate</span>(<span class="at">difference =</span> closer_vals <span class="sc">-</span> further_vals)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p>We need to read the excel file and get the sheet named ‘Farther_vals’ and ‘Closer_vals’. Stored the data and combine it into a new data frame, and use <code>mutate()</code> to add the column of difference.</p>
+</section>
+<section id="part-c" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="part-c"><span class="header-section-number">2.3</span> Part c</h2>
+<p>Summarize the data.</p>
+<ul>
+<li>Summarize the further data. Do the data suggest that dopamine in the brains of young zebra finches decreases when they sing further away?</li>
+<li>Summarize the closer data. Do the data suggest that dopamine in the brains of young zebra finches increases when they sing closer to their adult song?</li>
+<li>Summarize the paired differences. Do the data suggest that there is a difference between dopamine in the brains of young zebra finches when they sing further away compared to closer to their adult song?</li>
+<li><strong>Optional Challenge</strong> Can you reproduce Figure 2(g)? Note that the you can use to plot the range created by adding the mean <span class="math inline">\(\pm\)</span> one standard deviation.</li>
+</ul>
+<p><strong>Solution</strong></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>further.summary <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb4-3"><a href="#cb4-3"></a>    <span class="at">mean =</span> <span class="fu">mean</span>(further_vals),</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    <span class="at">sd =</span> <span class="fu">sd</span>(further_vals),</span>
+<span id="cb4-5"><a href="#cb4-5"></a>    <span class="at">median =</span> <span class="fu">median</span>(further_vals),</span>
+<span id="cb4-6"><a href="#cb4-6"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(further_vals),</span>
+<span id="cb4-7"><a href="#cb4-7"></a>    <span class="at">skew =</span> e1071<span class="sc">::</span><span class="fu">skewness</span>(further_vals),</span>
+<span id="cb4-8"><a href="#cb4-8"></a>    <span class="at">e.kurt =</span> e1071<span class="sc">::</span><span class="fu">kurtosis</span>(further_vals)</span>
+<span id="cb4-9"><a href="#cb4-9"></a>  )</span>
+<span id="cb4-10"><a href="#cb4-10"></a></span>
+<span id="cb4-11"><a href="#cb4-11"></a>closer.summary <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb4-13"><a href="#cb4-13"></a>    <span class="at">mean =</span> <span class="fu">mean</span>(closer_vals),</span>
+<span id="cb4-14"><a href="#cb4-14"></a>    <span class="at">sd =</span> <span class="fu">sd</span>(closer_vals),</span>
+<span id="cb4-15"><a href="#cb4-15"></a>    <span class="at">median =</span> <span class="fu">median</span>(closer_vals),</span>
+<span id="cb4-16"><a href="#cb4-16"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(closer_vals),</span>
+<span id="cb4-17"><a href="#cb4-17"></a>    <span class="at">skew =</span> e1071<span class="sc">::</span><span class="fu">skewness</span>(closer_vals),</span>
+<span id="cb4-18"><a href="#cb4-18"></a>    <span class="at">e.kurt =</span> e1071<span class="sc">::</span><span class="fu">kurtosis</span>(closer_vals)</span>
+<span id="cb4-19"><a href="#cb4-19"></a>  )</span>
+<span id="cb4-20"><a href="#cb4-20"></a></span>
+<span id="cb4-21"><a href="#cb4-21"></a>difference.summary <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb4-23"><a href="#cb4-23"></a>    <span class="at">mean =</span> <span class="fu">mean</span>(difference),</span>
+<span id="cb4-24"><a href="#cb4-24"></a>    <span class="at">sd =</span> <span class="fu">sd</span>(difference),</span>
+<span id="cb4-25"><a href="#cb4-25"></a>    <span class="at">median =</span> <span class="fu">median</span>(difference),</span>
+<span id="cb4-26"><a href="#cb4-26"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(difference),</span>
+<span id="cb4-27"><a href="#cb4-27"></a>    <span class="at">skew =</span> e1071<span class="sc">::</span><span class="fu">skewness</span>(difference),</span>
+<span id="cb4-28"><a href="#cb4-28"></a>    <span class="at">e.kurt =</span> e1071<span class="sc">::</span><span class="fu">kurtosis</span>(difference)</span>
+<span id="cb4-29"><a href="#cb4-29"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p></p>
+<div class="cell" data-tbl-cap="Summary table of the further data" data-tbl-align="center">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Summary table of the further data</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">IQR</th>
+<th style="text-align: right;">skew</th>
+<th style="text-align: right;">e.kurt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">-0.21</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">-0.19</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">-1.03</td>
+<td style="text-align: right;">0.88</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p></p>
+<p>The mean and median are both below zero, which suggests the dopamine in the brains may decreases when they sing further away.</p>
+<p></p>
+<div class="cell" data-tbl-cap="Summary table of the closer data" data-tbl-align="center">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Summary table of the closer data</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">IQR</th>
+<th style="text-align: right;">skew</th>
+<th style="text-align: right;">e.kurt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">-1.08</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p></p>
+<p>The mean and median are both above zero, which suggests the dopamine in the brains may increase when they sing closer to their adult song.</p>
+<p></p>
+<div class="cell" data-tbl-cap="Summary table of the difference data" data-tbl-align="center">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Summary table of the difference data</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">IQR</th>
+<th style="text-align: right;">skew</th>
+<th style="text-align: right;">e.kurt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.39</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">0.35</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.67</td>
+<td style="text-align: right;">-0.09</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p></p>
+<p>The mean and median of the difference are greater than 0, which suggests it is possible that there is a difference between dopamine in the brains of young zebra finches.</p>
+<p></p>
+<div class="cell" data-layout-align="center" data-scale="80%">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>summary <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(further.summary, closer.summary) </span>
+<span id="cb5-2"><a href="#cb5-2"></a>summary <span class="ot">&lt;-</span> summary <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">mutate</span>(<span class="at">condition =</span> <span class="fu">c</span>(<span class="st">'Further'</span>,<span class="st">'Closer'</span>))</span>
+<span id="cb5-4"><a href="#cb5-4"></a></span>
+<span id="cb5-5"><a href="#cb5-5"></a>dgraph <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">25</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(further_vals, closer_vals),</span>
+<span id="cb5-8"><a href="#cb5-8"></a>               <span class="at">names_to =</span> <span class="st">"condition"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9"></a>               <span class="at">values_to =</span> <span class="st">"value"</span>)  <span class="sc">|&gt;</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a>  <span class="fu">mutate</span>(<span class="at">condition =</span> <span class="fu">recode</span>(condition,</span>
+<span id="cb5-11"><a href="#cb5-11"></a>                            <span class="st">"further_vals"</span> <span class="ot">=</span> <span class="st">"Further"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12"></a>                            <span class="st">"closer_vals"</span> <span class="ot">=</span> <span class="st">"Closer"</span>))</span>
+<span id="cb5-13"><a href="#cb5-13"></a></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dgraph,</span>
+<span id="cb5-16"><a href="#cb5-16"></a>            <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(condition, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'Further'</span>,<span class="st">'Closer'</span>)), <span class="at">y =</span> value, <span class="at">group =</span> id),</span>
+<span id="cb5-17"><a href="#cb5-17"></a>            <span class="at">color =</span> <span class="st">"grey70"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb5-18"><a href="#cb5-18"></a>  </span>
+<span id="cb5-19"><a href="#cb5-19"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> dgraph,</span>
+<span id="cb5-20"><a href="#cb5-20"></a>             <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(condition, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'Further'</span>,<span class="st">'Closer'</span>)), <span class="at">y =</span> value, <span class="at">color =</span> condition), <span class="at">shape =</span> <span class="dv">1</span>,</span>
+<span id="cb5-21"><a href="#cb5-21"></a>             <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb5-22"><a href="#cb5-22"></a>  </span>
+<span id="cb5-23"><a href="#cb5-23"></a>  <span class="fu">geom_errorbar</span>(<span class="at">data =</span> summary,</span>
+<span id="cb5-24"><a href="#cb5-24"></a>                <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(condition, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'Further'</span>,<span class="st">'Closer'</span>)),</span>
+<span id="cb5-25"><a href="#cb5-25"></a>                    <span class="at">ymin =</span> mean <span class="sc">-</span> sd,</span>
+<span id="cb5-26"><a href="#cb5-26"></a>                    <span class="at">ymax =</span> mean <span class="sc">+</span> sd),</span>
+<span id="cb5-27"><a href="#cb5-27"></a>                <span class="at">width =</span> <span class="fl">0.1</span>,</span>
+<span id="cb5-28"><a href="#cb5-28"></a>                <span class="at">linewidth =</span> <span class="dv">1</span>,</span>
+<span id="cb5-29"><a href="#cb5-29"></a>                <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb5-30"><a href="#cb5-30"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"grey60"</span>) <span class="sc">+</span></span>
+<span id="cb5-31"><a href="#cb5-31"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> summary,</span>
+<span id="cb5-32"><a href="#cb5-32"></a>            <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(condition, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'Further'</span>,<span class="st">'Closer'</span>)),</span>
+<span id="cb5-33"><a href="#cb5-33"></a>                <span class="at">y =</span> mean, <span class="at">group =</span> <span class="dv">1</span>),</span>
+<span id="cb5-34"><a href="#cb5-34"></a>            <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb5-35"><a href="#cb5-35"></a>            <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb5-36"><a href="#cb5-36"></a></span>
+<span id="cb5-37"><a href="#cb5-37"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb5-38"><a href="#cb5-38"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="fu">expression</span>(Delta<span class="sc">*</span>F<span class="sc">/</span>F<span class="sc">*</span><span class="st">"(%)"</span>), <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Recreating Figure 2(g)</figcaption>
+<p><img src="Lab13WriteUp_files/figure-html/figure2(g)-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+</section>
+<section id="part-d" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="part-d"><span class="header-section-number">2.4</span> Part d</h2>
+<p>Conduct the inferences they do in the paper. Make sure to report the results a little more comprehensively – that is your parenthetical should look something like: (<span class="math inline">\(t=23.99\)</span>, <span class="math inline">\(p&lt;0.0001\)</span>; <span class="math inline">\(g=1.34\)</span>; 95% CI: 4.43, 4.60). Ensure to verify any conditions for use.<br>
+<strong>Note</strong>: Your numbers will vary slightly because they reported two-sided test <span class="math inline">\(p\)</span>-values instead of the specified one-sided tests.</p>
+<ul>
+<li>“The close responses differed significantly from 0 (<span class="math inline">\(p=1.63 \times 10^{-8}\)</span>).’’<br>
+<strong>Note</strong>: Use the appropriate one-sided test.</li>
+</ul>
+<p><strong>Solution</strong></p>
+<p>(<span class="math inline">\(t=9.16\)</span>, <span class="math inline">\(p=1.33 \times 10^{-9}\)</span>; <span class="math inline">\(g=1.77\)</span>; 95% CI: 0.138, 0.219)</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>closer_vals, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"two.sided"</span>)<span class="sc">$</span>conf.int</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1383650 0.2188831
+attr(,"conf.level")
+[1] 0.95</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>closer_vals, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"greater"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  data$closer_vals
+t = 9.1573, df = 24, p-value = 1.333e-09
+alternative hypothesis: true mean is greater than 0
+95 percent confidence interval:
+ 0.1452511       Inf
+sample estimates:
+mean of x 
+0.1786241 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">hedges_g</span>(<span class="at">x=</span>data<span class="sc">$</span>closer_vals, <span class="at">mu =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Hedges' g |       95% CI
+------------------------
+1.77      | [1.14, 2.39]</code></pre>
+</div>
+</div>
+<p></p>
+<ul>
+<li>“The far responses differed significantly from 0 (<span class="math inline">\(p=5.17 \times 10^{-8}\)</span>).’’<br>
+<strong>Note</strong>: Use the appropriate one-sided test.</li>
+</ul>
+<p><strong>Solution</strong></p>
+<p>(<span class="math inline">\(t=-7.92\)</span>, <span class="math inline">\(p=1.87 \times 10^{-8}\)</span>; <span class="math inline">\(g=-1.53\)</span>; 95% CI: -0.268, -0.157)</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>further_vals, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"two.sided"</span>)<span class="sc">$</span>conf.int</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.2682307 -0.1573819
+attr(,"conf.level")
+[1] 0.95</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>further_vals, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"less"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  data$further_vals
+t = -7.9245, df = 24, p-value = 1.866e-08
+alternative hypothesis: true mean is less than 0
+95 percent confidence interval:
+       -Inf -0.1668619
+sample estimates:
+ mean of x 
+-0.2128063 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">hedges_g</span>(<span class="at">x=</span>data<span class="sc">$</span>further_vals, <span class="at">mu =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Hedges' g |         95% CI
+--------------------------
+-1.53     | [-2.10, -0.95]</code></pre>
+</div>
+</div>
+<p></p>
+<ul>
+<li>“The difference between populations was significant (<span class="math inline">\(p=1.04 \times10^{-8}\)</span>).’’<br>
+<strong>Note</strong>: Use the two-sided test.</li>
+</ul>
+<p><strong>Solution</strong></p>
+<p>(<span class="math inline">\(t=9.1428\)</span>, <span class="math inline">\(p=2.75 \times 10^{-9}\)</span>; <span class="math inline">\(g=1.77\)</span>; 95% CI: 0.303, 0.480)</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>difference, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"two.sided"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  data$difference
+t = 9.1428, df = 24, p-value = 2.746e-09
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+ 0.3030683 0.4797923
+sample estimates:
+mean of x 
+0.3914303 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">hedges_g</span>(<span class="at">x=</span>data<span class="sc">$</span>difference, <span class="at">mu =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Hedges' g |       95% CI
+------------------------
+1.77      | [1.14, 2.39]</code></pre>
+</div>
+</div>
+<p></p>
+</section>
+<section id="part-e" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="part-e"><span class="header-section-number">2.5</span> Part e</h2>
+<p>For each hypothesis test in the previous question, plot the null <span class="math inline">\(T\)</span> distribution and the observed <span class="math inline">\(t\)</span> statistic. Ensure to use to highlight the rejection region and the <span class="math inline">\(p\)</span>-value. Additionally, add the resampling distribution for <span class="math inline">\(T\)</span> to the chart to demonstrate any differences between the null distribution and the distribution suggested by the data.</p>
+<p><strong>Solution</strong></p>
+<p>The close responses differed significantly from 0</p>
+<p></p>
+<div class="cell" data-layout-align="center" data-scale="80%">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>ggdat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">t =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">15</span>, <span class="at">length.out=</span><span class="dv">1000</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">mutate</span>(<span class="at">pdf.h0 =</span> <span class="fu">dt</span>(<span class="at">x=</span>t, <span class="at">df=</span><span class="dv">24</span>))</span>
+<span id="cb22-3"><a href="#cb22-3"></a></span>
+<span id="cb22-4"><a href="#cb22-4"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>closer_vals)</span>
+<span id="cb22-5"><a href="#cb22-5"></a><span class="co"># create vector of axis ticks</span></span>
+<span id="cb22-6"><a href="#cb22-6"></a>t.breaks <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">24</span>, <span class="dv">24</span>, <span class="dv">4</span>)</span>
+<span id="cb22-7"><a href="#cb22-7"></a>xbar.breaks <span class="ot">&lt;-</span> <span class="fu">round</span>(t.breaks <span class="sc">*</span> (s<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">25</span>)), <span class="dv">2</span>)</span>
+<span id="cb22-8"><a href="#cb22-8"></a></span>
+<span id="cb22-9"><a href="#cb22-9"></a><span class="co"># resampling</span></span>
+<span id="cb22-10"><a href="#cb22-10"></a>ts <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">1000</span>)</span>
+<span id="cb22-11"><a href="#cb22-11"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>closer_vals)</span>
+<span id="cb22-12"><a href="#cb22-12"></a>n <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb22-13"><a href="#cb22-13"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
+<span id="cb22-14"><a href="#cb22-14"></a>   curr.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(data<span class="sc">$</span>closer_vals, <span class="at">size=</span>n, <span class="at">replace=</span>T)</span>
+<span id="cb22-15"><a href="#cb22-15"></a>   ts[i] <span class="ot">&lt;-</span> (<span class="fu">mean</span>(curr.sample))<span class="sc">/</span>(s<span class="sc">/</span><span class="fu">sqrt</span>(n))</span>
+<span id="cb22-16"><a href="#cb22-16"></a>  }</span>
+<span id="cb22-17"><a href="#cb22-17"></a></span>
+<span id="cb22-18"><a href="#cb22-18"></a>t.critical <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="dv">1</span><span class="fl">-0.05</span>, <span class="at">df=</span><span class="dv">24</span>)</span>
+<span id="cb22-19"><a href="#cb22-19"></a>t.stat <span class="ot">=</span> <span class="fl">9.16</span></span>
+<span id="cb22-20"><a href="#cb22-20"></a></span>
+<span id="cb22-21"><a href="#cb22-21"></a><span class="fu">ggplot</span>(ggdat) <span class="sc">+</span></span>
+<span id="cb22-22"><a href="#cb22-22"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>pdf.h0))<span class="sc">+</span> <span class="co"># plot distribution of T under H0</span></span>
+<span id="cb22-23"><a href="#cb22-23"></a>  <span class="fu">stat_density</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">t=</span>ts), <span class="fu">aes</span>(<span class="at">x=</span>t), <span class="at">color=</span><span class="st">"grey"</span>, <span class="at">geom=</span><span class="st">"line"</span>)<span class="sc">+</span></span>
+<span id="cb22-24"><a href="#cb22-24"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb22-25"><a href="#cb22-25"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&gt;=</span> t.critical),</span>
+<span id="cb22-26"><a href="#cb22-26"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"Rejection Region"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb22-27"><a href="#cb22-27"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&gt;=</span> t.stat),</span>
+<span id="cb22-28"><a href="#cb22-28"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"P value"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb22-29"><a href="#cb22-29"></a>  <span class="co"># Plot observation</span></span>
+<span id="cb22-30"><a href="#cb22-30"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">x=</span>t.stat, <span class="at">y=</span><span class="dv">0</span>),</span>
+<span id="cb22-31"><a href="#cb22-31"></a>             <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">color=</span><span class="st">"red"</span>, <span class="at">size=</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb22-32"><a href="#cb22-32"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb22-33"><a href="#cb22-33"></a>  <span class="co"># Specify axis ticks</span></span>
+<span id="cb22-34"><a href="#cb22-34"></a>  <span class="fu">scale_x_continuous</span>(<span class="st">"t"</span>, <span class="at">breaks=</span>t.breaks, <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span>., <span class="fu">bquote</span>(<span class="fu">bar</span>(x)),</span>
+<span id="cb22-35"><a href="#cb22-35"></a>                     <span class="at">breaks=</span>t.breaks, <span class="at">labels=</span>xbar.breaks)) <span class="sc">+</span></span>
+<span id="cb22-36"><a href="#cb22-36"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"Density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Hypothesis test for the close responses differed significantly from 0</figcaption>
+<p><img src="Lab13WriteUp_files/figure-html/close response-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>The far responses differed significantly from 0</p>
+<p></p>
+<div class="cell" data-layout-align="center" data-scale="80%">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>ggdat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">t =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">15</span>, <span class="dv">4</span>, <span class="at">length.out=</span><span class="dv">1000</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">mutate</span>(<span class="at">pdf.h0 =</span> <span class="fu">dt</span>(<span class="at">x=</span>t, <span class="at">df=</span><span class="dv">24</span>))</span>
+<span id="cb23-3"><a href="#cb23-3"></a></span>
+<span id="cb23-4"><a href="#cb23-4"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>further_vals)</span>
+<span id="cb23-5"><a href="#cb23-5"></a><span class="co"># create vector of axis ticks</span></span>
+<span id="cb23-6"><a href="#cb23-6"></a>t.breaks <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">24</span>, <span class="dv">24</span>, <span class="dv">4</span>)</span>
+<span id="cb23-7"><a href="#cb23-7"></a>xbar.breaks <span class="ot">&lt;-</span> <span class="fu">round</span>(t.breaks <span class="sc">*</span> (s<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">25</span>)), <span class="dv">2</span>)</span>
+<span id="cb23-8"><a href="#cb23-8"></a></span>
+<span id="cb23-9"><a href="#cb23-9"></a><span class="co"># resampling</span></span>
+<span id="cb23-10"><a href="#cb23-10"></a>ts <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">1000</span>)</span>
+<span id="cb23-11"><a href="#cb23-11"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>further_vals)</span>
+<span id="cb23-12"><a href="#cb23-12"></a>n <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb23-13"><a href="#cb23-13"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
+<span id="cb23-14"><a href="#cb23-14"></a>   curr.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(data<span class="sc">$</span>further_vals, <span class="at">size=</span>n, <span class="at">replace=</span>T)</span>
+<span id="cb23-15"><a href="#cb23-15"></a>   ts[i] <span class="ot">&lt;-</span> (<span class="fu">mean</span>(curr.sample))<span class="sc">/</span>(s<span class="sc">/</span><span class="fu">sqrt</span>(n))</span>
+<span id="cb23-16"><a href="#cb23-16"></a>  }</span>
+<span id="cb23-17"><a href="#cb23-17"></a></span>
+<span id="cb23-18"><a href="#cb23-18"></a>t.critical <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.05</span>, <span class="at">df=</span><span class="dv">24</span>)</span>
+<span id="cb23-19"><a href="#cb23-19"></a>t.stat <span class="ot">=</span> <span class="sc">-</span><span class="fl">7.92</span></span>
+<span id="cb23-20"><a href="#cb23-20"></a></span>
+<span id="cb23-21"><a href="#cb23-21"></a><span class="fu">ggplot</span>(ggdat) <span class="sc">+</span></span>
+<span id="cb23-22"><a href="#cb23-22"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>pdf.h0))<span class="sc">+</span> <span class="co"># plot distribution of T under H0</span></span>
+<span id="cb23-23"><a href="#cb23-23"></a>  <span class="fu">stat_density</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">t=</span>ts), <span class="fu">aes</span>(<span class="at">x=</span>t), <span class="at">color=</span><span class="st">"grey"</span>, <span class="at">geom=</span><span class="st">"line"</span>)<span class="sc">+</span></span>
+<span id="cb23-24"><a href="#cb23-24"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb23-25"><a href="#cb23-25"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&lt;=</span> t.critical),</span>
+<span id="cb23-26"><a href="#cb23-26"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"Rejection Region"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb23-27"><a href="#cb23-27"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&lt;=</span> t.stat),</span>
+<span id="cb23-28"><a href="#cb23-28"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"P value"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb23-29"><a href="#cb23-29"></a>  <span class="co"># Plot observation</span></span>
+<span id="cb23-30"><a href="#cb23-30"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">x=</span>t.stat, <span class="at">y=</span><span class="dv">0</span>),</span>
+<span id="cb23-31"><a href="#cb23-31"></a>             <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">color=</span><span class="st">"red"</span>, <span class="at">size=</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb23-32"><a href="#cb23-32"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb23-33"><a href="#cb23-33"></a>  <span class="co"># Specify axis ticks</span></span>
+<span id="cb23-34"><a href="#cb23-34"></a>  <span class="fu">scale_x_continuous</span>(<span class="st">"t"</span>, <span class="at">breaks=</span>t.breaks, <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span>., <span class="fu">bquote</span>(<span class="fu">bar</span>(x)),</span>
+<span id="cb23-35"><a href="#cb23-35"></a>                     <span class="at">breaks=</span>t.breaks, <span class="at">labels=</span>xbar.breaks)) <span class="sc">+</span></span>
+<span id="cb23-36"><a href="#cb23-36"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"Density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Hypothesis test for the far responses differed significantly from 0</figcaption>
+<p><img src="Lab13WriteUp_files/figure-html/far response-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell" data-layout-align="center" data-scale="80%">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>ggdat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">t =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="dv">10</span>, <span class="at">length.out=</span><span class="dv">1000</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">mutate</span>(<span class="at">pdf.h0 =</span> <span class="fu">dt</span>(<span class="at">x=</span>t, <span class="at">df=</span><span class="dv">24</span>))</span>
+<span id="cb24-3"><a href="#cb24-3"></a></span>
+<span id="cb24-4"><a href="#cb24-4"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>difference)</span>
+<span id="cb24-5"><a href="#cb24-5"></a><span class="co"># create vector of axis ticks</span></span>
+<span id="cb24-6"><a href="#cb24-6"></a>t.breaks <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">24</span>, <span class="dv">24</span>, <span class="dv">4</span>)</span>
+<span id="cb24-7"><a href="#cb24-7"></a>xbar.breaks <span class="ot">&lt;-</span> <span class="fu">round</span>(t.breaks <span class="sc">*</span> (s<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">25</span>)), <span class="dv">2</span>)</span>
+<span id="cb24-8"><a href="#cb24-8"></a></span>
+<span id="cb24-9"><a href="#cb24-9"></a><span class="co"># resampling</span></span>
+<span id="cb24-10"><a href="#cb24-10"></a>ts <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">1000</span>)</span>
+<span id="cb24-11"><a href="#cb24-11"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>difference)</span>
+<span id="cb24-12"><a href="#cb24-12"></a>n <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb24-13"><a href="#cb24-13"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
+<span id="cb24-14"><a href="#cb24-14"></a>   curr.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(data<span class="sc">$</span>difference, <span class="at">size=</span>n, <span class="at">replace=</span>T)</span>
+<span id="cb24-15"><a href="#cb24-15"></a>   ts[i] <span class="ot">&lt;-</span> (<span class="fu">mean</span>(curr.sample))<span class="sc">/</span>(s<span class="sc">/</span><span class="fu">sqrt</span>(n))</span>
+<span id="cb24-16"><a href="#cb24-16"></a>  }</span>
+<span id="cb24-17"><a href="#cb24-17"></a></span>
+<span id="cb24-18"><a href="#cb24-18"></a>t.critical1 <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="at">df=</span><span class="dv">24</span>)</span>
+<span id="cb24-19"><a href="#cb24-19"></a>t.critical2 <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.025</span>, <span class="at">df=</span><span class="dv">24</span>)</span>
+<span id="cb24-20"><a href="#cb24-20"></a>t.stat <span class="ot">=</span> <span class="fl">9.1428</span></span>
+<span id="cb24-21"><a href="#cb24-21"></a></span>
+<span id="cb24-22"><a href="#cb24-22"></a><span class="fu">ggplot</span>(ggdat) <span class="sc">+</span></span>
+<span id="cb24-23"><a href="#cb24-23"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>pdf.h0))<span class="sc">+</span> <span class="co"># plot distribution of T under H0</span></span>
+<span id="cb24-24"><a href="#cb24-24"></a>  <span class="fu">stat_density</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">t=</span>ts), <span class="fu">aes</span>(<span class="at">x=</span>t), <span class="at">color=</span><span class="st">"grey"</span>, <span class="at">geom=</span><span class="st">"line"</span>)<span class="sc">+</span></span>
+<span id="cb24-25"><a href="#cb24-25"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb24-26"><a href="#cb24-26"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&lt;=</span> t.critical2), <span class="co"># rejection region</span></span>
+<span id="cb24-27"><a href="#cb24-27"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"Rejection Region"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb24-28"><a href="#cb24-28"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&gt;=</span> t.critical1), <span class="co"># rejection region</span></span>
+<span id="cb24-29"><a href="#cb24-29"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"Rejection Region"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb24-30"><a href="#cb24-30"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&gt;=</span> t.stat), <span class="co"># P value</span></span>
+<span id="cb24-31"><a href="#cb24-31"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"P value"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb24-32"><a href="#cb24-32"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&lt;=</span> <span class="sc">-</span>t.stat), <span class="co"># P value</span></span>
+<span id="cb24-33"><a href="#cb24-33"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"P value"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb24-34"><a href="#cb24-34"></a>  <span class="co"># Plot observation</span></span>
+<span id="cb24-35"><a href="#cb24-35"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">x=</span>t.stat, <span class="at">y=</span><span class="dv">0</span>),</span>
+<span id="cb24-36"><a href="#cb24-36"></a>             <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">color=</span><span class="st">"red"</span>, <span class="at">size=</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb24-37"><a href="#cb24-37"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb24-38"><a href="#cb24-38"></a>  <span class="co"># Specify axis ticks</span></span>
+<span id="cb24-39"><a href="#cb24-39"></a>  <span class="fu">scale_x_continuous</span>(<span class="st">"t"</span>, <span class="at">breaks=</span>t.breaks, <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span>., <span class="fu">bquote</span>(<span class="fu">bar</span>(x)),</span>
+<span id="cb24-40"><a href="#cb24-40"></a>                     <span class="at">breaks=</span>t.breaks, <span class="at">labels=</span>xbar.breaks)) <span class="sc">+</span></span>
+<span id="cb24-41"><a href="#cb24-41"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"Density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Hypothesis test for the difference between populations is significant</figcaption>
+<p><img src="Lab13WriteUp_files/figure-html/difference-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-pwr" class="csl-entry" role="listitem">
+Champely, Stephane. 2020. <em>Pwr: <span>B</span>asic Functions for Power Analysis</em>. <a href="https://CRAN.R-project.org/package=pwr">https://CRAN.R-project.org/package=pwr</a>.
+</div>
+<div id="ref-Kasdin25" class="csl-entry" role="listitem">
+Kasdin, Jonathan, Alison Duffy, Nathan Nadler, et al. 2025. <span>“Natural Behaviour Is Learned Through Dopamine-Mediated Reinforcement.”</span> <em>Nature</em>, 1–8.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
