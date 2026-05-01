@@ -554,12 +554,35 @@ X_{\text{far}} &amp;= \text{average \% change in fluorescence for the bottom 10\
 <strong>Note</strong>: Use the appropriate one-sided test.</li>
 </ul>
 <p><strong>Solution</strong></p>
+<p></p>
+<div class="cell" data-layout-align="center" data-scale="80%">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">ggplot</span>(data) <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>closer_vals, <span class="at">y=</span><span class="fu">after_stat</span>(density)),</span>
+<span id="cb6-3"><a href="#cb6-3"></a>                <span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="fl">0.5</span>,<span class="fl">0.05</span>), <span class="at">color=</span><span class="st">"grey"</span>)<span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>)<span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Closer values"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7"></a>       <span class="at">y=</span><span class="st">"Density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Histogram of Closer Values</figcaption>
+<p><img src="Lab13WriteUp_files/figure-html/closer value-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>The t-test requires the distribution of the sample to be approximately normal or the sample size should be greater than 30.</p>
 <p>(<span class="math inline">\(t=9.16\)</span>, <span class="math inline">\(p=1.33 \times 10^{-9}\)</span>; <span class="math inline">\(g=1.77\)</span>; 95% CI: 0.138, 0.219)</p>
 <p></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>closer_vals, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"two.sided"</span>)<span class="sc">$</span>conf.int</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>closer_vals, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"two.sided"</span>)<span class="sc">$</span>conf.int</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.1383650 0.2188831
@@ -568,7 +591,7 @@ attr(,"conf.level")
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>closer_vals, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"greater"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>closer_vals, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"greater"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -585,7 +608,7 @@ mean of x
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">hedges_g</span>(<span class="at">x=</span>data<span class="sc">$</span>closer_vals, <span class="at">mu =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">hedges_g</span>(<span class="at">x=</span>data<span class="sc">$</span>closer_vals, <span class="at">mu =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hedges' g |       95% CI
@@ -599,12 +622,35 @@ mean of x
 <strong>Note</strong>: Use the appropriate one-sided test.</li>
 </ul>
 <p><strong>Solution</strong></p>
+<p></p>
+<div class="cell" data-layout-align="center" data-scale="80%">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">ggplot</span>(data) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>further_vals, <span class="at">y=</span><span class="fu">after_stat</span>(density)),</span>
+<span id="cb13-3"><a href="#cb13-3"></a>                <span class="at">breaks=</span><span class="fu">seq</span>(<span class="sc">-</span><span class="fl">0.5</span>,<span class="dv">0</span>,<span class="fl">0.05</span>), <span class="at">color=</span><span class="st">"grey"</span>)<span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>)<span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Further values"</span>,</span>
+<span id="cb13-7"><a href="#cb13-7"></a>       <span class="at">y=</span><span class="st">"Density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Histogram of Further Values</figcaption>
+<p><img src="Lab13WriteUp_files/figure-html/further value-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>The t-test requires the distribution of the sample to be approximately normal or the sample size should be greater than 30.</p>
 <p>(<span class="math inline">\(t=-7.92\)</span>, <span class="math inline">\(p=1.87 \times 10^{-8}\)</span>; <span class="math inline">\(g=-1.53\)</span>; 95% CI: -0.268, -0.157)</p>
 <p></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>further_vals, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"two.sided"</span>)<span class="sc">$</span>conf.int</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>further_vals, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"two.sided"</span>)<span class="sc">$</span>conf.int</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -0.2682307 -0.1573819
@@ -613,7 +659,7 @@ attr(,"conf.level")
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>further_vals, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"less"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>further_vals, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"less"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -630,7 +676,7 @@ sample estimates:
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">hedges_g</span>(<span class="at">x=</span>data<span class="sc">$</span>further_vals, <span class="at">mu =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">hedges_g</span>(<span class="at">x=</span>data<span class="sc">$</span>further_vals, <span class="at">mu =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hedges' g |         95% CI
@@ -644,12 +690,35 @@ sample estimates:
 <strong>Note</strong>: Use the two-sided test.</li>
 </ul>
 <p><strong>Solution</strong></p>
+<p></p>
+<div class="cell" data-layout-align="center" data-scale="80%">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">ggplot</span>(data) <span class="sc">+</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>difference, <span class="at">y=</span><span class="fu">after_stat</span>(density)),</span>
+<span id="cb20-3"><a href="#cb20-3"></a>                <span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.1</span>), <span class="at">color=</span><span class="st">"grey"</span>)<span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>)<span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Difference"</span>,</span>
+<span id="cb20-7"><a href="#cb20-7"></a>       <span class="at">y=</span><span class="st">"Density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Histogram of Difference</figcaption>
+<p><img src="Lab13WriteUp_files/figure-html/difference value-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>The t-test requires the distribution of the sample to be approximately normal or the sample size should be greater than 30.</p>
 <p>(<span class="math inline">\(t=9.1428\)</span>, <span class="math inline">\(p=2.75 \times 10^{-9}\)</span>; <span class="math inline">\(g=1.77\)</span>; 95% CI: 0.303, 0.480)</p>
 <p></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>difference, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"two.sided"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">t.test</span>(<span class="at">x=</span>data<span class="sc">$</span>difference, <span class="at">mu=</span><span class="dv">0</span>, <span class="at">alternative=</span><span class="st">"two.sided"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -666,7 +735,7 @@ mean of x
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">hedges_g</span>(<span class="at">x=</span>data<span class="sc">$</span>difference, <span class="at">mu =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">hedges_g</span>(<span class="at">x=</span>data<span class="sc">$</span>difference, <span class="at">mu =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hedges' g |       95% CI
@@ -685,42 +754,42 @@ mean of x
 <div class="cell" data-layout-align="center" data-scale="80%">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>ggdat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">t =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">15</span>, <span class="at">length.out=</span><span class="dv">1000</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">mutate</span>(<span class="at">pdf.h0 =</span> <span class="fu">dt</span>(<span class="at">x=</span>t, <span class="at">df=</span><span class="dv">24</span>))</span>
-<span id="cb22-3"><a href="#cb22-3"></a></span>
-<span id="cb22-4"><a href="#cb22-4"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>closer_vals)</span>
-<span id="cb22-5"><a href="#cb22-5"></a><span class="co"># create vector of axis ticks</span></span>
-<span id="cb22-6"><a href="#cb22-6"></a>t.breaks <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">24</span>, <span class="dv">24</span>, <span class="dv">4</span>)</span>
-<span id="cb22-7"><a href="#cb22-7"></a>xbar.breaks <span class="ot">&lt;-</span> <span class="fu">round</span>(t.breaks <span class="sc">*</span> (s<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">25</span>)), <span class="dv">2</span>)</span>
-<span id="cb22-8"><a href="#cb22-8"></a></span>
-<span id="cb22-9"><a href="#cb22-9"></a><span class="co"># resampling</span></span>
-<span id="cb22-10"><a href="#cb22-10"></a>ts <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">1000</span>)</span>
-<span id="cb22-11"><a href="#cb22-11"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>closer_vals)</span>
-<span id="cb22-12"><a href="#cb22-12"></a>n <span class="ot">&lt;-</span> <span class="dv">25</span></span>
-<span id="cb22-13"><a href="#cb22-13"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
-<span id="cb22-14"><a href="#cb22-14"></a>   curr.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(data<span class="sc">$</span>closer_vals, <span class="at">size=</span>n, <span class="at">replace=</span>T)</span>
-<span id="cb22-15"><a href="#cb22-15"></a>   ts[i] <span class="ot">&lt;-</span> (<span class="fu">mean</span>(curr.sample))<span class="sc">/</span>(s<span class="sc">/</span><span class="fu">sqrt</span>(n))</span>
-<span id="cb22-16"><a href="#cb22-16"></a>  }</span>
-<span id="cb22-17"><a href="#cb22-17"></a></span>
-<span id="cb22-18"><a href="#cb22-18"></a>t.critical <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="dv">1</span><span class="fl">-0.05</span>, <span class="at">df=</span><span class="dv">24</span>)</span>
-<span id="cb22-19"><a href="#cb22-19"></a>t.stat <span class="ot">=</span> <span class="fl">9.16</span></span>
-<span id="cb22-20"><a href="#cb22-20"></a></span>
-<span id="cb22-21"><a href="#cb22-21"></a><span class="fu">ggplot</span>(ggdat) <span class="sc">+</span></span>
-<span id="cb22-22"><a href="#cb22-22"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>pdf.h0))<span class="sc">+</span> <span class="co"># plot distribution of T under H0</span></span>
-<span id="cb22-23"><a href="#cb22-23"></a>  <span class="fu">stat_density</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">t=</span>ts), <span class="fu">aes</span>(<span class="at">x=</span>t), <span class="at">color=</span><span class="st">"grey"</span>, <span class="at">geom=</span><span class="st">"line"</span>)<span class="sc">+</span></span>
-<span id="cb22-24"><a href="#cb22-24"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb22-25"><a href="#cb22-25"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&gt;=</span> t.critical),</span>
-<span id="cb22-26"><a href="#cb22-26"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"Rejection Region"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb22-27"><a href="#cb22-27"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&gt;=</span> t.stat),</span>
-<span id="cb22-28"><a href="#cb22-28"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"P value"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb22-29"><a href="#cb22-29"></a>  <span class="co"># Plot observation</span></span>
-<span id="cb22-30"><a href="#cb22-30"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">x=</span>t.stat, <span class="at">y=</span><span class="dv">0</span>),</span>
-<span id="cb22-31"><a href="#cb22-31"></a>             <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">color=</span><span class="st">"red"</span>, <span class="at">size=</span><span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb22-32"><a href="#cb22-32"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
-<span id="cb22-33"><a href="#cb22-33"></a>  <span class="co"># Specify axis ticks</span></span>
-<span id="cb22-34"><a href="#cb22-34"></a>  <span class="fu">scale_x_continuous</span>(<span class="st">"t"</span>, <span class="at">breaks=</span>t.breaks, <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span>., <span class="fu">bquote</span>(<span class="fu">bar</span>(x)),</span>
-<span id="cb22-35"><a href="#cb22-35"></a>                     <span class="at">breaks=</span>t.breaks, <span class="at">labels=</span>xbar.breaks)) <span class="sc">+</span></span>
-<span id="cb22-36"><a href="#cb22-36"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"Density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>ggdat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">t =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">15</span>, <span class="at">length.out=</span><span class="dv">1000</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a>  <span class="fu">mutate</span>(<span class="at">pdf.h0 =</span> <span class="fu">dt</span>(<span class="at">x=</span>t, <span class="at">df=</span><span class="dv">24</span>))</span>
+<span id="cb25-3"><a href="#cb25-3"></a></span>
+<span id="cb25-4"><a href="#cb25-4"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>closer_vals)</span>
+<span id="cb25-5"><a href="#cb25-5"></a><span class="co"># create vector of axis ticks</span></span>
+<span id="cb25-6"><a href="#cb25-6"></a>t.breaks <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">24</span>, <span class="dv">24</span>, <span class="dv">4</span>)</span>
+<span id="cb25-7"><a href="#cb25-7"></a>xbar.breaks <span class="ot">&lt;-</span> <span class="fu">round</span>(t.breaks <span class="sc">*</span> (s<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">25</span>)), <span class="dv">2</span>)</span>
+<span id="cb25-8"><a href="#cb25-8"></a></span>
+<span id="cb25-9"><a href="#cb25-9"></a><span class="co"># resampling</span></span>
+<span id="cb25-10"><a href="#cb25-10"></a>ts <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">1000</span>)</span>
+<span id="cb25-11"><a href="#cb25-11"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>closer_vals)</span>
+<span id="cb25-12"><a href="#cb25-12"></a>n <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb25-13"><a href="#cb25-13"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
+<span id="cb25-14"><a href="#cb25-14"></a>   curr.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(data<span class="sc">$</span>closer_vals, <span class="at">size=</span>n, <span class="at">replace=</span>T)</span>
+<span id="cb25-15"><a href="#cb25-15"></a>   ts[i] <span class="ot">&lt;-</span> (<span class="fu">mean</span>(curr.sample))<span class="sc">/</span>(s<span class="sc">/</span><span class="fu">sqrt</span>(n))</span>
+<span id="cb25-16"><a href="#cb25-16"></a>  }</span>
+<span id="cb25-17"><a href="#cb25-17"></a></span>
+<span id="cb25-18"><a href="#cb25-18"></a>t.critical <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="dv">1</span><span class="fl">-0.05</span>, <span class="at">df=</span><span class="dv">24</span>)</span>
+<span id="cb25-19"><a href="#cb25-19"></a>t.stat <span class="ot">=</span> <span class="fl">9.16</span></span>
+<span id="cb25-20"><a href="#cb25-20"></a></span>
+<span id="cb25-21"><a href="#cb25-21"></a><span class="fu">ggplot</span>(ggdat) <span class="sc">+</span></span>
+<span id="cb25-22"><a href="#cb25-22"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>pdf.h0))<span class="sc">+</span> <span class="co"># plot distribution of T under H0</span></span>
+<span id="cb25-23"><a href="#cb25-23"></a>  <span class="fu">stat_density</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">t=</span>ts), <span class="fu">aes</span>(<span class="at">x=</span>t), <span class="at">color=</span><span class="st">"grey"</span>, <span class="at">geom=</span><span class="st">"line"</span>)<span class="sc">+</span></span>
+<span id="cb25-24"><a href="#cb25-24"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb25-25"><a href="#cb25-25"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&gt;=</span> t.critical),</span>
+<span id="cb25-26"><a href="#cb25-26"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"Rejection Region"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb25-27"><a href="#cb25-27"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&gt;=</span> t.stat),</span>
+<span id="cb25-28"><a href="#cb25-28"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"P value"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb25-29"><a href="#cb25-29"></a>  <span class="co"># Plot observation</span></span>
+<span id="cb25-30"><a href="#cb25-30"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">x=</span>t.stat, <span class="at">y=</span><span class="dv">0</span>),</span>
+<span id="cb25-31"><a href="#cb25-31"></a>             <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">color=</span><span class="st">"red"</span>, <span class="at">size=</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb25-32"><a href="#cb25-32"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb25-33"><a href="#cb25-33"></a>  <span class="co"># Specify axis ticks</span></span>
+<span id="cb25-34"><a href="#cb25-34"></a>  <span class="fu">scale_x_continuous</span>(<span class="st">"t"</span>, <span class="at">breaks=</span>t.breaks, <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span>., <span class="fu">bquote</span>(<span class="fu">bar</span>(x)),</span>
+<span id="cb25-35"><a href="#cb25-35"></a>                     <span class="at">breaks=</span>t.breaks, <span class="at">labels=</span>xbar.breaks)) <span class="sc">+</span></span>
+<span id="cb25-36"><a href="#cb25-36"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"Density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -737,42 +806,42 @@ mean of x
 <div class="cell" data-layout-align="center" data-scale="80%">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>ggdat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">t =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">15</span>, <span class="dv">4</span>, <span class="at">length.out=</span><span class="dv">1000</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">mutate</span>(<span class="at">pdf.h0 =</span> <span class="fu">dt</span>(<span class="at">x=</span>t, <span class="at">df=</span><span class="dv">24</span>))</span>
-<span id="cb23-3"><a href="#cb23-3"></a></span>
-<span id="cb23-4"><a href="#cb23-4"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>further_vals)</span>
-<span id="cb23-5"><a href="#cb23-5"></a><span class="co"># create vector of axis ticks</span></span>
-<span id="cb23-6"><a href="#cb23-6"></a>t.breaks <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">24</span>, <span class="dv">24</span>, <span class="dv">4</span>)</span>
-<span id="cb23-7"><a href="#cb23-7"></a>xbar.breaks <span class="ot">&lt;-</span> <span class="fu">round</span>(t.breaks <span class="sc">*</span> (s<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">25</span>)), <span class="dv">2</span>)</span>
-<span id="cb23-8"><a href="#cb23-8"></a></span>
-<span id="cb23-9"><a href="#cb23-9"></a><span class="co"># resampling</span></span>
-<span id="cb23-10"><a href="#cb23-10"></a>ts <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">1000</span>)</span>
-<span id="cb23-11"><a href="#cb23-11"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>further_vals)</span>
-<span id="cb23-12"><a href="#cb23-12"></a>n <span class="ot">&lt;-</span> <span class="dv">25</span></span>
-<span id="cb23-13"><a href="#cb23-13"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
-<span id="cb23-14"><a href="#cb23-14"></a>   curr.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(data<span class="sc">$</span>further_vals, <span class="at">size=</span>n, <span class="at">replace=</span>T)</span>
-<span id="cb23-15"><a href="#cb23-15"></a>   ts[i] <span class="ot">&lt;-</span> (<span class="fu">mean</span>(curr.sample))<span class="sc">/</span>(s<span class="sc">/</span><span class="fu">sqrt</span>(n))</span>
-<span id="cb23-16"><a href="#cb23-16"></a>  }</span>
-<span id="cb23-17"><a href="#cb23-17"></a></span>
-<span id="cb23-18"><a href="#cb23-18"></a>t.critical <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.05</span>, <span class="at">df=</span><span class="dv">24</span>)</span>
-<span id="cb23-19"><a href="#cb23-19"></a>t.stat <span class="ot">=</span> <span class="sc">-</span><span class="fl">7.92</span></span>
-<span id="cb23-20"><a href="#cb23-20"></a></span>
-<span id="cb23-21"><a href="#cb23-21"></a><span class="fu">ggplot</span>(ggdat) <span class="sc">+</span></span>
-<span id="cb23-22"><a href="#cb23-22"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>pdf.h0))<span class="sc">+</span> <span class="co"># plot distribution of T under H0</span></span>
-<span id="cb23-23"><a href="#cb23-23"></a>  <span class="fu">stat_density</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">t=</span>ts), <span class="fu">aes</span>(<span class="at">x=</span>t), <span class="at">color=</span><span class="st">"grey"</span>, <span class="at">geom=</span><span class="st">"line"</span>)<span class="sc">+</span></span>
-<span id="cb23-24"><a href="#cb23-24"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb23-25"><a href="#cb23-25"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&lt;=</span> t.critical),</span>
-<span id="cb23-26"><a href="#cb23-26"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"Rejection Region"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb23-27"><a href="#cb23-27"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&lt;=</span> t.stat),</span>
-<span id="cb23-28"><a href="#cb23-28"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"P value"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb23-29"><a href="#cb23-29"></a>  <span class="co"># Plot observation</span></span>
-<span id="cb23-30"><a href="#cb23-30"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">x=</span>t.stat, <span class="at">y=</span><span class="dv">0</span>),</span>
-<span id="cb23-31"><a href="#cb23-31"></a>             <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">color=</span><span class="st">"red"</span>, <span class="at">size=</span><span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb23-32"><a href="#cb23-32"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
-<span id="cb23-33"><a href="#cb23-33"></a>  <span class="co"># Specify axis ticks</span></span>
-<span id="cb23-34"><a href="#cb23-34"></a>  <span class="fu">scale_x_continuous</span>(<span class="st">"t"</span>, <span class="at">breaks=</span>t.breaks, <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span>., <span class="fu">bquote</span>(<span class="fu">bar</span>(x)),</span>
-<span id="cb23-35"><a href="#cb23-35"></a>                     <span class="at">breaks=</span>t.breaks, <span class="at">labels=</span>xbar.breaks)) <span class="sc">+</span></span>
-<span id="cb23-36"><a href="#cb23-36"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"Density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>ggdat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">t =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">15</span>, <span class="dv">4</span>, <span class="at">length.out=</span><span class="dv">1000</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a>  <span class="fu">mutate</span>(<span class="at">pdf.h0 =</span> <span class="fu">dt</span>(<span class="at">x=</span>t, <span class="at">df=</span><span class="dv">24</span>))</span>
+<span id="cb26-3"><a href="#cb26-3"></a></span>
+<span id="cb26-4"><a href="#cb26-4"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>further_vals)</span>
+<span id="cb26-5"><a href="#cb26-5"></a><span class="co"># create vector of axis ticks</span></span>
+<span id="cb26-6"><a href="#cb26-6"></a>t.breaks <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">24</span>, <span class="dv">24</span>, <span class="dv">4</span>)</span>
+<span id="cb26-7"><a href="#cb26-7"></a>xbar.breaks <span class="ot">&lt;-</span> <span class="fu">round</span>(t.breaks <span class="sc">*</span> (s<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">25</span>)), <span class="dv">2</span>)</span>
+<span id="cb26-8"><a href="#cb26-8"></a></span>
+<span id="cb26-9"><a href="#cb26-9"></a><span class="co"># resampling</span></span>
+<span id="cb26-10"><a href="#cb26-10"></a>ts <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">1000</span>)</span>
+<span id="cb26-11"><a href="#cb26-11"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>further_vals)</span>
+<span id="cb26-12"><a href="#cb26-12"></a>n <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb26-13"><a href="#cb26-13"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
+<span id="cb26-14"><a href="#cb26-14"></a>   curr.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(data<span class="sc">$</span>further_vals, <span class="at">size=</span>n, <span class="at">replace=</span>T)</span>
+<span id="cb26-15"><a href="#cb26-15"></a>   ts[i] <span class="ot">&lt;-</span> (<span class="fu">mean</span>(curr.sample))<span class="sc">/</span>(s<span class="sc">/</span><span class="fu">sqrt</span>(n))</span>
+<span id="cb26-16"><a href="#cb26-16"></a>  }</span>
+<span id="cb26-17"><a href="#cb26-17"></a></span>
+<span id="cb26-18"><a href="#cb26-18"></a>t.critical <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.05</span>, <span class="at">df=</span><span class="dv">24</span>)</span>
+<span id="cb26-19"><a href="#cb26-19"></a>t.stat <span class="ot">=</span> <span class="sc">-</span><span class="fl">7.92</span></span>
+<span id="cb26-20"><a href="#cb26-20"></a></span>
+<span id="cb26-21"><a href="#cb26-21"></a><span class="fu">ggplot</span>(ggdat) <span class="sc">+</span></span>
+<span id="cb26-22"><a href="#cb26-22"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>pdf.h0))<span class="sc">+</span> <span class="co"># plot distribution of T under H0</span></span>
+<span id="cb26-23"><a href="#cb26-23"></a>  <span class="fu">stat_density</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">t=</span>ts), <span class="fu">aes</span>(<span class="at">x=</span>t), <span class="at">color=</span><span class="st">"grey"</span>, <span class="at">geom=</span><span class="st">"line"</span>)<span class="sc">+</span></span>
+<span id="cb26-24"><a href="#cb26-24"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb26-25"><a href="#cb26-25"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&lt;=</span> t.critical),</span>
+<span id="cb26-26"><a href="#cb26-26"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"Rejection Region"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb26-27"><a href="#cb26-27"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&lt;=</span> t.stat),</span>
+<span id="cb26-28"><a href="#cb26-28"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"P value"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb26-29"><a href="#cb26-29"></a>  <span class="co"># Plot observation</span></span>
+<span id="cb26-30"><a href="#cb26-30"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">x=</span>t.stat, <span class="at">y=</span><span class="dv">0</span>),</span>
+<span id="cb26-31"><a href="#cb26-31"></a>             <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">color=</span><span class="st">"red"</span>, <span class="at">size=</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb26-32"><a href="#cb26-32"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb26-33"><a href="#cb26-33"></a>  <span class="co"># Specify axis ticks</span></span>
+<span id="cb26-34"><a href="#cb26-34"></a>  <span class="fu">scale_x_continuous</span>(<span class="st">"t"</span>, <span class="at">breaks=</span>t.breaks, <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span>., <span class="fu">bquote</span>(<span class="fu">bar</span>(x)),</span>
+<span id="cb26-35"><a href="#cb26-35"></a>                     <span class="at">breaks=</span>t.breaks, <span class="at">labels=</span>xbar.breaks)) <span class="sc">+</span></span>
+<span id="cb26-36"><a href="#cb26-36"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"Density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -788,47 +857,47 @@ mean of x
 <div class="cell" data-layout-align="center" data-scale="80%">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>ggdat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">t =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="dv">10</span>, <span class="at">length.out=</span><span class="dv">1000</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">mutate</span>(<span class="at">pdf.h0 =</span> <span class="fu">dt</span>(<span class="at">x=</span>t, <span class="at">df=</span><span class="dv">24</span>))</span>
-<span id="cb24-3"><a href="#cb24-3"></a></span>
-<span id="cb24-4"><a href="#cb24-4"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>difference)</span>
-<span id="cb24-5"><a href="#cb24-5"></a><span class="co"># create vector of axis ticks</span></span>
-<span id="cb24-6"><a href="#cb24-6"></a>t.breaks <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">24</span>, <span class="dv">24</span>, <span class="dv">4</span>)</span>
-<span id="cb24-7"><a href="#cb24-7"></a>xbar.breaks <span class="ot">&lt;-</span> <span class="fu">round</span>(t.breaks <span class="sc">*</span> (s<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">25</span>)), <span class="dv">2</span>)</span>
-<span id="cb24-8"><a href="#cb24-8"></a></span>
-<span id="cb24-9"><a href="#cb24-9"></a><span class="co"># resampling</span></span>
-<span id="cb24-10"><a href="#cb24-10"></a>ts <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">1000</span>)</span>
-<span id="cb24-11"><a href="#cb24-11"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>difference)</span>
-<span id="cb24-12"><a href="#cb24-12"></a>n <span class="ot">&lt;-</span> <span class="dv">25</span></span>
-<span id="cb24-13"><a href="#cb24-13"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
-<span id="cb24-14"><a href="#cb24-14"></a>   curr.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(data<span class="sc">$</span>difference, <span class="at">size=</span>n, <span class="at">replace=</span>T)</span>
-<span id="cb24-15"><a href="#cb24-15"></a>   ts[i] <span class="ot">&lt;-</span> (<span class="fu">mean</span>(curr.sample))<span class="sc">/</span>(s<span class="sc">/</span><span class="fu">sqrt</span>(n))</span>
-<span id="cb24-16"><a href="#cb24-16"></a>  }</span>
-<span id="cb24-17"><a href="#cb24-17"></a></span>
-<span id="cb24-18"><a href="#cb24-18"></a>t.critical1 <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="at">df=</span><span class="dv">24</span>)</span>
-<span id="cb24-19"><a href="#cb24-19"></a>t.critical2 <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.025</span>, <span class="at">df=</span><span class="dv">24</span>)</span>
-<span id="cb24-20"><a href="#cb24-20"></a>t.stat <span class="ot">=</span> <span class="fl">9.1428</span></span>
-<span id="cb24-21"><a href="#cb24-21"></a></span>
-<span id="cb24-22"><a href="#cb24-22"></a><span class="fu">ggplot</span>(ggdat) <span class="sc">+</span></span>
-<span id="cb24-23"><a href="#cb24-23"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>pdf.h0))<span class="sc">+</span> <span class="co"># plot distribution of T under H0</span></span>
-<span id="cb24-24"><a href="#cb24-24"></a>  <span class="fu">stat_density</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">t=</span>ts), <span class="fu">aes</span>(<span class="at">x=</span>t), <span class="at">color=</span><span class="st">"grey"</span>, <span class="at">geom=</span><span class="st">"line"</span>)<span class="sc">+</span></span>
-<span id="cb24-25"><a href="#cb24-25"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb24-26"><a href="#cb24-26"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&lt;=</span> t.critical2), <span class="co"># rejection region</span></span>
-<span id="cb24-27"><a href="#cb24-27"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"Rejection Region"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb24-28"><a href="#cb24-28"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&gt;=</span> t.critical1), <span class="co"># rejection region</span></span>
-<span id="cb24-29"><a href="#cb24-29"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"Rejection Region"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb24-30"><a href="#cb24-30"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&gt;=</span> t.stat), <span class="co"># P value</span></span>
-<span id="cb24-31"><a href="#cb24-31"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"P value"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb24-32"><a href="#cb24-32"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&lt;=</span> <span class="sc">-</span>t.stat), <span class="co"># P value</span></span>
-<span id="cb24-33"><a href="#cb24-33"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"P value"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb24-34"><a href="#cb24-34"></a>  <span class="co"># Plot observation</span></span>
-<span id="cb24-35"><a href="#cb24-35"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">x=</span>t.stat, <span class="at">y=</span><span class="dv">0</span>),</span>
-<span id="cb24-36"><a href="#cb24-36"></a>             <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">color=</span><span class="st">"red"</span>, <span class="at">size=</span><span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb24-37"><a href="#cb24-37"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
-<span id="cb24-38"><a href="#cb24-38"></a>  <span class="co"># Specify axis ticks</span></span>
-<span id="cb24-39"><a href="#cb24-39"></a>  <span class="fu">scale_x_continuous</span>(<span class="st">"t"</span>, <span class="at">breaks=</span>t.breaks, <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span>., <span class="fu">bquote</span>(<span class="fu">bar</span>(x)),</span>
-<span id="cb24-40"><a href="#cb24-40"></a>                     <span class="at">breaks=</span>t.breaks, <span class="at">labels=</span>xbar.breaks)) <span class="sc">+</span></span>
-<span id="cb24-41"><a href="#cb24-41"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"Density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>ggdat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">t =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="dv">10</span>, <span class="at">length.out=</span><span class="dv">1000</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2"></a>  <span class="fu">mutate</span>(<span class="at">pdf.h0 =</span> <span class="fu">dt</span>(<span class="at">x=</span>t, <span class="at">df=</span><span class="dv">24</span>))</span>
+<span id="cb27-3"><a href="#cb27-3"></a></span>
+<span id="cb27-4"><a href="#cb27-4"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>difference)</span>
+<span id="cb27-5"><a href="#cb27-5"></a><span class="co"># create vector of axis ticks</span></span>
+<span id="cb27-6"><a href="#cb27-6"></a>t.breaks <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">24</span>, <span class="dv">24</span>, <span class="dv">4</span>)</span>
+<span id="cb27-7"><a href="#cb27-7"></a>xbar.breaks <span class="ot">&lt;-</span> <span class="fu">round</span>(t.breaks <span class="sc">*</span> (s<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">25</span>)), <span class="dv">2</span>)</span>
+<span id="cb27-8"><a href="#cb27-8"></a></span>
+<span id="cb27-9"><a href="#cb27-9"></a><span class="co"># resampling</span></span>
+<span id="cb27-10"><a href="#cb27-10"></a>ts <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">1000</span>)</span>
+<span id="cb27-11"><a href="#cb27-11"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(data<span class="sc">$</span>difference)</span>
+<span id="cb27-12"><a href="#cb27-12"></a>n <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb27-13"><a href="#cb27-13"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
+<span id="cb27-14"><a href="#cb27-14"></a>   curr.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(data<span class="sc">$</span>difference, <span class="at">size=</span>n, <span class="at">replace=</span>T)</span>
+<span id="cb27-15"><a href="#cb27-15"></a>   ts[i] <span class="ot">&lt;-</span> (<span class="fu">mean</span>(curr.sample))<span class="sc">/</span>(s<span class="sc">/</span><span class="fu">sqrt</span>(n))</span>
+<span id="cb27-16"><a href="#cb27-16"></a>  }</span>
+<span id="cb27-17"><a href="#cb27-17"></a></span>
+<span id="cb27-18"><a href="#cb27-18"></a>t.critical1 <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="at">df=</span><span class="dv">24</span>)</span>
+<span id="cb27-19"><a href="#cb27-19"></a>t.critical2 <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.025</span>, <span class="at">df=</span><span class="dv">24</span>)</span>
+<span id="cb27-20"><a href="#cb27-20"></a>t.stat <span class="ot">=</span> <span class="fl">9.1428</span></span>
+<span id="cb27-21"><a href="#cb27-21"></a></span>
+<span id="cb27-22"><a href="#cb27-22"></a><span class="fu">ggplot</span>(ggdat) <span class="sc">+</span></span>
+<span id="cb27-23"><a href="#cb27-23"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>pdf.h0))<span class="sc">+</span> <span class="co"># plot distribution of T under H0</span></span>
+<span id="cb27-24"><a href="#cb27-24"></a>  <span class="fu">stat_density</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">t=</span>ts), <span class="fu">aes</span>(<span class="at">x=</span>t), <span class="at">color=</span><span class="st">"grey"</span>, <span class="at">geom=</span><span class="st">"line"</span>)<span class="sc">+</span></span>
+<span id="cb27-25"><a href="#cb27-25"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb27-26"><a href="#cb27-26"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&lt;=</span> t.critical2), <span class="co"># rejection region</span></span>
+<span id="cb27-27"><a href="#cb27-27"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"Rejection Region"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb27-28"><a href="#cb27-28"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&gt;=</span> t.critical1), <span class="co"># rejection region</span></span>
+<span id="cb27-29"><a href="#cb27-29"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"Rejection Region"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb27-30"><a href="#cb27-30"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&gt;=</span> t.stat), <span class="co"># P value</span></span>
+<span id="cb27-31"><a href="#cb27-31"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"P value"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb27-32"><a href="#cb27-32"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>ggdat <span class="sc">|&gt;</span> <span class="fu">filter</span>(t <span class="sc">&lt;=</span> <span class="sc">-</span>t.stat), <span class="co"># P value</span></span>
+<span id="cb27-33"><a href="#cb27-33"></a>              <span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">ymin=</span><span class="dv">0</span>, <span class="at">ymax=</span> pdf.h0, <span class="at">fill=</span><span class="st">"P value"</span>), <span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb27-34"><a href="#cb27-34"></a>  <span class="co"># Plot observation</span></span>
+<span id="cb27-35"><a href="#cb27-35"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">x=</span>t.stat, <span class="at">y=</span><span class="dv">0</span>),</span>
+<span id="cb27-36"><a href="#cb27-36"></a>             <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">color=</span><span class="st">"red"</span>, <span class="at">size=</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb27-37"><a href="#cb27-37"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb27-38"><a href="#cb27-38"></a>  <span class="co"># Specify axis ticks</span></span>
+<span id="cb27-39"><a href="#cb27-39"></a>  <span class="fu">scale_x_continuous</span>(<span class="st">"t"</span>, <span class="at">breaks=</span>t.breaks, <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span>., <span class="fu">bquote</span>(<span class="fu">bar</span>(x)),</span>
+<span id="cb27-40"><a href="#cb27-40"></a>                     <span class="at">breaks=</span>t.breaks, <span class="at">labels=</span>xbar.breaks)) <span class="sc">+</span></span>
+<span id="cb27-41"><a href="#cb27-41"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"Density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">

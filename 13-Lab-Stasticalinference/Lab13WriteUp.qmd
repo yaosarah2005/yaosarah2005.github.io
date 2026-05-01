@@ -274,6 +274,26 @@ Conduct the inferences they do in the paper. Make sure to report the results a l
 
 **Solution**
 
+```{r}
+#| label: closer value
+#| fig-cap: "Histogram of Closer Values"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
+ggplot(data) +
+  geom_histogram(aes(x=closer_vals, y=after_stat(density)),
+                breaks=seq(0,0.5,0.05), color="grey")+
+  geom_hline(yintercept=0)+
+  theme_bw() +
+  labs(x="Closer values",
+       y="Density")
+```
+
+The t-test requires the distribution of the sample to be approximately normal or the sample size should be greater than 30. 
+
 ($t=9.16$, $p=1.33 \times 10^{-9}$; $g=1.77$; 95% CI: 0.138, 0.219)
 
 ```{r}
@@ -288,6 +308,26 @@ hedges_g(x=data$closer_vals, mu = 0)
 
 **Solution**
 
+```{r}
+#| label: further value
+#| fig-cap: "Histogram of Further Values"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
+ggplot(data) +
+  geom_histogram(aes(x=further_vals, y=after_stat(density)),
+                breaks=seq(-0.5,0,0.05), color="grey")+
+  geom_hline(yintercept=0)+
+  theme_bw() +
+  labs(x="Further values",
+       y="Density")
+```
+
+The t-test requires the distribution of the sample to be approximately normal or the sample size should be greater than 30. 
+
 ($t=-7.92$, $p=1.87 \times 10^{-8}$; $g=-1.53$; 95% CI: -0.268, -0.157)
 
 ```{r}
@@ -300,6 +340,26 @@ hedges_g(x=data$further_vals, mu = 0)
 **Note**: Use the two-sided test.
 
 **Solution**
+
+```{r}
+#| label: difference value
+#| fig-cap: "Histogram of Difference"
+#| fig-width: 5
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: scriptsize
+
+ggplot(data) +
+  geom_histogram(aes(x=difference, y=after_stat(density)),
+                breaks=seq(0,1,0.1), color="grey")+
+  geom_hline(yintercept=0)+
+  theme_bw() +
+  labs(x="Difference",
+       y="Density")
+```
+
+The t-test requires the distribution of the sample to be approximately normal or the sample size should be greater than 30. 
 
 ($t=9.1428$, $p=2.75 \times 10^{-9}$; $g=1.77$; 95% CI: 0.303, 0.480)
 
